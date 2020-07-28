@@ -1,0 +1,13 @@
+# Using workaround from https://github.com/jazzband/pip-tools/issues/204#issuecomment-550051424
+-e file:.#egg=charm  # egg name here must be the same value as the name argument of setup() in setup.py
+
+# Use dependency list in requirements.txt to constrain the dependencies that
+# gets resolved when compiling this file.
+-c requirements.txt
+
+charmcraft
+flake8
+pytest
+pytest-cov
+pytest-randomly
+tox

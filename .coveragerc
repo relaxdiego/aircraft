@@ -1,0 +1,11 @@
+# https://coverage.readthedocs.io/en/latest/config.html
+[run]
+branch = True
+source = src
+
+[report]
+include = src/*
+
+[html]
+directory=htmlcov
+title = Test Coverage for ChangeMe Operator

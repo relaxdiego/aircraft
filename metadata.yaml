@@ -1,0 +1,15 @@
+name: "changeme"
+display-name: "changeme"
+summary: "changeme"
+maintainers:
+    - "changeme <changeme@changeme.com>"
+description: |
+  Deploys and operates ChangeMe on Kubernetes
+tags:
+    - "application"
+series:
+    - "kubernetes"
+resources:
+  changeme-image:
+    type: oci-image
+    description: Container image to be used for the changeme pod
