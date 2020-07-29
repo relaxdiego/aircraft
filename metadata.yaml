@@ -1,15 +1,11 @@
-name: "changeme"
-display-name: "changeme"
-summary: "changeme"
+name: "unboxed"
+display-name: "unboxed"
+summary: "A python-based charm that uses the thinnest and lightest possible framework."
 maintainers:
-    - "changeme <changeme@changeme.com>"
+    - "Mark S. Maglana <mark.maglana@canonical.com>"
 description: |
-  Deploys and operates ChangeMe on Kubernetes
+  Deploys and operates Unboxed on Kubernetes
 tags:
     - "application"
 series:
     - "kubernetes"
-resources:
-  changeme-image:
-    type: oci-image
-    description: Container image to be used for the changeme pod

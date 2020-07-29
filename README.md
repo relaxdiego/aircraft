@@ -1,28 +1,4 @@
-### How To Use This Template
-
-> **WARNING**: This is a **PROOF-OF-CONCEPT** template to help you quickly get started with writing
->charms built on top of the Operator Framework. It uses charmcraft to build the final charm
-> zip file. More info on how to use charmcraft in [Juju Discourse](https://discourse.juju.is/t/how-to-build-a-charm-using-modern-tools/3246).
-> Please note that this template has neither been reviewed nor adopted by the Charmcraft team so use
-> this template at your own risk.
-
-Browse to [this template's GitHub page](https://github.com/relaxdiego/operator-charm-template)
-then click on the green "Use this template" button. Follow the steps on GitHub to create
-a freshly squeezed charm project! If you need more information before diving in, kindly
-refer to [this GitHub documentation](https://docs.github.com/en/github/creating-cloning-and-archiving-repositories/creating-a-repository-from-a-template).
-
-Next, run the following command to know which places you need to customize:
-
-```
-make changes
-```
-
-Change every line of every file listed in the output until re-running the command does
-not yield anything else. Afterwards, delete this section and then proceed to the
-Developer Guide section below for more instructions. Good luck!
-
-
-# ChangeMe Charm
+# Unboxed Charm
 
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam efficitur eros sed arcu
 commodo posuere. Sed nec ornare enim, ut pellentesque tellus. Nunc lacinia, dolor vel
@@ -34,16 +10,27 @@ Cras convallis lorem quis augue vestibulum, eu blandit metus vulputate.
 
 ## Quick Start
 
-Test, build, and deploy the charm:
+Build, and deploy the charm:
 
 ```
-make test build && \
-    juju deploy ./changeme.charm --resource changeme-image=changeme/changeme:v1.2.3
+make build && juju deploy ./unboxed.charm
 ```
+
+Optionally set the Juju log level to DEBUG:
+
+```
+juju model-config logging-config="<root>=WARNING;unit=DEBUG"
+```
+
 
 # Developer's Guide
 
-## Prepare Your Development Environment
+## Prepare Your Python Environment
+
+> This section is OPTIONAL but RECOMMENDED since it guarantees safety of your main
+> Python environment or any other virtual environments you have lying around. That
+> said, you're free to skip this part and just go with `python3 -m venv ./.venv`.
+> Just make sure to activate that virtualenv before you go to the next section!
 
 1. Install pyenv so that you can test with different versions of Python
 
@@ -80,7 +67,7 @@ NOTE: For more available versions, run `pyenv install --list`
 5. Create a virtualenv for this project
 
 ```
-export charm_name=changeme
+export charm_name=unboxed
 pyenv virtualenv 3.7.7 ${charm_name}-3.7.7
 pyenv local ${charm_name}-3.7.7 3.7.7 3.6.10 3.5.9
 ```
@@ -89,7 +76,14 @@ Your newly created virtualenv should now be activated if your prompt changed
 to the following:
 
 ```
-(changeme-3.5.9) ubuntu@dev-18-04-2:/path/to/your/charm$
+(unboxed-3.7.7) ubuntu@dev...
+```
+
+or, should you happen to be using [my dotfiles](https://dotfiles.relaxdiego.com),
+if it changed tothe following
+
+```
+... via 🐍 v3.7.7 (unboxed-3.7.7)
 ```
 
 Notice the things in parentheses that corresponds to the virtualenv you created
@@ -107,7 +101,7 @@ Install all development and runtime dependencies.
 
 WARNING: Make sure you are using a virtualenv before running this command. Since it
          uses pip-sync to install dependencies, it will remove any package that is not
-         listed in either `dev-requirements.in` or `setup.py`. If you followed the steps
+         listed in either `requirements-dev.in` or `setup.py`. If you followed the steps
          in Prepare Your Development Environment above, then you're good.
 
 ```
@@ -117,24 +111,24 @@ make dependencies
 
 ## Adding A Development Dependency
 
-1. Add it to `dev-requirements.in` and then run make:
+1. Add it to `requirements-dev.in` and then run make:
 
 ```
-echo "foo" >> dev-requirements.in
+echo "foo" >> requirements-dev.in
 make dependencies
 ```
 
-This will create `dev-requirements.txt` and then install all dependencies
+This will create `requirements-dev.txt` and then install all dependencies
 
 
-2. Commit `dev-requirements.in` and `dev-requirements.txt`. Both
+2. Commit `requirements-dev.in` and `requirements-dev.txt`. Both
    files should now be updated and the `foo` package installed in your
    local machine. Make sure to commit both files to the repo to let your
    teammates know of the new dependency.
 
 ```
-git add dev-requirements.*
-git commit -m "Add foo to dev-requirements.txt"
+git add requirements-dev.*
+git commit -m "Add foo to requirements-dev.txt"
 git push origin
 ```
 
@@ -198,10 +192,11 @@ results for all Python versions listed in tox.ini's envlist config option
 tox
 ```
 
-## Need to Start Over?
+## Need A Fresh Start?
 
-Sigh, don't we all...oh, wait, you mean with the project's state? Oh, well
-we got you covered there. Just run:
+Sigh, oh what we'd give to get a fresh start in life, huh? Oh, wait, you
+mean just the project directory's state? Oh, well we got you covered there
+too! Just run:
 
 ```
 make clean
