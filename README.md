@@ -11,7 +11,7 @@ is a good place to start.
 
 ## 4-minute Demo
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/iwmjgEqEQxY" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+[Watch it on YouTube](https://youtu.be/iwmjgEqEQxY)
 
 
 ## Quick Start
