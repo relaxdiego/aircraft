@@ -1,12 +1,18 @@
 # Unboxed Charm
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam efficitur eros sed arcu
-commodo posuere. Sed nec ornare enim, ut pellentesque tellus. Nunc lacinia, dolor vel
-aliquet tincidunt, mi risus finibus mauris, vel pellentesque ante diam in leo. Sed et
-faucibus eros, vel sagittis purus. Praesent vel malesuada nulla. Quisque tincidunt mauris
-vitae finibus fermentum. Phasellus sodales magna quis feugiat lacinia. Nullam placerat
-nunc quis eros vehicula feugiat. In nunc odio, euismod nec felis nec, egestas aliquam leo.
-Cras convallis lorem quis augue vestibulum, eu blandit metus vulputate.
+It's the most useless [Juju Charm](https://jaas.ai/how-it-works) in the world
+but it shows you that you don't need to learn black magic to create your own
+charm. You can start with pure Python and go from there. Of course, you could
+also go with the [Operator Framework](github.com/canonical/operator) which gets
+you to where you want to go faster, but if you just want to play around with
+the internals of Juju Charms and get to know it at a deeper level, this repo
+is a good place to start.
+
+
+## 4-minute Demo
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/iwmjgEqEQxY" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
 
 ## Quick Start
 
