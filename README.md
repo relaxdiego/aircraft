@@ -14,7 +14,26 @@ is a good place to start.
 [Watch it on YouTube](https://youtu.be/iwmjgEqEQxY)
 
 
-## Quick Start
+## First Make Sure You've Got a Juju model on k8s Running
+
+Just follow these steps and you'll be alright:
+
+```
+sudo snap remove microk8s
+sudo snap remove juju
+sudo snap install --channel=2.8/stable juju --classic
+sudo snap install --channel=1.18/stable microk8s --classic
+sudo microk8s.enable dns dashboard registry storage metrics-server ingress
+sudo snap install --channel=1.18/stable kubectl --classic
+mkdir -p ~/.kube
+sudo microk8s.config > ~/.kube/config
+juju add-k8s k8s-1.18
+juju bootstrap k8s-1.18 juju-2-8-1
+juju add-model demo
+```
+
+
+## Now Let's Rock and Roll!
 
 Build, and deploy the charm:
 
