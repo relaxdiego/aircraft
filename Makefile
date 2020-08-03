@@ -41,7 +41,7 @@ test: .last-pip-sync .last-pip-tools-install
 	@(grep "charmcraft build error" .last-build 1>/dev/null 2>&1 && rm -f .last-build && exit 1) || true
 
 .last-pip-tools-install:
-	@(pip-compile --version 1>/dev/null 2>&1 || pip --disable-pip-version-check install "pip-tools>=5.2.1,<5.3" || echo "pip-tools install error") | tee .last-pip-tools-install
+	@(pip-compile --version 1>/dev/null 2>&1 || pip --disable-pip-version-check install "pip-tools>=5.3.0,<5.4" || echo "pip-tools install error") | tee .last-pip-tools-install
 	@(grep "pip-tools install error" .last-pip-tools-install 1>/dev/null 2>&1 && rm -f .last-pip-tools-install && exit 1) || true
 
 requirements.txt: setup.py
