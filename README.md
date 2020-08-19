@@ -45,6 +45,13 @@ juju bootstrap k8s-1.18 juju-2-8-1
 juju add-model demo
 ```
 
+You may want to set the unit logging to TRACE so that you can get to the
+bottom of any charm errors quickly:
+
+```
+juju model-config logging-config="<root>=DEBUG;<unit>=TRACE"
+```
+
 
 ## Now Let's Rock and Roll!
 
@@ -85,8 +92,6 @@ You should already have `pyenv` and `pyenv-virtualenv` installed
 1. Install Python 3.5, 3.6 and 3.7
 
 ```
-pyenv install 3.5.9
-pyenv install 3.6.10
 pyenv install 3.7.7
 ```
 

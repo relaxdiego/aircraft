@@ -35,9 +35,9 @@ test: .last-pip-sync .last-pip-tools-install
 	@(grep "pip-sync error" .last-pip-sync 1>/dev/null 2>&1 && rm -f .last-pip-sync && exit 1) || true
 	@pyenv rehash
 
-.last-build: unboxed/* .last-pip-sync metadata.yaml config.yaml
+.last-build: src/* .last-pip-sync metadata.yaml config.yaml
 	@echo "Rebuilding charm '${charm_name}' using 'charmcraft build'"
-	@(python -m charmcraft build -e unboxed/charm.py 2>&1 || echo "charmcraft build error") | tee .last-build
+	@(python -m charmcraft build -e src/charm.py 2>&1 || echo "charmcraft build error") | tee .last-build
 	@(grep "charmcraft build error" .last-build 1>/dev/null 2>&1 && rm -f .last-build && exit 1) || true
 
 .last-pip-tools-install:

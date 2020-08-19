@@ -14,13 +14,13 @@
 # project's README.md file
 runtime_requirements = []
 
-minimum_python_version = (3, 5, 0)
+minimum_python_version = (3, 7, 7)
 
 #
 # DO NOT CHANGE ANYTHING BELOW
 #
 
-from setuptools import find_packages, setup
+from setuptools import setup, find_packages
 from sys import version_info
 
 
@@ -36,5 +36,5 @@ if version_info[:3] < minimum_python_version:
 setup(
     install_requires=runtime_requirements,
     name='charm',
-    packages=find_packages(),
+    packages_dir=find_packages(),
 )
