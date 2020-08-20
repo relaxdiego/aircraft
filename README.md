@@ -41,13 +41,6 @@ juju bootstrap k8s-1.18 juju-2-8-1
 juju add-model demo
 ```
 
-You may want to set the unit logging to TRACE so that you can get to the
-bottom of any charm errors quickly:
-
-```
-juju model-config logging-config="<root>=DEBUG;<unit>=TRACE"
-```
-
 
 ## Now Let's Rock and Roll!
 
@@ -60,7 +53,13 @@ make build && juju deploy ./unboxed.charm
 Optionally set the Juju log level to DEBUG:
 
 ```
-juju model-config logging-config="<root>=WARNING;unit=DEBUG"
+juju model-config logging-config="<root>=DEBUG;<unit>=TRACE"
+```
+
+Now follow the log:
+
+```
+juju debug-log --replay --include-module unit
 ```
 
 
@@ -75,7 +74,7 @@ python3 -m venv ./venv
 ```
 
 Activate it in every shell session where you intend to run make or
-the unit tests (well, when they start to exist 😅)
+the unit tests
 
 ```
 source ./venv/bin/activate
