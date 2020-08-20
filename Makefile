@@ -36,9 +36,18 @@ test: .last-pip-sync .last-pip-tools-install
 	@pyenv rehash
 
 .last-build: src/* .last-pip-sync metadata.yaml config.yaml
-	@echo "Rebuilding charm '${charm_name}' using 'charmcraft build'"
-	@(python -m charmcraft build -e src/charm.py 2>&1 || echo "charmcraft build error") | tee .last-build
-	@(grep "charmcraft build error" .last-build 1>/dev/null 2>&1 && rm -f .last-build && exit 1) || true
+	@echo "Building ${charm_name}.charm..."
+	@rm -rf build && python3 setup.py build | tee .last-build
+	@mkdir -p build/hooks | tee -a .last-build
+	@cp hook-wrapper build/dispatch | tee -a .last-build
+	@cp hook-wrapper build/hooks/upgrade-charm | tee -a .last-build
+	@cp hook-wrapper build/hooks/install | tee -a .last-build
+	@cp hook-wrapper build/hooks/start | tee -a .last-build
+	@cp metadata.yaml build/ | tee -a .last-build
+	@cp config.yaml build/ | tee -a .last-build
+	@rm -f ${charm_name}.charm | tee -a .last-build
+	@zip --help 1>/dev/null 2>&1 || sudo apt install zip
+	@cd build && zip -r ../${charm_name}.charm .
 
 .last-pip-tools-install:
 	@(pip-compile --version 1>/dev/null 2>&1 || pip --disable-pip-version-check install "pip-tools>=5.3.0,<5.4" || echo "pip-tools install error") | tee .last-pip-tools-install

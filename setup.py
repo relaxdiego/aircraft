@@ -14,27 +14,30 @@
 # project's README.md file
 runtime_requirements = []
 
-minimum_python_version = (3, 7, 7)
-
 #
 # DO NOT CHANGE ANYTHING BELOW
 #
 
-from setuptools import setup, find_packages
-from sys import version_info
-
-
-if version_info[:3] < minimum_python_version:
-    raise RuntimeError(
-        'Unsupported python version {}. Please use {} or newer'.format(
-            '.'.join(map(str, version_info[:3])),
-            '.'.join(map(str, minimum_python_version)),
-        )
-    )
-
+from setuptools import setup
 
 setup(
     install_requires=runtime_requirements,
-    name='charm',
-    packages_dir=find_packages(),
+    version='0.1.0',
+    name='charm-dist',
+    author='Mark S. Maglana',
+    author_email='mmaglana@gmail.com',
+    url='https://github.com/relaxdiego/unboxed',
+    python_requires='~=3.7',
+    package_dir={'': 'src'},
+    packages=[
+        'charm',
+        'unboxed'
+    ],
+
+    # https://pypi.org/classifiers/
+    classifiers=[
+        "Programming Language :: Python :: 3.7",
+        "License :: OSI Approved :: Apache Software License",
+        "Operating System :: POSIX :: Linux",
+    ]
 )

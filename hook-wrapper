@@ -1,0 +1,2 @@
+#!/bin/sh
+JUJU_DISPATCH_PATH="${JUJU_DISPATCH_PATH:-$0}" PYTHONPATH=lib python3 lib/charm/charm.py

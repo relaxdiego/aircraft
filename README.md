@@ -8,15 +8,9 @@ is deployed and handled by Juju so I have to get rid of as much of the
 guard rails as possible. That is, I have to "unbox" Juju Charms.
 
 If that doesn't sound like your cup of tea and would much rather get actual
-sh\*\* done, then may I suggest that you start with the
+work done, then may I suggest that you start with the
 [Operator Framework](github.com/canonical/operator) as well as the
 [charmcraft](https://github.com/canonical/charmcraft) tool.
-
-I should also note that this project does currently use the
-[charmcraft](https://github.com/canonical/charmcraft) tool since I'm currently
-more interested examining Juju Charms at runtime rather than
-at build time. For more information on how I use it, check out the `Makefile`
-in this repo, specifically the `build` goal.
 
 Please note that while I'm an employee of [Canonical](https://canonical.com),
 the work that I do in this repo represent my own personal journey. Any opinionated-ness
@@ -30,6 +24,8 @@ views of [Canonical](https://canonical.com/) unless explicitely stated.
 
 
 ## First Make Sure You've Got a Juju model on k8s Running
+
+If you don't have one, you can create it on top of microk8s as follows:
 
 ```
 which microk8s && sudo snap remove microk8s

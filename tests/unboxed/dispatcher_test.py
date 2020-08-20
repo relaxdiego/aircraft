@@ -1,4 +1,3 @@
-import logging
 import unittest
 from unittest.mock import (
     create_autospec,
@@ -7,26 +6,21 @@ from unittest.mock import (
 )
 from uuid import uuid4
 
-from src.charm import (
+from unboxed.dispatcher import (
     _get_charm_context,
-    _configure_logging,
     _run_hook,
     CharmContext,
     dispatch,
-    JujuLogHandler,
-    log,
 )
 
 
 class DispatchTest(unittest.TestCase):
 
-    @patch('src.charm._run_hook', spec_set=True)
-    @patch('src.charm.inspect', spec_set=True)
-    @patch('src.charm._get_charm_context', spec_set=True)
-    @patch('src.charm._configure_logging', spec_set=True)
+    @patch('unboxed.dispatcher._run_hook', spec_set=True)
+    @patch('unboxed.dispatcher.inspect', spec_set=True)
+    @patch('unboxed.dispatcher._get_charm_context', spec_set=True)
     def test__it_dispatches_the_hook_correctly(
             self,
-            mock_configure_logging_func,
             mock_get_charm_context_func,
             mock_inspect,
             mock_run_hook_func):
@@ -34,9 +28,6 @@ class DispatchTest(unittest.TestCase):
         dispatch()
 
         # Assert
-        assert mock_configure_logging_func.call_count == 1
-        assert mock_configure_logging_func.call_args == call(log)
-
         assert mock_get_charm_context_func.call_count == 1
         assert mock_get_charm_context_func.call_args == call()
 
@@ -47,27 +38,9 @@ class DispatchTest(unittest.TestCase):
         )
 
 
-class ConfigureLoggingTest(unittest.TestCase):
-
-    def test__it_configures_the_log_level_and_handler(self):
-        # Setup
-        mock_log = create_autospec(log, spec_set=True)
-
-        # Exercise
-        _configure_logging(mock_log)
-
-        # Assert
-        assert mock_log.setLevel.call_count == 1
-        assert mock_log.setLevel.call_args == call(logging.DEBUG)
-
-        assert mock_log.addHandler.call_count == 1
-        call_arg = mock_log.addHandler.call_args[0][0]
-        assert isinstance(call_arg, JujuLogHandler)
-
-
 class GetCharmContextTest(unittest.TestCase):
 
-    @patch('src.charm.os.environ', spec_set=True)
+    @patch('unboxed.dispatcher.os.environ', spec_set=True)
     def test__it_returns_a_charm_context_object(
             self,
             mock_os_environ):
@@ -84,9 +57,11 @@ class GetCharmContextTest(unittest.TestCase):
 
 class RunHookTest(unittest.TestCase):
 
-    @patch('src.charm.getattr')
+    @patch('unboxed.dispatcher.getattr')
+    @patch('unboxed.dispatcher.log')
     def test__it_runs_an_existing_hook(
             self,
+            mock_log,
             mock_getattr_func):
         # Setup
         ctx = CharmContext(
@@ -102,9 +77,11 @@ class RunHookTest(unittest.TestCase):
         assert mock_hook.call_count == 1
         assert mock_hook.call_args == call(ctx)
 
-    @patch('src.charm.getattr')
+    @patch('unboxed.dispatcher.getattr')
+    @patch('unboxed.dispatcher.log')
     def test__it_does_not_fail_if_hook_is_not_found(
             self,
+            mock_log,
             mock_getattr_func):
         # Setup
         ctx = CharmContext(
