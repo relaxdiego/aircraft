@@ -3,7 +3,7 @@ import json
 import logging
 import os
 
-from unboxed.dispatcher import dispatch
+from unboxed import dispatch
 
 log = logging.getLogger()
 

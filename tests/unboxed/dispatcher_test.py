@@ -6,11 +6,12 @@ from unittest.mock import (
 )
 from uuid import uuid4
 
+from unboxed import dispatch
+
 from unboxed.dispatcher import (
     _get_charm_context,
     _run_hook,
     CharmContext,
-    dispatch,
 )
 
 
