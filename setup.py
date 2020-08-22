@@ -4,7 +4,9 @@
 # updating and pinning the runtime dependencies in requirements.txt so that you
 # don't have to. For more info, please see "Adding A Runtime Dependency" in this
 # project's README.md file
-runtime_requirements = []
+runtime_requirements = [
+    'kubernetes'
+]
 
 from setuptools import setup
 
