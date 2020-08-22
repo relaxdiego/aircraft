@@ -9,7 +9,9 @@ import os
 from pathlib import Path
 import sys
 
-from unboxed import dispatch
+from unboxed import (
+    dispatch,
+)
 
 log = logging.getLogger()
 
@@ -56,30 +58,19 @@ def hook_start(context):
 
 def _load_k8s_client_credentials():
     user_kubeconfig = Path(os.path.expanduser("~")) / '.kube' / 'config'
-    sa_token = Path('/var') / 'run' / 'secrets' \
-        / 'kubernetes.io' / 'serviceaccount' / 'token'
-    ca_cert = Path('/var') / 'run' / 'secrets' \
-        / 'kubernetes.io' / 'serviceaccount' / 'ca.crt'
 
     if user_kubeconfig.exists():
         log.debug("Using user kube config")
         config.load_kube_config()
-
-    elif sa_token.exists() and ca_cert.exists():
-        log.debug("Using service account token")
-
-        # https://github.com/kubernetes-client/python/issues/430
-        configuration = client.Configuration()
-        configuration.host = "https://kubernetes.default.svc"
-        configuration.verify_ssl = True
-        configuration.ssl_ca_cert = str(ca_cert)
-        configuration.api_key_prefix['authorization'] = 'Bearer'
-        with open(sa_token) as fp:
-            configuration.api_key['authorization'] = fp.read()
-
-        client.Configuration.set_default(configuration)
-
     else:
+        # Workaround for bug https://bugs.launchpad.net/juju/+bug/1892255
+        os.environ.update(
+            dict(
+                e.split("=")
+                for e in Path("/proc/1/environ").read_text().split("\x00")
+                if "KUBERNETES_SERVICE" in e
+            )
+        )
         log.debug("Using in-cluster kube config")
         try:
             config.load_incluster_config()
