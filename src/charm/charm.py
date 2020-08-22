@@ -43,8 +43,8 @@ def hook_install(context):
 
 def hook_start(context):
     log.debug(f"Hello from {context.hook_name}")
-    _load_k8s_client_credentials()
 
+    load_k8s_client_credentials()
     core_v1 = client.CoreV1Api()
     v1_pod_list = core_v1.list_pod_for_all_namespaces(watch=False)
 
@@ -60,7 +60,7 @@ def hook_start(context):
 # === HELPERS
 
 
-def _load_k8s_client_credentials():
+def load_k8s_client_credentials():
     user_kubeconfig = Path(os.path.expanduser("~")) / '.kube' / 'config'
 
     if user_kubeconfig.exists():
