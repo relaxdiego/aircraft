@@ -18,9 +18,10 @@ that you observe here, real or imagined, do not necessarily represent the
 views of [Canonical](https://canonical.com/) unless explicitely stated.
 
 
-## 4-minute Demo
+## Demo Videos
 
-[Watch it on YouTube](https://youtu.be/iwmjgEqEQxY)
+[Part 1](https://youtu.be/iwmjgEqEQxY)
+[Part 2](https://youtu.be/LckY8fdJL40)
 
 
 ## First Make Sure You've Got a Juju model on k8s Running
