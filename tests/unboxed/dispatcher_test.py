@@ -20,7 +20,7 @@ class DispatchTest(unittest.TestCase):
     @patch('unboxed.dispatcher._run', spec_set=True)
     @patch('unboxed.dispatcher.inspect', spec_set=True)
     @patch('unboxed.dispatcher._get_charm_context', spec_set=True)
-    def test__it_dispatches_the_hook_correctly(
+    def test__it_dispatches_correctly(
             self,
             mock_get_charm_context_func,
             mock_inspect,
@@ -56,11 +56,11 @@ class GetCharmContextTest(unittest.TestCase):
         assert ctx.hook_path == mock_os_environ.get.return_value
 
 
-class RunHookTest(unittest.TestCase):
+class RunTest(unittest.TestCase):
 
     @patch('unboxed.dispatcher.getattr')
     @patch('unboxed.dispatcher.log')
-    def test__it_runs_an_existing_hook(
+    def test__it_executes_an_existing_function(
             self,
             mock_log,
             mock_getattr_func):
@@ -69,18 +69,18 @@ class RunHookTest(unittest.TestCase):
             hook_path=f"hooks/{uuid4()}"
         )
         mock_mod = create_autospec(object)
-        mock_hook = mock_getattr_func.return_value
+        mock_func = mock_getattr_func.return_value
 
         # Exercise
         _run(mock_mod, ctx)
 
         # Assert
-        assert mock_hook.call_count == 1
-        assert mock_hook.call_args == call(ctx)
+        assert mock_func.call_count == 1
+        assert mock_func.call_args == call(ctx)
 
     @patch('unboxed.dispatcher.getattr')
     @patch('unboxed.dispatcher.log')
-    def test__it_does_not_fail_if_hook_is_not_found(
+    def test__it_skips_execution_if_function_does_not_exist(
             self,
             mock_log,
             mock_getattr_func):
@@ -96,3 +96,6 @@ class RunHookTest(unittest.TestCase):
 
         # Assert
         assert mock_getattr_func.call_count == 1
+        assert mock_getattr_func.call_args == call(mock_mod,
+                                                   ctx.hook_name,
+                                                   None)
