@@ -45,17 +45,18 @@ def _get_charm_context():
 
 
 def _run_hook(caller_mod, ctx):
-    log.debug(f"{ctx.hook_path} called. Looking for {ctx.hook_name}")
+    log.debug(f"{ctx.hook_path} dispatched by Juju")
+    log.debug(f"Looking for function {ctx.hook_name}...")
 
     # Try to get the hook if it exists
     hook = getattr(caller_mod, ctx.hook_name, None)
 
     # Call if the hook is found
     if hook:
-        log.debug(f"{ctx.hook_name} found. Running...")
+        log.debug(f"Function {ctx.hook_name} found. Running...")
         hook(ctx)
     else:
-        log.debug(f"{ctx.hook_name} not found. Ignoring.")
+        log.debug(f"Function {ctx.hook_name} not found. Ignoring.")
 
 
 @dataclass
