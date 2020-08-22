@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 import logging
 import os
 
@@ -28,14 +27,22 @@ log.addHandler(JujuLogHandler())
 def dispatch():
     ctx = _get_charm_context()
 
-    # Not much explanation for this code right now while I'm
-    # re-familiarizing myself with Python's reflection/metaprogramming
-    # style. More documentation soon!
-    # https://stackoverflow.com/a/1095621
-    caller = inspect.stack()[1]
-    caller_mod = inspect.getmodule(caller[0])
+    # Reference: https://docs.python.org/3.7/library/inspect.html
+    #
+    # NOTE: The inspect module is very much tied to CPython which means
+    #       that there is no guarantee that this code will work with any
+    #       other implementation of Python (e.g. Jython). On the other
+    #       hand, I don't see any need to use anything other than CPython.
 
-    _run_hook(caller_mod, ctx)
+    # Get the the FrameInfo named tuple of the prev frame as denoted by [1]
+    caller_frame_info = inspect.stack()[1]
+
+    # caller_frame_info[0] refers to the actual frame obj inside FrameInfo
+    caller_module = inspect.getmodule(caller_frame_info[0])
+
+    # We then pass the caller's module to _run which will take
+    # care of finding the function that corresponds to the provided hook path
+    _run(caller_module, ctx)
 
 
 def _get_charm_context():
@@ -44,7 +51,7 @@ def _get_charm_context():
     )
 
 
-def _run_hook(caller_mod, ctx):
+def _run(caller_mod, ctx):
     log.debug(f"{ctx.hook_path} dispatched by Juju")
     log.debug(f"Looking for function {ctx.hook_name}...")
 

@@ -10,21 +10,21 @@ from unboxed import dispatch
 
 from unboxed.dispatcher import (
     _get_charm_context,
-    _run_hook,
+    _run,
     CharmContext,
 )
 
 
 class DispatchTest(unittest.TestCase):
 
-    @patch('unboxed.dispatcher._run_hook', spec_set=True)
+    @patch('unboxed.dispatcher._run', spec_set=True)
     @patch('unboxed.dispatcher.inspect', spec_set=True)
     @patch('unboxed.dispatcher._get_charm_context', spec_set=True)
     def test__it_dispatches_the_hook_correctly(
             self,
             mock_get_charm_context_func,
             mock_inspect,
-            mock_run_hook_func):
+            mock_run_func):
         # Exercise
         dispatch()
 
@@ -32,8 +32,8 @@ class DispatchTest(unittest.TestCase):
         assert mock_get_charm_context_func.call_count == 1
         assert mock_get_charm_context_func.call_args == call()
 
-        assert mock_run_hook_func.call_count == 1
-        assert mock_run_hook_func.call_args == call(
+        assert mock_run_func.call_count == 1
+        assert mock_run_func.call_args == call(
             mock_inspect.getmodule.return_value,
             mock_get_charm_context_func.return_value
         )
@@ -72,7 +72,7 @@ class RunHookTest(unittest.TestCase):
         mock_hook = mock_getattr_func.return_value
 
         # Exercise
-        _run_hook(mock_mod, ctx)
+        _run(mock_mod, ctx)
 
         # Assert
         assert mock_hook.call_count == 1
@@ -92,7 +92,7 @@ class RunHookTest(unittest.TestCase):
         mock_getattr_func.return_value = None
 
         # Exercise
-        _run_hook(mock_mod, ctx)
+        _run(mock_mod, ctx)
 
         # Assert
         assert mock_getattr_func.call_count == 1
