@@ -7,6 +7,7 @@ from kubernetes import (
 import logging
 import os
 from pathlib import Path
+from subprocess import call
 import sys
 
 from unboxed import (
@@ -51,6 +52,9 @@ def hook_start(context):
 
     for i in v1_pod_list.items:
         log.info(f'  - {i.metadata.name}')
+
+    # Reference: https://discourse.juju.is/t/hook-tools/1163
+    call(['status-set', 'active', "Looking good, Bill Ray!"])
 
 
 # === HELPERS
