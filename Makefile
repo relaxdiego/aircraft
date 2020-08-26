@@ -33,8 +33,10 @@ test: .last-pip-sync .last-pip-tools-install
 	@(grep "pip-sync error" .last-pip-sync 1>/dev/null 2>&1 && rm -f .last-pip-sync && exit 1) || true
 	@pyenv rehash
 
-.last-build: src/* .last-pip-sync metadata.yaml config.yaml
-	# Read up on https://realpython.com/pypi-publish-python-package/
+.last-build: src/* .last-pip-sync
+	@(python setup.py sdist bdist || echo "build error") | tee .last-build
+	@(twine check dist/* || echo "build error") | tee -a .last-build
+	@(grep "build error" .last-build 1>/dev/null 2>&1 && rm -f .last-build && exit 1) || true
 
 .last-pip-tools-install:
 	@(pip-compile --version 1>/dev/null 2>&1 || pip --disable-pip-version-check install "pip-tools>=5.3.0,<5.4" || echo "pip-tools install error") | tee .last-pip-tools-install
