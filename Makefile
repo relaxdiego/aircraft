@@ -23,6 +23,8 @@ coverage-server:
 
 dependencies: .last-pip-tools-install .last-pip-sync
 
+publish: .last-publish
+
 test: .last-pip-sync .last-pip-tools-install
 	pytest --capture=no -vv
 
@@ -34,13 +36,20 @@ test: .last-pip-sync .last-pip-tools-install
 	@pyenv rehash
 
 .last-build: src/* .last-pip-sync
-	@(python setup.py sdist bdist || echo "build error") | tee .last-build
+	@rm -rf dist
+	@(python setup.py sdist || echo "build error") | tee .last-build
 	@(twine check dist/* || echo "build error") | tee -a .last-build
 	@(grep "build error" .last-build 1>/dev/null 2>&1 && rm -f .last-build && exit 1) || true
 
 .last-pip-tools-install:
 	@(pip-compile --version 1>/dev/null 2>&1 || pip --disable-pip-version-check install "pip-tools>=5.3.0,<5.4" || echo "pip-tools install error") | tee .last-pip-tools-install
 	@(grep "pip-tools install error" .last-pip-tools-install 1>/dev/null 2>&1 && rm -f .last-pip-tools-install && exit 1) || true
+
+.last-publish: .last-build
+	@(twine upload dist/* || echo "publish error") | tee .last-publish
+	@(grep "publish error" .last-publish 1>/dev/null 2>&1 && rm -f .last-publish && exit 1) || true
+	@(echo "Bump the version via: bump2version major|minor|patch")
+	@(echo "Then push the new commit and tag")
 
 requirements.txt: setup.py
 	@CUSTOM_COMPILE_COMMAND="make dependencies" pip-compile
