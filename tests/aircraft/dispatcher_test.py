@@ -6,9 +6,9 @@ from unittest.mock import (
 )
 from uuid import uuid4
 
-from unboxed import dispatch
+from aircraft import dispatch
 
-from unboxed.dispatcher import (
+from aircraft.dispatcher import (
     _get_charm_context,
     _run,
     CharmContext,

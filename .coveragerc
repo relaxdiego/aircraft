@@ -8,4 +8,4 @@ include = src/*
 
 [html]
 directory=htmlcov
-title = Test Coverage for Unboxed Charm
+title = Test Coverage Aircraft

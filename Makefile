@@ -1,8 +1,6 @@
 .PHONY: build changes clean coverage-server dependencies
 .DEFAULT_GOAL := .last-build
 
-charm_name := $(shell grep -Eo "^name: *[\"']([A-Za-z0-9\-]*)[\"']" metadata.yaml | sed -E 's/^name: *[\"'\'']([A-Za-z0-9\-]*)[\"'\'']/\1/g')
-
 # WARNING: Use the all argument  only while developing the template, not when developing charms
 ifndef all
 	requirements=""
@@ -17,7 +15,7 @@ build: .last-build
 clean:
 	@pip uninstall -y -r requirements.txt -r requirements-dev.txt 2>/dev/null || true
 	@pip uninstall -y pip-tools 2>/dev/null || true
-	@rm -fv .last* *.charm .coverage ${requirements}
+	@rm -fv .last* .coverage ${requirements}
 	@rm -rfv build/ *.egg-info **/__pycache__ .pytest_cache .tox htmlcov
 
 coverage-server:
@@ -36,18 +34,7 @@ test: .last-pip-sync .last-pip-tools-install
 	@pyenv rehash
 
 .last-build: src/* .last-pip-sync metadata.yaml config.yaml
-	@echo "Building ${charm_name}.charm..."
-	@rm -rf build && python3 setup.py build | tee .last-build
-	@mkdir -p build/hooks | tee -a .last-build
-	@cp hook-wrapper build/dispatch | tee -a .last-build
-	@cp hook-wrapper build/hooks/upgrade-charm | tee -a .last-build
-	@cp hook-wrapper build/hooks/install | tee -a .last-build
-	@cp hook-wrapper build/hooks/start | tee -a .last-build
-	@cp metadata.yaml build/ | tee -a .last-build
-	@cp config.yaml build/ | tee -a .last-build
-	@rm -f ${charm_name}.charm | tee -a .last-build
-	@zip --help 1>/dev/null 2>&1 || sudo apt install zip
-	@cd build && zip -r ../${charm_name}.charm .
+	# Read up on https://realpython.com/pypi-publish-python-package/
 
 .last-pip-tools-install:
 	@(pip-compile --version 1>/dev/null 2>&1 || pip --disable-pip-version-check install "pip-tools>=5.3.0,<5.4" || echo "pip-tools install error") | tee .last-pip-tools-install

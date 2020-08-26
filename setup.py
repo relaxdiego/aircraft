@@ -4,24 +4,21 @@
 # updating and pinning the runtime dependencies in requirements.txt so that you
 # don't have to. For more info, please see "Adding A Runtime Dependency" in this
 # project's README.md file
-runtime_requirements = [
-    'kubernetes'
-]
+runtime_requirements = []
 
 from setuptools import setup
 
 setup(
     install_requires=runtime_requirements,
     version='0.1.0',
-    name='charm-dist',
+    name='aircraft',
     author='Mark S. Maglana',
     author_email='mmaglana@gmail.com',
-    url='https://github.com/relaxdiego/unboxed',
+    url='https://github.com/relaxdiego/aircraft',
     python_requires='~=3.7',
     package_dir={'': 'src'},
     packages=[
-        'charm',
-        'unboxed'
+        'aircraft',
     ],
 
     # https://pypi.org/classifiers/

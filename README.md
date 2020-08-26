@@ -1,66 +1,12 @@
-# Juju Charms, Unboxed!
+# AirCraft Library
 
-This project serves as my learning journal for [Juju Charms](https://jaas.ai/how-it-works)
-in general.
-
-In this repo, I make attempts to dive into the internals of a how a charm
-is deployed and handled by Juju so I have to get rid of as much of the
-guard rails as possible. That is, I have to "unbox" Juju Charms.
-
-If that doesn't sound like your cup of tea and would much rather get actual
-work done, then may I suggest that you start with the
-[Operator Framework](github.com/canonical/operator) as well as the
-[charmcraft](https://github.com/canonical/charmcraft) tool.
-
-Please note that while I'm an employee of [Canonical](https://canonical.com),
-the work that I do in this repo represent my own personal journey. Any opinionated-ness
-that you observe here, real or imagined, do not necessarily represent the
-views of [Canonical](https://canonical.com/) unless explicitely stated.
+This is extracted from my [learning journal on Juju Charms](https://github.com/relaxdiego/unboxed)
 
 
-## Demo Videos
-
-[Part 1](https://youtu.be/iwmjgEqEQxY)
-[Part 2](https://youtu.be/LckY8fdJL40)
-
-
-## First Make Sure You've Got a Juju model on k8s Running
-
-If you don't have one, you can create it on top of microk8s as follows:
+## Build the Library
 
 ```
-which microk8s && sudo snap remove microk8s
-which juju && sudo snap remove juju
-sudo snap install --channel=2.8/stable juju --classic
-sudo snap install --channel=1.18/stable microk8s --classic
-sudo microk8s.enable dns dashboard registry storage metrics-server ingress
-sudo snap install --channel=1.18/stable kubectl --classic
-mkdir -p ~/.kube
-sudo microk8s.config > ~/.kube/config
-juju add-k8s k8s-1.18
-juju bootstrap k8s-1.18 juju-2-8-1
-juju add-model demo
-```
-
-
-## Now Let's Rock and Roll!
-
-Build, and deploy the charm:
-
-```
-make build && juju deploy ./unboxed.charm
-```
-
-Optionally set the Juju log level to DEBUG:
-
-```
-juju model-config logging-config="<root>=DEBUG;<unit>=TRACE"
-```
-
-Now follow the log:
-
-```
-juju debug-log --replay --include-module unit
+make build
 ```
 
 
@@ -96,22 +42,21 @@ NOTE: For more available versions, run `pyenv install --list`
 2. Create a virtualenv for this project
 
 ```
-export charm_name=unboxed
-pyenv virtualenv 3.7.7 ${charm_name}-3.7.7
+pyenv virtualenv 3.7.7 aircraft-3.7.7
 ```
 
 Your newly created virtualenv should now be automatically activated if your
 prompt changed to the following:
 
 ```
-(unboxed-3.7.7) ubuntu@dev...
+(aircraft-3.7.7) ubuntu@dev...
 ```
 
 or, should you happen to be using [dotfiles.relaxdiego.com](https://dotfiles.relaxdiego.com),
-if it changed tothe following
+if it changed to the following
 
 ```
-... via 🐍 v3.7.7 (unboxed-3.7.7)
+... via 🐍 v3.7.7 (aircraft-3.7.7)
 ```
 
 Notice the things in parentheses that corresponds to the virtualenv you created
@@ -173,22 +118,20 @@ make dependencies
 This will create `requirements.txt` and then install all dependencies
 
 
-2. Commit `setup.py` and `requirements.txt`. Both
-   files should now be updated and the `foo` package installed in your
-   local machine. Make sure to commit both files to the repo to let your
-   teammates know of the new dependency.
+2. Commit `setup.py` and ignore `requirements.txt`. We ignore the latter
+   since this is a library project which may be used with different versions
+   of its dependencues at development and run time.
 
 ```
-git add requirements.txt
 git add setup.py
-git commit -m "Add bar to requirements.txt"
+git commit -m "Add bar to requirements"
 git push origin
 ```
 
 
 ## Testing and Building the Charm
 
-After any change in the charm code, you want to ensure that all unit tests
+After any change in the library, you want to ensure that all unit tests
 pass before building it. This can be easily done by running:
 
 ```
@@ -213,7 +156,7 @@ the line of code.
 
 ## Running the Tests in Multiple Python Versions
 
-More often than not your charm needs to support more than one version of
+More often than not you want to be able to support more than one version of
 Python. This is where tox comes in. Just run the following to get test
 results for all Python versions listed in tox.ini's envlist config option
 
