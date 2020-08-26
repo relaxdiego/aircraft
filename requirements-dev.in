@@ -5,6 +5,7 @@
 # gets resolved when compiling this file.
 -c requirements.txt
 
+bump2version
 flake8
 pytest
 pytest-cov
