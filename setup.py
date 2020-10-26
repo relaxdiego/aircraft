@@ -24,7 +24,7 @@ setup(
     long_description=README,
     long_description_content_type="text/markdown",
     url='https://github.com/relaxdiego/aircraft',
-    python_requires='~=3.7',
+    python_requires='~=3.5',
     package_dir={'': 'src'},
     packages=[
         'aircraft',
