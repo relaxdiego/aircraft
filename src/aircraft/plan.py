@@ -13,5 +13,8 @@ class Plan:
         self.__driver = PlanApiV1Beta1(start_at=start_at,
                                        rules=rules)
 
+    def execute(self):
+        self.__driver.execute()
+
     def get_driver(self):
         return self.__driver
