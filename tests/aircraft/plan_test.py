@@ -1,4 +1,5 @@
-from aircraft import Plan, PlanDriverV1Beta1
+from aircraft import Plan
+from aircraft.plan_api.v1beta1 import PlanApiV1Beta1
 
 
 def test_init():
@@ -36,7 +37,7 @@ def test_init():
     assert plan.rules == rules
 
 
-def test_load_correct_plan_driver():
+def test_load_correct_plan_api_object():
 
     api_version = "plan/v1beta1"
 
@@ -46,4 +47,4 @@ def test_load_correct_plan_driver():
         rules={}
     )
 
-    type(plan.get_driver()) == PlanDriverV1Beta1
+    assert type(plan.get_driver()) == PlanApiV1Beta1

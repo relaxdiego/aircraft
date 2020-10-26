@@ -9,9 +9,7 @@ __pycache__
 build/
 dist/
 htmlcov
-/*
- * Do not check in requirements.txt since aircraft is a library and
- * we need it to play nice with a wide number of other libraries
- */
+# Do not check in requirements.txt since aircraft is a library and
+# we need it to play nice with a wide number of other libraries
 requirements.txt
 venv
