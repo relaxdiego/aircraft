@@ -32,19 +32,4 @@ def test_init():
         rules=rules
     )
 
-    assert plan.api_version == api_version
-    assert plan.start_at == waypoint_a
-    assert plan.rules == rules
-
-
-def test_load_correct_plan_api_object():
-
-    api_version = "plan/v1beta1"
-
-    plan = Plan(
-        api_version=api_version,
-        start_at=object(),
-        rules={}
-    )
-
     assert type(plan.get_driver()) == PlanApiV1Beta1
