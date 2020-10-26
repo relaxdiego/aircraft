@@ -4,7 +4,9 @@
 # updating and pinning the runtime dependencies in requirements.txt so that you
 # don't have to. For more info, please see "Adding A Runtime Dependency" in this
 # project's README.md file
-runtime_requirements = []
+runtime_requirements = [
+    "pydantic",
+]
 
 import pathlib
 from setuptools import setup
@@ -24,7 +26,7 @@ setup(
     long_description=README,
     long_description_content_type="text/markdown",
     url='https://github.com/relaxdiego/aircraft',
-    python_requires='~=3.5',
+    python_requires='~=3.6',
     package_dir={'': 'src'},
     packages=[
         'aircraft',

@@ -27,6 +27,7 @@ pkginfo==1.6.0            # via twine
 pluggy==0.13.1            # via pytest, tox
 py==1.9.0                 # via pytest, tox
 pycodestyle==2.6.0        # via flake8
+pydantic==1.6.1           # via -c requirements.txt, aircraft
 pyflakes==2.2.0           # via flake8
 pygments==2.7.2           # via readme-renderer
 pyparsing==2.4.7          # via packaging
