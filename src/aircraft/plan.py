@@ -1,4 +1,12 @@
-from aircraft.plan_api.v1beta1 import PlanApiV1Beta1
+from typing import (
+    Callable,
+    Dict,
+)
+from pydantic import (
+    BaseModel,
+)
+
+from aircraft.executor import Executor
 
 
 class UnsupportedApiVersionError(Exception):
@@ -10,11 +18,13 @@ class UnsupportedApiVersionError(Exception):
 class Plan:
 
     def __init__(self, api_version, start_at, rules):
-        self.__driver = PlanApiV1Beta1(start_at=start_at,
-                                       rules=rules)
+        self.__plan = PlanV1Beta1(start_at=start_at,
+                                  rules=rules)
 
     def execute(self):
-        self.__driver.execute()
+        Executor(self.__plan).execute()
 
-    def get_driver(self):
-        return self.__driver
+
+class PlanV1Beta1(BaseModel):
+    start_at: Callable
+    rules: Dict[Callable, Dict[str, Callable]]
