@@ -1,0 +1,21 @@
+# Using workaround from https://github.com/jazzband/pip-tools/issues/204#issuecomment-550051424
+-e file:.#egg=aircraft  # egg name here must be the same value as the name argument of setup() in setup.py
+
+# Use dependency list in requirements.txt to constrain the dependencies that
+# gets resolved when compiling this file.
+-c requirements.txt
+
+# Unit testing friends
+flake8
+pytest
+pytest-cov
+pytest-randomly
+tox
+
+# Utility for publishing Python packages to PyPI
+# https://pypi.org/project/twine/
+twine
+
+# Used for managing version of the project
+# https://pypi.org/project/bump2version/
+bump2version

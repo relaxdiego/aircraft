@@ -1,0 +1,13 @@
+*.charm
+*.egg-info
+.coverage
+.last-*
+.pytest_cache
+.python-version
+.tox
+__pycache__
+build/
+dist/
+htmlcov
+requirements.txt
+venv
