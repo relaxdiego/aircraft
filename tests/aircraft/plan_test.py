@@ -1,35 +1,27 @@
+from unittest.mock import (
+    call,
+    patch,
+)
+
 from aircraft import Plan
-from aircraft.plan_api.v1beta1 import PlanApiV1Beta1
 
 
-def test_init():
-    def waypoint_a():
-        pass
-
-    def waypoint_b():
-        pass
-
-    def waypoint_c():
-        pass
-
+@patch("aircraft.plan.PlanApiV1Beta1", autospec=True, spec_set=True)
+def test_it_uses_PlanApiV1Beta1(mock_plan_api_v1beta1_cls):
     api_version = "plan/v1beta1"
-    rules = {
-        waypoint_a: {
-            "event_b": waypoint_b,
-            "event_c": waypoint_c,
-        },
-        waypoint_b: {
-            "event_c": waypoint_c,
-        },
-        waypoint_c: {
-            "_success_": True
-        }
-    }
+    waypoint = object()
+    rules = {}
 
     plan = Plan(
         api_version=api_version,
-        start_at=waypoint_a,
+        start_at=waypoint,
         rules=rules
     )
 
-    assert type(plan.get_driver()) == PlanApiV1Beta1
+    assert mock_plan_api_v1beta1_cls.call_count == 1
+    assert mock_plan_api_v1beta1_cls.call_args == call(
+        start_at=waypoint,
+        rules=rules
+    )
+
+    assert plan.get_driver() == mock_plan_api_v1beta1_cls.return_value
