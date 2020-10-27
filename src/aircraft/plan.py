@@ -1,3 +1,5 @@
+import logging
+
 from typing import (
     Callable,
     Dict,
@@ -7,6 +9,8 @@ from pydantic import (
 )
 
 from aircraft.executor import Executor
+
+log = logging.getLogger("aircraft.Plan")
 
 
 class UnsupportedApiVersionError(Exception):
@@ -20,4 +24,5 @@ class Plan(BaseModel):
     rules: Dict[Callable, Dict[str, Callable]]
 
     def execute(self):
+        log.debug("Executing plan")
         Executor(start_at=self.start_at, rules=self.rules)()
