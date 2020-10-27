@@ -20,9 +20,12 @@ class UnsupportedApiVersionError(Exception):
 
 
 class Plan(BaseModel):
+    name: str
     start_at: Callable
     rules: Dict[Callable, Dict[str, Callable]]
 
     def execute(self):
-        log.debug("Executing plan")
-        Executor(start_at=self.start_at, rules=self.rules)()
+        log.debug("Executing plan '{}'".format(self.name))
+        result = Executor(start_at=self.start_at, rules=self.rules)()
+        log.debug("Plan '{}' completed".format(self.name))
+        return result
