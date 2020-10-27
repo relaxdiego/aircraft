@@ -1,8 +1,18 @@
 import logging
 import logging.config
-import os
+
+from pydantic import BaseSettings
 
 from aircraft.plan import Plan
+
+
+class Settings(BaseSettings):
+
+    LOG_LEVEL: str = "DEBUG"
+
+    class Config:
+        env_prefix = 'AIRCRAFT_'
+
 
 LOGGING_CONFIG = {
     'version': 1,
@@ -24,12 +34,12 @@ LOGGING_CONFIG = {
         # root logger
         '': {
             'handlers': ['default'],
-            'level': 'WARNING',
+            'level': Settings().LOG_LEVEL,
             'propagate': False
         },
         'aircraft': {
             'handlers': ['default'],
-            'level': os.environ.get("AIRCRAFT_LOGLEVEL", 'WARN'),
+            'level': Settings().LOG_LEVEL,
             'propagate': False
         },
     }
