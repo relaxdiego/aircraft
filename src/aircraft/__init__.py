@@ -1,5 +1,6 @@
 import logging
 import logging.config
+import os
 
 from aircraft.plan import Plan
 
@@ -28,7 +29,7 @@ LOGGING_CONFIG = {
         },
         'aircraft': {
             'handlers': ['default'],
-            'level': 'DEBUG',
+            'level': os.environ.get("AIRCRAFT_LOGLEVEL", 'WARN'),
             'propagate': False
         },
     }
