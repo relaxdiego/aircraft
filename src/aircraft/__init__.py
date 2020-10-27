@@ -14,6 +14,8 @@ class Settings(BaseSettings):
         env_prefix = 'AIRCRAFT_'
 
 
+settings = Settings()
+
 LOGGING_CONFIG = {
     'version': 1,
     'disable_existing_loggers': True,
@@ -24,7 +26,7 @@ LOGGING_CONFIG = {
     },
     'handlers': {
         'default': {
-            'level': 'DEBUG',
+            'level': settings.LOG_LEVEL,
             'formatter': 'standard',
             'class': 'logging.StreamHandler',
             'stream': 'ext://sys.stdout',
@@ -34,12 +36,12 @@ LOGGING_CONFIG = {
         # root logger
         '': {
             'handlers': ['default'],
-            'level': Settings().LOG_LEVEL,
+            'level': settings.LOG_LEVEL,
             'propagate': False
         },
         'aircraft': {
             'handlers': ['default'],
-            'level': Settings().LOG_LEVEL,
+            'level': settings.LOG_LEVEL,
             'propagate': False
         },
     }

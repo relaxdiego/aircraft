@@ -6,6 +6,7 @@ from typing import (
 )
 from pydantic import (
     BaseModel,
+    validator
 )
 
 from aircraft.executor import Executor
@@ -21,8 +22,18 @@ class UnsupportedApiVersionError(Exception):
 
 class Plan(BaseModel):
     name: str
+    api_version: str
     start_at: Callable
     rules: Dict[Callable, Dict[str, Callable]]
+
+    @validator('api_version')
+    def is_supported(cls, value):
+        supported_versions = [
+            "v1beta1"
+        ]
+        msg = "must be a supported version. Valid values are {}"
+        assert value in ["v1beta1"], msg.format(supported_versions)
+        return value
 
     def execute(self):
         log.debug("Executing plan '{}'".format(self.name))
