@@ -19,7 +19,7 @@ README = (HERE / "README.md").read_text()
 
 setup(
     install_requires=runtime_requirements,
-    version='0.2.0',
+    version='0.2.1',
     name='aircraft',
     author='Mark S. Maglana',
     author_email='mmaglana@gmail.com',
