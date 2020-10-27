@@ -23,7 +23,8 @@ def test_it_executes_the_plan(mock_executor_cls):
 
     mock_executor_obj = mock_executor_cls
 
-    Plan(api_version=api_version,
+    Plan(name="test",
+         api_version=api_version,
          start_at=sample_waypoint,
          rules=rules).execute()
 

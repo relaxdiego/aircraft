@@ -29,4 +29,4 @@ rules = {
     endpoint: {}
 }
 
-Plan(api_version="v1beta1", start_at=waypoint, rules=rules).execute()
+Plan(name="Sample", api_version="v1beta1", start_at=waypoint, rules=rules).execute()

@@ -18,7 +18,7 @@ def test_successfully_executes_a_plan():
     mock_wp_b.return_value = ["event_c", "data2"]
 
     mock_wp_c = create_autospec(waypoint, spec_set=True)
-    mock_wp_c.return_value = ["end", "data3"]
+    mock_wp_c.return_value = ["event_c", "data3"]
 
     rules = {
         mock_wp_a: {
@@ -27,9 +27,7 @@ def test_successfully_executes_a_plan():
         mock_wp_b: {
             "event_c": mock_wp_c,
         },
-        mock_wp_c: {
-            "_success_": True
-        }
+        mock_wp_c: {}
     }
 
     Executor(start_at=mock_wp_a, rules=rules)()
