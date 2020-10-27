@@ -8,6 +8,6 @@ class Executor:
         wp = self.__start_at
         data = None
 
-        while wp:
+        while wp is not None:
             event, data = wp(data)
             wp = self.__rules.get(wp, {}).get(event, None)
