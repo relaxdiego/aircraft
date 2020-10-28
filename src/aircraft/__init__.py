@@ -4,6 +4,7 @@ import logging.config
 from pydantic import BaseSettings
 
 from aircraft.plan import Plan
+from aircraft.ssh import ssh
 
 
 class Settings(BaseSettings):
@@ -50,4 +51,5 @@ logging.config.dictConfig(LOGGING_CONFIG)
 
 __all__ = (
     "Plan",
+    "ssh",
 )
