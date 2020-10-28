@@ -37,6 +37,5 @@ class Plan(BaseModel):
 
     def execute(self):
         log.debug("Executing plan '{}'".format(self.name))
-        result = Executor(start_at=self.start_at, rules=self.rules)()
+        Executor(start_at=self.start_at, rules=self.rules)()
         log.debug("Plan '{}' completed".format(self.name))
-        return result

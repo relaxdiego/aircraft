@@ -11,19 +11,15 @@ class Executor:
 
     def __call__(self):
         wp = self.__start_at
-        data = None
 
         while wp is not None:
             log.debug("Approaching Waypoint: {}".format(wp.__name__))
-            result = wp(data)
+            event = wp()
 
-            if result is None:
+            if event is None:
                 raise WaypointDidNotReturnTuple(wp)
 
-            event, data = result
-
-            log.debug("Event occured: {}".format(event))
-            log.debug("Data received: {}".format(data))
+            log.debug("Event: {}".format(event))
 
             next_rules = self.__rules.get(wp)
             if next_rules == {}:
@@ -36,8 +32,6 @@ class Executor:
                 break
 
             wp = next_wp
-
-        return data
 
 
 class CannotTransitionError(Exception):
