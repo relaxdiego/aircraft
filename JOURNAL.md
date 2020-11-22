@@ -4,6 +4,49 @@ Move the project from terminus to aircraft since I'm not using this
 project for anything apart from experimental work on an FSM-based config
 management library which is not going anywhere fast enough.
 
+Continuing on my thoughts from yesterday, I would like to ultimately reach
+a point where I can define my data in a single yaml file and reference secrets
+from a separate, encrypted yaml file. For example, the data could be in
+a `main.yml` file with the following contents (schema bound to change):
+
+```
+hosts:
+  kvm-1:
+    data:
+      key1: val1
+      key2: secret:some.key.in.secrets.yml
+  kvm-2:
+    data:
+      key1: val1
+      key2: secret:some.key.in.secrets.yml
+  maas-1:
+    data:
+      key1: val1
+      key2: val2
+groups:
+  kvm:
+    data:
+      key1: val1
+      key2: val2
+    hosts:
+    - kvm-1
+    - kvm-2
+  maas:
+    data:
+      key1: val1
+      key2: val2
+    hosts:
+    - maas-1
+```
+
+And a `secrets.yml` would contain `some.key.in.secrets.yml` which can
+be auto-decrypted during runtime. We can use [sops](https://github.com/mozilla/sops/)
+for this since it already provides many of the requirements that we need.
+Furthermore, sops is able to encrypt just the values in a yaml file
+rather than the entire file itself. This is handy for code reviews where
+the reviewer can easily see which keys in the YAML file has changed.
+[Read more about this workflow](https://poweruser.blog/how-to-encrypt-secrets-in-config-files-1dbb794f7352).
+
 
 2020-11-21T19:50:00+0800
 
