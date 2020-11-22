@@ -5,7 +5,8 @@
 # don't have to. For more info, please see "Adding A Runtime Dependency" in this
 # project's README.md file
 runtime_requirements = [
-    "pydantic",
+    "pydantic~=1.6.0",
+    "pyinfra~=1.2.0",
 ]
 
 import pathlib
