@@ -19,7 +19,7 @@ README = (HERE / "README.md").read_text()
 
 setup(
     install_requires=runtime_requirements,
-    version='0.2.1',
+    version='0.2.1',  # DO NOT EDIT DIRECTLY! Use `bumpversion major|minor|patch`
     name='aircraft',
     author='Mark S. Maglana',
     author_email='mmaglana@gmail.com',
