@@ -1,0 +1,23 @@
+  File "/Users/mark/.pyenv/versions/3.7.7/envs/terminus/lib/python3.7/site-packages/pyinfra_cli/main.py", line 216, in cli
+    _main(*args, **kwargs)
+  File "/Users/mark/.pyenv/versions/3.7.7/envs/terminus/lib/python3.7/site-packages/pyinfra_cli/main.py", line 543, in _main
+    load_deploy_file(state, filename)
+  File "/Users/mark/.pyenv/versions/3.7.7/envs/terminus/lib/python3.7/site-packages/pyinfra_cli/util.py", line 168, in load_deploy_file
+    exec_file(filename)
+  File "/Users/mark/.pyenv/versions/3.7.7/envs/terminus/lib/python3.7/site-packages/pyinfra_cli/util.py", line 52, in exec_file
+    exec(PYTHON_CODES[filename], data)
+  File "deploy.py", line 3, in <module>
+    kvm.prepare_host()
+  File "/Users/mark/.pyenv/versions/3.7.7/envs/terminus/lib/python3.7/site-packages/pyinfra/api/deploy.py", line 128, in decorated_func
+    func(*args, **kwargs)
+  File "/Users/mark/src/github.com/relaxdiego/terminus/src/terminus/blueprints/machine/kvm/__init__.py", line 17, in prepare_host
+    host=host,
+  File "/Users/mark/.pyenv/versions/3.7.7/envs/terminus/lib/python3.7/site-packages/pyinfra/api/operation.py", line 337, in decorated_func
+    commands = unroll_generators(func(*actual_args, **actual_kwargs))
+  File "/Users/mark/.pyenv/versions/3.7.7/envs/terminus/lib/python3.7/site-packages/pyinfra/api/util.py", line 143, in unroll_generators
+    for item in generator:
+  File "/Users/mark/.pyenv/versions/3.7.7/envs/terminus/lib/python3.7/site-packages/pyinfra/operations/files.py", line 800, in template
+    output = get_template(src).render(data)
+  File "/Users/mark/.pyenv/versions/3.7.7/envs/terminus/lib/python3.7/site-packages/pyinfra/api/util.py", line 170, in get_template
+    with open(filename_or_string, 'r') as file_io:
+FileNotFoundError: [Errno 2] No such file or directory: 'templates/netplan.yaml.j2'

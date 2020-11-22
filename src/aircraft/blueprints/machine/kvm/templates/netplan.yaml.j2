@@ -1,0 +1,21 @@
+network:
+  version: 2
+  ethernets:
+    {{host.data.interface}}:
+      dhcp4: false
+      dhcp6: false
+
+  bridges:
+    br0:
+      interfaces:
+      - {{host.data.interface}}
+      addresses:
+      - {{host.data.ip_address}}
+      gateway4: {{host.data.gateway}}
+      nameservers:
+        addresses: {{host.data.nameservers}}
+      dhcp4: false
+      dhcp6: false
+      parameters:
+        forward-delay: 4
+        stp:           true
