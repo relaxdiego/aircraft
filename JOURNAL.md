@@ -1,4 +1,4 @@
-2020-11-22T10:55:00+0800
+# 2020-11-22T10:55:00+0800
 
 Move the project from terminus to aircraft since I'm not using this
 project for anything apart from experimental work on an FSM-based config
@@ -48,7 +48,7 @@ the reviewer can easily see which keys in the YAML file has changed.
 [Read more about this workflow](https://poweruser.blog/how-to-encrypt-secrets-in-config-files-1dbb794f7352).
 
 
-2020-11-21T19:50:00+0800
+# 2020-11-21T19:50:00+0800
 
 I've implemented the notes that I wrote down in my previous entry. This
 new set up does offer better flexibility. I would like to get to a point
@@ -61,7 +61,7 @@ fails loudly if the data is not defined otherwise we may end up with
 templates that are mis-rendered.
 
 
-2020-11-21T17:30:00+0800
+# 2020-11-21T17:30:00+0800
 
 Running the following allows us to print host facts and data. Make sure
 to run the following against sha `501458b`.
