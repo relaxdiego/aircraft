@@ -5,17 +5,24 @@ AirCraft
 
 ## Prerequisites
 
+1. [Python 3](https://www.python.org/downloads/)
+2. Make
+
+
+## Prepare Your Python Environment (pyenv style; one-time only)
+
+You will need two additional dependencies for this style:
+
 1. [pyenv](https://github.com/pyenv/pyenv-installer)
 2. [pyenv-virtualenv](https://github.com/pyenv/pyenv-virtualenv)
 
-## Prepare Your Python Environment (One-time Only)
-
-You should already have `pyenv` and `pyenv-virtualenv` installed
+Once the above dependencies are installed, do the following:
 
 1. Install an isolated environment for your preferred Python version.
 
 ```
-pyenv install --enable-shared 3.7.7 
+python_version=<YOUR-PREFERRED-PYTHON-VERSION>
+pyenv install --enable-shared $python_version
 ```
 
 NOTE: For more available versions, run `pyenv install --list`
@@ -23,7 +30,7 @@ NOTE: For more available versions, run `pyenv install --list`
 2. Create a virtualenv for this project
 
 ```
-pyenv virtualenv 3.7.7 aircraft
+pyenv virtualenv $python_version aircraft
 ```
 
 3. Add a `.python-version` file to this project dir
@@ -31,7 +38,7 @@ pyenv virtualenv 3.7.7 aircraft
 ```
 cat >.python-version<<EOF
 aircrat
-3.7.7
+$python_version
 EOF
 ```
 
@@ -46,7 +53,7 @@ or, should you happen to be using [dotfiles.relaxdiego.com](https://dotfiles.rel
 if it changed to the following
 
 ```
-... via 🐍 v3.7.7 (aircraft)
+... via 🐍 <YOUR-PREFERRED-PYTHON-VERSION> (aircraft)
 ```
 Notice the things in parentheses that corresponds to the virtualenv you created
 in the previous step. This is thanks to the coordination of pyenv-virtualenv and
