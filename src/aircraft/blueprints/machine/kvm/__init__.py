@@ -1,7 +1,6 @@
 from os import path
 
-from pyinfra import host
-from pyinfra.api import deploy, DeployError
+from pyinfra.api import deploy
 from pyinfra.operations import files
 
 
