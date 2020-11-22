@@ -1,0 +1,20 @@
+hosts:
+  kvm-1:
+    data:
+      ip_address: 192.168.100.21/24
+  kvm-2:
+    data:
+      ip_address: 192.168.100.22/24
+
+groups:
+  kvm:
+    data:
+      interface: eno1
+      gateway:   192.168.100.1
+      nameservers:
+      - 1.1.1.1
+      - 8.8.8.8
+      - 8.8.4.4
+    hosts:
+    - kvm-1
+    - kvm-2

@@ -19,3 +19,7 @@ twine
 # Used for managing version of the project
 # https://pypi.org/project/bump2version/
 bump2version
+
+# Useful for debugging
+# https://python-devtools.helpmanual.io/
+devtools

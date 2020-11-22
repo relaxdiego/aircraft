@@ -1,3 +1,26 @@
+# 2020-11-22T14:32:00+0800
+
+Let's mock up the CLI interface for launching a deployment as follows:
+
+```
+aircraft launch examples/ha-kvm
+```
+
+We should also eventually support a `deployment.yml` file which describes
+the blueprints to be used for the deployment. The contents of the file
+could be as follows (subject to change):
+
+```
+meta:
+  title: Deployment of HA MAAS on KVM VMs
+spec:
+- type: machine.kvm
+- type: service.maas
+  options:
+    group: maas-hosts
+```
+
+
 # 2020-11-22T10:55:00+0800
 
 Move the project from terminus to aircraft since I'm not using this
