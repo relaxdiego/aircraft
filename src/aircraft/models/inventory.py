@@ -1,11 +1,52 @@
-# https://pydantic-docs.helpmanual.io/usage/models/
+from ipaddress import (
+    IPv4Address,
+    IPv4Interface,
+)
+from typing import (
+    Dict,
+    List,
+)
 from pydantic import (
     BaseModel,
+    validator,
 )
 
 
-# The inventory must be able to validate its fields
+class HostData(BaseModel):
+    ip_address: IPv4Interface
+
+
+class HostSpec(BaseModel):
+    data: HostData
+
+
+class GroupData(BaseModel):
+    interface: str
+    gateway: IPv4Address
+    nameservers: List[IPv4Address]
+
+
+class GroupSpec(BaseModel):
+    data: GroupData
+    hosts: List[str]
+
 
 class Inventory(BaseModel):
-    hosts: dict
-    groups: dict
+    hosts: Dict[str, HostSpec]
+    groups: Dict[str, GroupSpec]
+
+    @validator('groups')
+    def hosts_in_groups_must_be_defined(cls, groups, values):
+        hosts = values['hosts'].keys()
+
+        for group, spec in groups.items():
+            undefined_hosts = [host for host in spec.hosts
+                               if host not in hosts]
+            if len(undefined_hosts) > 0:
+                msg = "Hosts '{}' referenced by group '{}' is undefined."
+                raise ValueError(msg.format(','.join(undefined_hosts), group))
+
+        return groups
+
+    class Config:
+        allow_mutation = False

@@ -1,3 +1,9 @@
+# 2020-11-22T18:15:00+0800
+
+We've implemented the model hierarchy for the inventory YAML file as
+spec'd earlier. Up next is to properly implement the CLI launch subcommand.
+
+
 # 2020-11-22T14:32:00+0800
 
 Let's mock up the CLI interface for launching a deployment as follows:

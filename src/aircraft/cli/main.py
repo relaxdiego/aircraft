@@ -1,9 +1,6 @@
 import os
 import yaml
 
-from devtools import debug
-
-
 from aircraft.models.inventory import Inventory
 
 
@@ -29,6 +26,4 @@ def load_inventory():
     with open(inventory_path, 'r') as inventory_fh:
         inventory_dict = yaml.safe_load(inventory_fh)
 
-    inventory = Inventory(**inventory_dict)
-
-    debug(inventory)
+    import devtools; devtools.debug(Inventory(**inventory_dict).json())  # NOQA: E702
