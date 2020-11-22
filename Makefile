@@ -1,4 +1,4 @@
-.DEFAULT_GOAL := .last-build
+.DEFAULT_GOAL := help
 
 ##
 ## Available Goals:
