@@ -1,3 +1,9 @@
+# 2020-11-23T09:52:00+0800
+
+Consider using [Fire](https://google.github.io/python-fire/) for implementing
+the CLI tool.
+
+
 # 2020-11-22T18:15:00+0800
 
 We've implemented the model hierarchy for the inventory YAML file as
