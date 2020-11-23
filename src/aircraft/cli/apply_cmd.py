@@ -4,7 +4,7 @@ import yaml
 from aircraft.models.inventory import Inventory
 
 
-class LaunchCmd:
+class ApplyCmd:
 
     def __init__(self, manifest_dir):
         self.manifest_dir = manifest_dir

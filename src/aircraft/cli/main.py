@@ -2,7 +2,7 @@ import sys
 
 import click
 
-from aircraft.cli.launch_cmd import LaunchCmd
+from aircraft.cli.apply_cmd import ApplyCmd
 
 
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
@@ -20,13 +20,14 @@ def main():
                                 exists=True,
                                 resolve_path=True,
                                 readable=True))
-def launch(manifest_dir):
+def apply(manifest_dir):
     """
-    Launches a deployment based on a manifest directory refered to by
-    MANIFEST_DIR which can either be a relative or absolute path.
+    Applies the configuration defined in MANIFEST_DIR against the hosts
+    declared within said directory. MANIFEST_DIR may be a relative or
+    absolute path.
     """
     try:
-        LaunchCmd(manifest_dir=manifest_dir).run()
+        ApplyCmd(manifest_dir=manifest_dir).run()
     except Exception as e:
         print(e)
         sys.exit(1)
