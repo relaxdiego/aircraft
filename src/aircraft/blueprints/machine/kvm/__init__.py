@@ -1,18 +1,16 @@
-from os import path
+from pathlib import Path
 
 from pyinfra.api import deploy
 from pyinfra.operations import files
 
 
-@deploy('Prepare Host', data_defaults={})
-def prepare_host(state, host):
+@deploy('Configure KVM-based Host', data_defaults={})
+def main(state, host):
 
     files.template(
         name='Render netplan configuration',
-        src=path.join(
-            path.dirname(__file__), 'templates', 'netplan.yaml.j2'
-        ),
-        dest=host.fact.find_files('/etc/netplan/*.y*ml')[0],
+        src=str(Path(__file__).parent / 'templates' / 'netplan.yml.j2'),
+        dest=str(Path('/tmp') / 'netplan.yml'),
 
         state=state,
         host=host,

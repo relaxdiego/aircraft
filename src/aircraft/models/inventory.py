@@ -38,7 +38,7 @@ class HostSpec(BaseModel):
 
 
 class GroupData(BaseModel):
-    interface: str = ""
+    interface: str = None
     gateway: IPv4Address = None
     nameservers: List[IPv4Address] = []
 

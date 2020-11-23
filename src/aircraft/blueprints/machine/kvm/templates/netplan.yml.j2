@@ -4,7 +4,6 @@ network:
     {{host.data.interface}}:
       dhcp4: false
       dhcp6: false
-
   bridges:
     br0:
       interfaces:
@@ -13,7 +12,10 @@ network:
       - {{host.data.ip_address}}
       gateway4: {{host.data.gateway}}
       nameservers:
-        addresses: {{host.data.nameservers}}
+        addresses:
+        {%- for address in host.data.nameservers %}
+        - {{address}}
+        {%- endfor %}
       dhcp4: false
       dhcp6: false
       parameters:

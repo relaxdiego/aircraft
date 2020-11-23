@@ -7,12 +7,9 @@ hosts:
       ip_address: 192.168.100.22/24
 
 groups:
-  all:
-    data:
-      interface:  eno1
-
   kvm:
     data:
+      interface:  eno1
       gateway:    192.168.100.1
       nameservers:
       - 1.1.1.1

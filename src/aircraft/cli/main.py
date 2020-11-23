@@ -1,8 +1,8 @@
-import sys
+import os
 
 import click
 
-from aircraft.cli.apply_cmd import ApplyCmd
+from aircraft import aircraft_dir
 
 
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
@@ -26,4 +26,8 @@ def apply(manifest_dir):
     declared within said directory. MANIFEST_DIR may be a relative or
     absolute path.
     """
-    ApplyCmd(manifest_dir=manifest_dir).run()
+    os.environ['AIRCRAFT_MANIFEST_DIR'] = manifest_dir
+
+    cmd = f"cd {aircraft_dir / 'deployment'} && " \
+          f"pyinfra inventory.py operations.py"
+    os.system(cmd)

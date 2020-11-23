@@ -1,3 +1,16 @@
+# 2020-11-23T18:43:00+0800
+
+Shift implementation to using Pyinfra's built-in support for dynamic
+inventories data generation inside `inventory.py`. This saves a lot of
+coding for sure.
+
+FIXME: If the `all` group defines a field such as `interface` and the
+       `kvm` group does not, we end up setting the `interface` value to
+       `None` since that's the default value in the group if it's not
+       defined. There needs to be a way to account for this and ensure
+       that a value is not accidentally undefined.
+
+
 # 2020-11-23T16:30:00+0800
 
 I've implemented some form of dynamic inventory generation but I'm unsure
