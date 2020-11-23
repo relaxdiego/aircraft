@@ -1,3 +1,5 @@
+import sys
+
 import click
 
 from aircraft.cli.launch_cmd import LaunchCmd
@@ -27,3 +29,4 @@ def launch(manifest_dir):
         LaunchCmd(manifest_dir=manifest_dir).run()
     except Exception as e:
         print(e)
+        sys.exit(1)
