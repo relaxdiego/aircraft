@@ -31,6 +31,13 @@ class GroupSpec(BaseModel):
     hosts: List[str]
 
 
+class UndefinedHostsError(ValueError):
+
+    def __init__(self, group, undefined_hosts):
+        msg = "Group '{}' is referencing undefined hosts: '{}'"
+        super().__init__(msg.format(group, ', '.join(undefined_hosts)))
+
+
 class Inventory(BaseModel):
     hosts: Dict[str, HostSpec]
     groups: Dict[str, GroupSpec]
@@ -43,8 +50,7 @@ class Inventory(BaseModel):
             undefined_hosts = [host for host in spec.hosts
                                if host not in hosts]
             if len(undefined_hosts) > 0:
-                msg = "Group '{}' is referencing undefined hosts: {}"
-                raise ValueError(msg.format(group, ','.join(undefined_hosts)))
+                raise UndefinedHostsError(group, undefined_hosts)
 
         return groups
 

@@ -18,3 +18,4 @@ groups:
     hosts:
     - kvm-1
     - kvm-2
+    - kvm-3

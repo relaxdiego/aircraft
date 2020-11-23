@@ -1,3 +1,10 @@
+# 2020-11-23T12:11:00+0800
+
+I've shifted from Fire to [Click](https://click.palletsprojects.com/en/7.x/documentation/)
+instead since the former has a richer set of features while Fire is still
+in very early stages.
+
+
 # 2020-11-23T09:52:00+0800
 
 Consider using [Fire](https://google.github.io/python-fire/) for implementing

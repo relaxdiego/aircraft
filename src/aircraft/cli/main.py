@@ -1,29 +1,29 @@
-import os
-import yaml
+import click
 
-from aircraft.models.inventory import Inventory
+from aircraft.cli.launch_cmd import LaunchCmd
 
 
-# Currently a WIP. These are all mock ups and will end up becoming
-# more complete down the line. For now, we are hardcoding the launch
-# subcommand but this will eventually end up supporting multiple
-# subcommands as we flesh out the CLI's details.
+CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 
+
+@click.group(context_settings=CONTEXT_SETTINGS)
 def main():
-    launch()
+    pass
 
 
-def launch():
-    load_inventory()
-
-
-def load_inventory():
-    inventory_path = os.path.join(os.getcwd(),
-                                  'examples',
-                                  'ha-kvm',
-                                  'inventory.yml')
-
-    with open(inventory_path, 'r') as inventory_fh:
-        inventory_dict = yaml.safe_load(inventory_fh)
-
-    import devtools; devtools.debug(Inventory(**inventory_dict).json())  # NOQA: E702
+@main.command()
+@click.argument('manifest_dir',
+                type=click.Path(file_okay=False,
+                                dir_okay=True,
+                                exists=True,
+                                resolve_path=True,
+                                readable=True))
+def launch(manifest_dir):
+    """
+    Launches a deployment based on a manifest directory refered to by
+    MANIFEST_DIR which can either be a relative or absolute path.
+    """
+    try:
+        LaunchCmd(manifest_dir=manifest_dir).run()
+    except Exception as e:
+        print(e)
