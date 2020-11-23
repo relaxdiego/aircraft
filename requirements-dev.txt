@@ -23,6 +23,7 @@ distlib==0.3.1            # via virtualenv
 distro==1.5.0             # via -c requirements.txt, pyinfra
 docutils==0.16            # via readme-renderer
 filelock==3.0.12          # via tox, virtualenv
+fire==0.3.1               # via -c requirements.txt, aircraft
 flake8==3.8.4             # via -r requirements-dev.in
 gevent==20.9.0            # via -c requirements.txt, pyinfra
 greenlet==0.4.17          # via -c requirements.txt, gevent
@@ -58,7 +59,8 @@ requests-ntlm==1.1.0      # via -c requirements.txt, pywinrm
 requests-toolbelt==0.9.1  # via twine
 requests==2.25.0          # via -c requirements.txt, pywinrm, requests-ntlm, requests-toolbelt, twine
 rfc3986==1.4.0            # via twine
-six==1.15.0               # via -c requirements.txt, bcrypt, bleach, cryptography, packaging, pyinfra, pynacl, python-dateutil, pywinrm, readme-renderer, tox, virtualenv
+six==1.15.0               # via -c requirements.txt, bcrypt, bleach, cryptography, fire, packaging, pyinfra, pynacl, python-dateutil, pywinrm, readme-renderer, tox, virtualenv
+termcolor==1.1.0          # via -c requirements.txt, fire
 toml==0.10.1              # via pytest, tox
 tox==3.20.1               # via -r requirements-dev.in
 tqdm==4.51.0              # via twine

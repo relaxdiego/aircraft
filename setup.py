@@ -5,6 +5,7 @@
 # don't have to. For more info, please see "Adding A Runtime Dependency" in this
 # project's README.md file
 runtime_requirements = [
+    "fire~=0.3.0",
     "pydantic~=1.6",
     "pyinfra~=1.2",
     "pyyaml~=5.0",
