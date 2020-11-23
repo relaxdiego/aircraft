@@ -1,3 +1,10 @@
+# 2020-11-23T22:46:00+0800
+
+Fixes the problem I described earlier where values that are set lower in
+the precedence hierarchy are unset higher up by a level that doesn't have
+the same field set.
+
+
 # 2020-11-23T18:43:00+0800
 
 Shift implementation to using Pyinfra's built-in support for dynamic

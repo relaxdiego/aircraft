@@ -6,6 +6,7 @@ from ipaddress import (
 from typing import (
     Dict,
     List,
+    Optional,
 )
 from pydantic import (
     BaseModel,
@@ -20,8 +21,14 @@ class InvalidIPAddressError(ValueError):
         super().__init__(msg)
 
 
-class HostData(BaseModel):
-    ip_address: str
+class BaseData(BaseModel):
+    interface: Optional[str]
+    gateway: Optional[IPv4Address]
+    nameservers: Optional[List[IPv4Address]]
+
+
+class HostData(BaseData):
+    ip_address: Optional[str]
 
     @validator('ip_address')
     def ip_address_must_be_of_cidr_notation(cls, ip_address):
@@ -37,15 +44,13 @@ class HostSpec(BaseModel):
     data: HostData
 
 
-class GroupData(BaseModel):
-    interface: str = None
-    gateway: IPv4Address = None
-    nameservers: List[IPv4Address] = []
+class GroupData(BaseData):
+    pass
 
 
 class GroupSpec(BaseModel):
     data: GroupData = GroupData()
-    hosts: List[str] = []
+    hosts: Optional[List[str]]
 
 
 class UndefinedHostsError(ValueError):
@@ -70,6 +75,10 @@ class InventorySpec(BaseModel):
         hosts = values['hosts'].keys()
 
         for group, spec in groups.items():
+            # Skip this group if it doesnot have a hosts field
+            if spec.hosts is None:
+                continue
+
             undefined_hosts = [host for host in spec.hosts
                                if host not in hosts]
             if len(undefined_hosts) > 0:

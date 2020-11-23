@@ -23,8 +23,14 @@ for group_name, group_spec in inventory_spec.groups.items():
     globals()[group_name] = []
     for host in group_spec.hosts:
         merged_data = {
-            **inventory_spec.groups['all'].data.dict(),
-            **group_spec.data.dict(),
-            **inventory_spec.hosts[host].data.dict(),
+            **{k: v for k, v
+               in inventory_spec.groups['all'].data.dict().items()
+               if v is not None},
+            **{k: v for k, v
+               in group_spec.data.dict().items()
+               if v is not None},
+            **{k: v for k, v
+               in inventory_spec.hosts[host].data.dict().items()
+               if v is not None},
         }
         globals()[group_name].append((host, merged_data))
