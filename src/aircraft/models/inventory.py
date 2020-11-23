@@ -43,8 +43,8 @@ class Inventory(BaseModel):
             undefined_hosts = [host for host in spec.hosts
                                if host not in hosts]
             if len(undefined_hosts) > 0:
-                msg = "Hosts '{}' referenced by group '{}' is undefined."
-                raise ValueError(msg.format(','.join(undefined_hosts), group))
+                msg = "Group '{}' is referencing undefined hosts: {}"
+                raise ValueError(msg.format(group, ','.join(undefined_hosts)))
 
         return groups
 
