@@ -26,8 +26,4 @@ def apply(manifest_dir):
     declared within said directory. MANIFEST_DIR may be a relative or
     absolute path.
     """
-    try:
-        ApplyCmd(manifest_dir=manifest_dir).run()
-    except Exception as e:
-        print(e)
-        sys.exit(1)
+    ApplyCmd(manifest_dir=manifest_dir).run()

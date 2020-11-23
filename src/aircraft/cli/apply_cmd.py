@@ -1,7 +1,9 @@
 from pathlib import Path
 import yaml
 
-from aircraft.models.inventory import Inventory
+from pyinfra.api import Inventory
+
+from aircraft.models.inventory import InventorySpec
 
 
 class ApplyCmd:
@@ -15,6 +17,21 @@ class ApplyCmd:
         with open(inventory_path, 'r') as inventory_fh:
             inventory_dict = yaml.safe_load(inventory_fh)
 
-        inventory = Inventory(**inventory_dict)
+        inventory_spec = InventorySpec(**inventory_dict)
+
+        hosts = []
+        for name, spec in inventory_spec.hosts.items():
+            hosts.append((name, spec.data.dict()))
+
+        groups_except_all = {name: spec for name, spec
+                             in inventory_spec.groups.items()
+                             if name != 'all'}
+        groups = {}
+        for name, spec in groups_except_all.items():
+            groups[name] = (spec.hosts, spec.data.dict())
+
+        global_data = inventory_spec.groups['all'].data.dict()
+
+        inventory = Inventory((hosts, global_data), **groups)
 
         import devtools; devtools.debug(inventory)  # NOQA: E702, E501

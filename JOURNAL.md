@@ -1,3 +1,14 @@
+# 2020-11-23T16:30:00+0800
+
+I've implemented some form of dynamic inventory generation but I'm unsure
+if this is the right way to go about it. Perhaps this is too low level and
+it may be better to stick to [the method](https://docs.pyinfra.com/en/1.x/examples/dynamic_inventories_data.html)
+described by the Pyinfra documentation. That may be doable and more manageable.
+We don't expect to have arbitrary set of groups for this project anyway
+since the manifest directory is intended to be very specific to putting up
+a MAAS cluster and not some arbitrary cluster running arbitrary services.
+
+
 # 2020-11-23T12:11:00+0800
 
 I've shifted from Fire to [Click](https://click.palletsprojects.com/en/7.x/documentation/)
