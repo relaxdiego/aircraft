@@ -1,7 +1,6 @@
 operations:
   - blueprints:
-      - machine.kvm.bridge_br0_to_host_network
-      - machine.kvm.install_kvm
-      - machine.kvm.use_br0_for_virsh_network
+      - machine.kvm.install_packages
+      - machine.kvm.configure_bridged_network
     groups:
       - level_1
