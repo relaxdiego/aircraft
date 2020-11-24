@@ -15,9 +15,8 @@ with open(operations_path, 'r') as operations_fh:
     operation_set_spec = OperationSetSpec(**yaml.safe_load(operations_fh))
 
 for operation_spec in operation_set_spec.operations:
-    for blueprint_shortname in operation_spec.blueprints:
-        blueprint_fullname = f"aircraft.blueprints.{blueprint_shortname}"
-        blueprint = import_module(blueprint_fullname)
-
     if set(operation_spec.groups).intersection(host.groups):
-        getattr(blueprint, 'main')()
+        for blueprint_shortname in operation_spec.blueprints:
+            blueprint_fullname = f"aircraft.blueprints.{blueprint_shortname}"
+            blueprint = import_module(blueprint_fullname)
+            getattr(blueprint, 'main')()
