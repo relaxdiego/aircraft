@@ -29,6 +29,7 @@ def apply(deploy_spec):
     """
     os.environ['AIRCRAFT_DEPLOY_SPEC'] = deploy_spec
 
-    cmd = f"cd {aircraft_dir / 'deployment'} && " \
-          f"pyinfra inventory.py operations.py"
-    os.system(cmd)
+    old_path = os.getcwd()
+    os.chdir(aircraft_dir / 'deployment')
+    os.system("pyinfra inventory.py operations.py")
+    os.chdir(old_path)
