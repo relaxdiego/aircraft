@@ -20,7 +20,9 @@ def main():
                                 exists=True,
                                 resolve_path=True,
                                 readable=True))
-def apply(deploy_spec):
+@click.option('-v', '--verbose', count=True,
+              help="Print meta (-v), input (-vv) and output (-vvv)")
+def apply(deploy_spec, verbose):
     """
     Applies DEPLOY_SPEC where DEPLOY_SPEC is a directory containing files
     that lists the host inventory, deployment-specific data, and the
@@ -29,9 +31,13 @@ def apply(deploy_spec):
     """
     os.environ['AIRCRAFT_DEPLOY_SPEC'] = deploy_spec
 
+    verbosity = ''
+    if verbose > 0:
+        verbosity = f"-{'v' * verbose}"
+
     old_path = os.getcwd()
     os.chdir(aircraft_dir / 'deployment')
-    os.system("pyinfra inventory.py operations.py")
+    os.system(f"pyinfra {verbosity} inventory.py operations.py")
     os.chdir(old_path)
 
 
