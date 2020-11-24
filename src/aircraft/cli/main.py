@@ -54,4 +54,5 @@ def debug(deploy_spec):
     old_path = os.getcwd()
     os.chdir(aircraft_dir / 'deployment')
     os.system("pyinfra inventory.py debug-inventory")
+    os.system("pyinfra --debug-operations inventory.py operations.py")
     os.chdir(old_path)
