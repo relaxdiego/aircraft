@@ -1,3 +1,11 @@
+# 2020-11-24T10:36:00+0800
+
+The highest priority right now for this prototyping stage is to figure
+out the best way to implement secrets management. Being able to use
+gpg-based encryption with the password shared off-band similar to what I
+described [in this video](https://youtu.be/PweKPLDweO4) is important.
+
+
 # 2020-11-23T22:46:00+0800
 
 Fixes the problem I described earlier where values that are set lower in
