@@ -1,6 +1,5 @@
 from ipaddress import (
     AddressValueError,
-    IPv4Address,
     IPv4Interface,
 )
 from typing import (
@@ -14,6 +13,14 @@ from pydantic import (
 )
 
 
+def validate_ip_address(ip_address):
+    try:
+        IPv4Interface(ip_address)
+    except AddressValueError:
+        raise InvalidIPAddressError(ip_address)
+    return ip_address
+
+
 class InvalidIPAddressError(ValueError):
 
     def __init__(self, ip_address):
@@ -23,8 +30,20 @@ class InvalidIPAddressError(ValueError):
 
 class BaseData(BaseModel):
     interface: Optional[str]
-    gateway: Optional[IPv4Address]
-    nameservers: Optional[List[IPv4Address]]
+    gateway: Optional[str]
+    nameservers: Optional[List[str]]
+
+    class Config:
+        extra = 'forbid'
+
+    @validator('gateway')
+    def gateway_must_be_an_ip_address(cls, ip_address):
+        return validate_ip_address(ip_address)
+
+    @validator('nameservers')
+    def nameservers_must_be_an_ip_address(cls, nameservers):
+        (validate_ip_address(nameserver) for nameserver in nameservers)
+        return nameservers
 
 
 class HostData(BaseData):
@@ -32,12 +51,7 @@ class HostData(BaseData):
 
     @validator('ip_address')
     def ip_address_must_be_of_cidr_notation(cls, ip_address):
-        try:
-            ip_address = IPv4Interface(ip_address)
-        except AddressValueError:
-            raise InvalidIPAddressError(ip_address)
-
-        return ip_address
+        return validate_ip_address(ip_address)
 
 
 class HostSpec(BaseModel):
