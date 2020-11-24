@@ -7,12 +7,12 @@ from pyinfra.operations import (
 )
 
 
-@deploy('Prepare the KVM host network', data_defaults={})
+@deploy('Bridge br0 to host network', data_defaults={})
 def main(state, host):
 
     netplan_config = files.template(
         name='Render netplan config',
-        src=str(Path(__file__).parent / 'templates' / 'netplan.yml.j2'),
+        src=str(Path(__file__).parent / 'templates' / 'netplan-bridged-br0.yml.j2'),
         dest=host.fact.find_files('/etc/netplan/*.y*ml')[0],
         sudo=True,
 

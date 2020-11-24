@@ -3,29 +3,13 @@ from pathlib import (
 )
 from pyinfra.api import deploy
 from pyinfra.operations import (
-    apt,
     files,
     server,
 )
 
 
-@deploy('Configure KVM', data_defaults={})
+@deploy('Use br0 for virsh-net', data_defaults={})
 def main(state, host):
-
-    apt.packages(
-        name='Install required packages',
-        packages=[
-            'qemu-kvm',
-            'libvirt-daemon-system'
-        ],
-        sudo=True,
-        update=True,
-        cache_time=2592000,  # 30 days
-
-        host=host,
-        state=state,
-    )
-
     networks = host.fact.virsh_network_names
 
     if 'default' in networks:
@@ -56,7 +40,7 @@ def main(state, host):
     if 'br0' not in networks:
         files.template(
             name='Render br0 network config',
-            src=str(Path(__file__).parent / 'templates' / 'virsh-net.xml.j2'),
+            src=str(Path(__file__).parent / 'templates' / 'virsh-net-br0.xml.j2'),
             dest=virsh_net_xml,
 
             state=state,
