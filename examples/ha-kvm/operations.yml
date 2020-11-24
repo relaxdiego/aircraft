@@ -1,2 +1,2 @@
 operations:
-  - blueprint: machine.kvm
+  - blueprint: machine.kvm.prepare_network

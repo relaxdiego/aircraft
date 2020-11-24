@@ -4,7 +4,7 @@ from pyinfra.api import deploy
 from pyinfra.operations import files
 
 
-@deploy('Configure KVM-based Host', data_defaults={})
+@deploy('Prepare KVM host network', data_defaults={})
 def main(state, host):
 
     files.template(
