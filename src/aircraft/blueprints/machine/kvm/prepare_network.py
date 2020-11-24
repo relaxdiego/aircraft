@@ -10,7 +10,7 @@ from pyinfra.operations import (
 @deploy('machine.kvm.prepare_network', data_defaults={})
 def main(state, host):
 
-    files.template(
+    netplan_config = files.template(
         name='Render netplan config',
         src=str(Path(__file__).parent / 'templates' / 'netplan.yml.j2'),
         dest=host.fact.find_files('/etc/netplan/*.y*ml')[0],
@@ -20,20 +20,21 @@ def main(state, host):
         host=host,
     )
 
-    server.shell(
-        name='Run netplan generate',
-        commands=['netplan generate'],
-        sudo=True,
+    if netplan_config.changed:
+        server.shell(
+            name='Run netplan generate',
+            commands=['netplan --debug generate'],
+            sudo=True,
 
-        state=state,
-        host=host,
-    )
+            state=state,
+            host=host,
+        )
 
-    server.shell(
-        name='Run netplan apply',
-        commands=['netplan apply'],
-        sudo=True,
+        server.shell(
+            name='Run netplan apply',
+            commands=['netplan --debug apply'],
+            sudo=True,
 
-        state=state,
-        host=host,
-    )
+            state=state,
+            host=host,
+        )
