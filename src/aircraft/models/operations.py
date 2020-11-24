@@ -7,8 +7,8 @@ from pydantic import (
 
 
 class OperationSpec(BaseModel):
-    blueprint: str
-    operation: str = "main"
+    blueprints: List[str]
+    groups: List[str]
 
     # TODO: Add a validator here to check if the blueprint is valid?
 
