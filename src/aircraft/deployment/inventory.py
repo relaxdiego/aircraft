@@ -11,10 +11,12 @@ inventory_path = deploy_spec / 'inventory.yml'
 with open(inventory_path, 'r') as inventory_fh:
     inventory_spec = InventorySpec(**yaml.safe_load(inventory_fh))
 
-inventory_spec = InventorySpec(**inventory_dict)
-
-hosts = [(name, spec.data.dict()) for name, spec
-         in inventory_spec.hosts.items()]
+hosts = []
+for host, host_spec in inventory_spec.hosts.items():
+    data = {k: v for k, v
+            in host_spec.data.dict().items()
+            if v is not None}
+    hosts.append((host, data))
 
 for group_name, group_spec in inventory_spec.groups.items():
     if group_name == 'all':
