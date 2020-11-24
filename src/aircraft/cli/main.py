@@ -50,10 +50,9 @@ def apply(deploy_spec, verbose):
                                 readable=True))
 def debug(deploy_spec):
     """
-    Debugs DEPLOY_SPEC where DEPLOY_SPEC is a directory containing files
-    that lists the host inventory, deployment-specific data, and the
-    operations that must be executed against the deployment. DEPLOY_SPEC
-    may either be a relative or absolute path.
+    Prints out inventory and oeration debug information for DEPLOY_SPEC
+    and then exits. It will connect to the hosts to be able to generate
+    the oeprations list but it will not execute any of them.
     """
     os.environ['AIRCRAFT_DEPLOY_SPEC'] = deploy_spec
 
