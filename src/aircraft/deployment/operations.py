@@ -17,5 +17,4 @@ operation_set_spec = OperationSetSpec(**operations_dict)
 for operation_spec in operation_set_spec.operations:
     module_name = f"aircraft.blueprints.{operation_spec.blueprint}"
     module = import_module(module_name)
-    module.main()
     getattr(module, operation_spec.operation)()
