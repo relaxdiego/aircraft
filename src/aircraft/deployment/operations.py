@@ -10,9 +10,7 @@ deploy_spec = Path(os.environ['AIRCRAFT_DEPLOY_SPEC'])
 operations_path = deploy_spec / 'operations.yml'
 
 with open(operations_path, 'r') as operations_fh:
-    operations_dict = yaml.safe_load(operations_fh)
-
-operation_set_spec = OperationSetSpec(**operations_dict)
+    operation_set_spec = OperationSetSpec(**yaml.safe_load(operations_fh))
 
 for operation_spec in operation_set_spec.operations:
     module_name = f"aircraft.blueprints.{operation_spec.blueprint}"
