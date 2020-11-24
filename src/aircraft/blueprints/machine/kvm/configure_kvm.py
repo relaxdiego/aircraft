@@ -26,7 +26,7 @@ def main(state, host):
         state=state,
     )
 
-    networks = host.fact.command("sudo virsh net-list --all --name").split('\n')
+    networks = host.fact.virsh_network_names
 
     if 'default' in networks:
         server.shell(
