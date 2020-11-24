@@ -1,3 +1,8 @@
+# 2020-11-24T13:47:00+0800
+
+Would be good to have `aircraft lint DEPLOY_SEC`
+
+
 # 2020-11-24T10:36:00+0800
 
 The highest priority right now for this prototyping stage is to figure
