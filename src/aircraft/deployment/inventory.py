@@ -26,9 +26,6 @@ for group_name, group_spec in inventory_spec.groups.items():
     for host in group_spec.hosts:
         merged_data = {
             **{k: v for k, v
-               in inventory_spec.groups['all'].data.dict().items()
-               if v is not None},
-            **{k: v for k, v
                in group_spec.data.dict().items()
                if v is not None},
             **{k: v for k, v
