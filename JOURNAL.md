@@ -1,3 +1,40 @@
+# 2020-11-24T21:11:00+0800
+
+Something to think about now is how to separate the operations for the
+hypervisors vs the operations for the VM hosts. Would it make sense to
+create a new construct named `stage`? As in:
+
+```yaml
+stages:
+- name: stage-1
+  operations:
+  - blueprints:
+    - machine.kvm.install_packages
+    - ...
+    targets:
+    - hypervisors
+  - blueprints:
+    - ...
+    targets:
+    - ...
+
+- name: stage-2
+  operations:
+  - blueprints:
+    - service.maas.install_packages
+    - ...
+    targets:
+    - infra-nodes
+```
+
+The question now is whether the inventory will fail because it defines
+hosts that are not yet reachable (e.g. infra-nodes). There is also the
+concern of making the `operations.yml` file too complex.
+
+Maybe we're better off just separating infra node configuration into its
+own deployment spec instead.
+
+
 # 2020-11-24T13:47:00+0800
 
 Would be good to have `aircraft lint DEPLOY_SEC`
