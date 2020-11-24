@@ -4,9 +4,9 @@ import yaml
 
 from aircraft.models.inventory import InventorySpec
 
-manifest_dir = Path(os.environ['AIRCRAFT_MANIFEST_DIR'])
+deploy_spec = Path(os.environ['AIRCRAFT_DEPLOY_SPEC'])
 
-inventory_path = manifest_dir / 'inventory.yml'
+inventory_path = deploy_spec / 'inventory.yml'
 
 with open(inventory_path, 'r') as inventory_fh:
     inventory_dict = yaml.safe_load(inventory_fh)

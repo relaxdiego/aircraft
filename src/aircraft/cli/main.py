@@ -14,19 +14,20 @@ def main():
 
 
 @main.command()
-@click.argument('manifest_dir',
+@click.argument('deploy_spec',
                 type=click.Path(file_okay=False,
                                 dir_okay=True,
                                 exists=True,
                                 resolve_path=True,
                                 readable=True))
-def apply(manifest_dir):
+def apply(deploy_spec):
     """
-    Applies the configuration defined in MANIFEST_DIR against the hosts
-    declared within said directory. MANIFEST_DIR may be a relative or
-    absolute path.
+    Applies DEPLOY_SPEC where DEPLOY_SPEC is a directory containing files
+    that lists the host inventory, deployment-specific data, and the
+    operations that must be executed against the deployment. DEPLOY_SPEC
+    may either be a relative or absolute path.
     """
-    os.environ['AIRCRAFT_MANIFEST_DIR'] = manifest_dir
+    os.environ['AIRCRAFT_DEPLOY_SPEC'] = deploy_spec
 
     cmd = f"cd {aircraft_dir / 'deployment'} && " \
           f"pyinfra inventory.py operations.py"

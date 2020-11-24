@@ -5,8 +5,9 @@ import yaml
 
 from aircraft.models.operations import OperationSetSpec
 
-manifest_dir = Path(os.environ['AIRCRAFT_MANIFEST_DIR'])
-operations_path = manifest_dir / 'operations.yml'
+deploy_spec = Path(os.environ['AIRCRAFT_DEPLOY_SPEC'])
+
+operations_path = deploy_spec / 'operations.yml'
 
 with open(operations_path, 'r') as operations_fh:
     operations_dict = yaml.safe_load(operations_fh)
