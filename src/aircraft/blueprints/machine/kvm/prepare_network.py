@@ -7,7 +7,7 @@ from pyinfra.operations import (
 )
 
 
-@deploy('machine.kvm.prepare_network', data_defaults={})
+@deploy('Prepare the KVM host network', data_defaults={})
 def main(state, host):
 
     netplan_config = files.template(

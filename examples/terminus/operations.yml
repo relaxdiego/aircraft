@@ -1,5 +1,6 @@
 operations:
   - blueprints:
       - machine.kvm.prepare_network
+      - machine.kvm.configure_kvm
     groups:
       - level_1
