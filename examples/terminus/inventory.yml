@@ -2,6 +2,7 @@ hosts:
   kvm-1:
     data:
       ip_address: 192.168.100.11/24
+      infra_vm_count: 3
   kvm-2:
     data:
       ip_address: 192.168.100.12/24
@@ -11,7 +12,7 @@ groups:
     data:
       interface: eno1
 
-  level_1:
+  hypervisors:
     data:
       gateway: 192.168.100.1
       nameservers:

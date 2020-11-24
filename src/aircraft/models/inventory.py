@@ -29,6 +29,7 @@ class InvalidIPAddressError(ValueError):
 
 
 class BaseData(BaseModel):
+    infra_vm_count: Optional[int]
     interface: Optional[str]
     gateway: Optional[str]
     nameservers: Optional[List[str]]

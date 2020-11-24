@@ -11,7 +11,8 @@ def main(state, host):
         name='Install required packages',
         packages=[
             'qemu-kvm',
-            'libvirt-daemon-system'
+            'libvirt-daemon-system',
+            'virtinst'
         ],
         sudo=True,
         update=True,

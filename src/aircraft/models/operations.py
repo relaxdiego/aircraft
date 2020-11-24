@@ -8,7 +8,7 @@ from pydantic import (
 
 class OperationSpec(BaseModel):
     blueprints: List[str]
-    groups: List[str]
+    targets: List[str]
 
     # TODO: Add a validator here to check if the blueprint is valid?
 
