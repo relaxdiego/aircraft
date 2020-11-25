@@ -1,3 +1,8 @@
+# 2020-11-25T15:25:00+0800
+
+Would be good to have `aircraft exec DEPLOY_SEC`
+
+
 # 2020-11-24T21:11:00+0800
 
 Something to think about now is how to separate the operations for the
