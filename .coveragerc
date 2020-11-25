@@ -1,10 +1,10 @@
 # https://coverage.readthedocs.io/en/latest/config.html
 [run]
 branch = True
-source = src
+parallel = True
 
 [report]
-include = src/*
+show_missing = False
 
 [html]
 directory=htmlcov

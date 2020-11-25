@@ -12,7 +12,10 @@ runtime_requirements = [
 ]
 
 import pathlib
-from setuptools import setup
+from setuptools import (
+    find_packages,
+    setup,
+)
 
 # Some options here are taken from this handy guide:
 # https://realpython.com/pypi-publish-python-package/
@@ -31,9 +34,7 @@ setup(
     url='https://github.com/relaxdiego/aircraft',
     python_requires='~=3.6',
     package_dir={'': 'src'},
-    packages=[
-        'aircraft',
-    ],
+    packages=find_packages('src'),
     entry_points={
         'console_scripts': [
             'aircraft = aircraft.cli.main:main'
