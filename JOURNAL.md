@@ -1,3 +1,63 @@
+# 2020-11-26T08:18:00+0800
+
+I've spent way too much time on this but I think these example schemas
+are good enough for v1beta1:
+
+KVM host inventory:
+
+```yaml
+kind: inventory.hypervisor.kvm
+api_version: v1beta1
+spec:
+  hosts:
+  - name: kvm-1
+    data:
+      ip_address: 192.168.100.11/24
+      guests:
+      - name: config
+      - name: infra-1
+      - name: infra-2
+      - name: infra-3
+  - name: kvm-2
+    data:
+      ip_address: 192.168.100.12/24
+      guests:
+      - name: node-1
+      - name: node-2
+
+  groups:
+  - name: all
+    data:
+      interface: eno1
+
+  - name: hypervisors
+    data:
+      gateway: 192.168.100.1
+      nameservers:
+      - 1.1.1.1
+      - 8.8.8.8
+      - 8.8.4.4
+    members:
+    - kvm-1
+    - kvm-2
+```
+
+Operations
+
+```yaml
+kind: operations
+api_version: v1beta1
+spec:
+  operations:
+  - blueprints:
+    - machine.kvm.install_packages
+    - machine.kvm.configure_bridged_network
+    - machine.kvm.create_guests
+    targets:
+    - hypervisors
+```
+
+
 # 2020-11-25T15:25:00+0800
 
 Would be good to have `aircraft exec DEPLOY_SEC`
