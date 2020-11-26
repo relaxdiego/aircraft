@@ -1,3 +1,11 @@
+# 2020-11-26T20:05:00+0800
+
+I'm starting to think that `operations.yml` is redundant. For example,
+if a user creates an inventory of kind `hypvervisor.kv` with api version
+`v1beta1`, then we shoul be able to infer the operations necessary to
+fulfill the user's requirement.
+
+
 # 2020-11-26T08:18:00+0800
 
 I've spent way too much time on this but I think these example schemas
