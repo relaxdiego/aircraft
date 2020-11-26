@@ -4,7 +4,7 @@ import yaml
 
 from aircraft.models.inventory import InventorySpec
 
-deploy_spec = Path(os.environ['AIRCRAFT_DEPLOY_SPEC'])
+deploy_spec = Path(os.environ['AIRCRAFT_DEPLOYSPEC'])
 
 inventory_path = deploy_spec / 'inventory.yml'
 

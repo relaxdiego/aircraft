@@ -60,7 +60,7 @@ spec:
 
 # 2020-11-25T15:25:00+0800
 
-Would be good to have `aircraft exec DEPLOY_SEC`
+Would be good to have `aircraft exec DEPLOYSPEC`
 
 
 # 2020-11-24T21:11:00+0800
@@ -102,7 +102,7 @@ own deployment spec instead.
 
 # 2020-11-24T13:47:00+0800
 
-Would be good to have `aircraft lint DEPLOY_SEC`
+Would be good to have `aircraft lint DEPLOYSPEC`
 
 
 # 2020-11-24T10:36:00+0800

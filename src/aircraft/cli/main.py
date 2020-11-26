@@ -14,7 +14,7 @@ def main():
 
 
 @main.command()
-@click.argument('deploy_spec',
+@click.argument('deployspec',
                 type=click.Path(file_okay=False,
                                 dir_okay=True,
                                 exists=True,
@@ -22,14 +22,14 @@ def main():
                                 readable=True))
 @click.option('-v', '--verbose', count=True,
               help="Print meta (-v), input (-vv) and output (-vvv)")
-def apply(deploy_spec, verbose):
+def apply(deployspec, verbose):
     """
-    Applies DEPLOY_SPEC where DEPLOY_SPEC is a directory containing files
+    Applies DEPLOYSPEC where DEPLOYSPEC is a directory containing files
     that lists the host inventory, deployment-specific data, and the
-    operations that must be executed against the deployment. DEPLOY_SPEC
+    operations that must be executed against the deployment. DEPLOYSPEC
     may either be a relative or absolute path.
     """
-    os.environ['AIRCRAFT_DEPLOY_SPEC'] = deploy_spec
+    os.environ['AIRCRAFT_DEPLOYSPEC'] = deployspec
 
     verbosity = ''
     if verbose > 0:
@@ -42,19 +42,19 @@ def apply(deploy_spec, verbose):
 
 
 @main.command()
-@click.argument('deploy_spec',
+@click.argument('deployspec',
                 type=click.Path(file_okay=False,
                                 dir_okay=True,
                                 exists=True,
                                 resolve_path=True,
                                 readable=True))
-def debug(deploy_spec):
+def debug(deployspec):
     """
-    Prints out inventory and oeration debug information for DEPLOY_SPEC
+    Prints out inventory and oeration debug information for DEPLOYSPEC
     and then exits. It will connect to the hosts to be able to generate
     the oeprations list but it will not execute any of them.
     """
-    os.environ['AIRCRAFT_DEPLOY_SPEC'] = deploy_spec
+    os.environ['AIRCRAFT_DEPLOYSPEC'] = deployspec
 
     old_path = os.getcwd()
     os.chdir(aircraft_dir / 'deployment')

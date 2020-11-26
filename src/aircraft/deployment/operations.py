@@ -22,7 +22,7 @@ class MainNotFoundError(AttributeError):
         super().__init__(msg)
 
 
-deploy_spec = Path(os.environ['AIRCRAFT_DEPLOY_SPEC'])
+deploy_spec = Path(os.environ['AIRCRAFT_DEPLOYSPEC'])
 
 operations_path = deploy_spec / 'operations.yml'
 
