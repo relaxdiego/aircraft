@@ -4,7 +4,7 @@ from uuid import uuid4
 from pydantic.error_wrappers import ValidationError
 import pytest
 
-from aircraft.models.deployment.inventory.hypervisor.kvm.v1beta1 import (
+from aircraft.models.deployspec.inventory.hypervisor.kvm.v1beta1 import (
     BaseData,
 )
 

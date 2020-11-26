@@ -3,7 +3,6 @@ from ipaddress import (
     IPv4Interface,
 )
 from typing import (
-    Dict,
     List,
     Optional,
 )
@@ -46,7 +45,7 @@ class GroupHasNoMembersError(ValueError):
 class UnknownGroupMembersError(ValueError):
 
     def __init__(self, group, unknown_hosts):
-        msg = f"Group '{group}' contains members that are unknown: " \
+        msg = f"Group '{group.name}' contains members that are unknown: " \
               f"{','.join(unknown_hosts)}"
         super().__init__(msg)
 
@@ -80,8 +79,12 @@ class BaseData(BaseModel):
         return nameservers
 
 
+class GuestSpec(BaseModel):
+    name: str
+
+
 class HostData(BaseData):
-    infra_vms: Optional[List[str]]
+    guests: Optional[List[GuestSpec]]
     ip_address: Optional[str]
 
     @validator('ip_address')
@@ -90,7 +93,8 @@ class HostData(BaseData):
         return ip_address
 
 
-class Host(BaseModel):
+class HostSpec(BaseModel):
+    name: str
     data: HostData = HostData()
 
 
@@ -98,14 +102,15 @@ class GroupData(BaseData):
     pass
 
 
-class Group(BaseModel):
+class GroupSpec(BaseModel):
+    name: str
     data: GroupData = GroupData()
-    members: Optional[List[str]]
+    members: List[str]
 
 
-class Inventory(BaseModel):
-    hosts: Dict[str, Host]
-    groups: Dict[str, Group]
+class InventorySpec(BaseModel):
+    hosts: List[HostSpec]
+    groups: List[GroupSpec] = []
 
     @validator('groups')
     def groups_members_must_be_known_hosts(cls, groups, values):
@@ -114,16 +119,14 @@ class Inventory(BaseModel):
         if 'hosts' not in values:
             return groups
 
-        hosts = values['hosts'].keys()
+        defined_host_names = [host.name for host in values['hosts']]
 
-        for group, spec in groups.items():
-            if group == 'all' and spec.members is not None:
-                raise AllGroupDefinesMembersError(spec.members)
-            elif spec.members is None:
+        for group in groups:
+            if group.members is None:
                 raise GroupHasNoMembersError(group)
 
-            unknown_hosts = [host for host in spec.members
-                             if host not in hosts]
+            unknown_hosts = [member for member in group.members
+                             if member not in defined_host_names]
             if len(unknown_hosts) > 0:
                 raise UnknownGroupMembersError(group, unknown_hosts)
 
@@ -131,10 +134,21 @@ class Inventory(BaseModel):
 
     @validator('groups')
     def ensure_all_group_is_defined(cls, groups, values):
-        if 'all' not in groups.keys():
-            groups['all'] = Group()
+        all_group = next((group for group in groups
+                          if group.name == 'all'), None)
+
+        if all_group is None:
+            groups.append(GroupSpec(
+                name='all',
+                members=[host.name for host in values['hosts']]))
 
         return groups
+
+
+class Inventory(BaseModel):
+    kind: str
+    api_version: str
+    spec: InventorySpec
 
     class Config:
         allow_mutation = False

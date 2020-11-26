@@ -1,6 +1,6 @@
 import unittest
 
-from aircraft.models.deployment.inventory.hypervisor.kvm.v1beta1 import (
+from aircraft.models.deployspec.inventory.hypervisor.kvm.v1beta1 import (
     BaseData,
     GroupData,
 )
