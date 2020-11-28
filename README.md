@@ -1,6 +1,72 @@
 AirCraft
 ========
 
+> BUYER BEWARE: This project is still in very early stages. Its architecture
+> will drastically change from day to day as I experiment, make mistakes, and
+> implement the lessons learned. I also cannot make any guarantees that the
+> entire codebase will always work. Bugs abound. Having said that, if you like
+> to browse incomplete code and gain an understanding of how a project is
+> designed, this might just be the thing for you!
+
+
+Declaratively specify your cluster's configuration:
+
+```yaml
+kind: hypervisor.kvm
+api_version: v1beta1
+spec:
+  hosts:
+  - name: kvm-1
+    data:
+      ip_address:   192.168.100.11/24
+      ssh_user:     secrets/ssh_user
+      ssh_password: secrets/ssh_password
+      guests:
+      - name: config
+      - name: infra-1
+      - name: infra-2
+      - name: infra-3
+  - name: kvm-2
+    data:
+      ip_address: 192.168.100.12/24
+      guests:
+      - name: node-1
+      - name: node-2
+
+  groups:
+  - name: all
+    data:
+      interface: eno1
+
+  - name: group-1
+    data:
+      gateway: 192.168.100.1
+      nameservers:
+      - 1.1.1.1
+      - 8.8.8.8
+      - 8.8.4.4
+    members:
+    - kvm-1
+    - kvm-2
+```
+
+
+Apply your cluster configuration:
+
+```
+aircraft apply path/to/inventory/file
+```
+
+Alternatively, if you have a directory full of inventory files, just
+provide `aircraft apply` the directory itself:
+
+```
+aircraft apply path/to/inventory/dir
+```
+
+Aircraft will iterate through the inventory files in lexicographic order.
+
+
 # Developer's Guide
 
 ## Prerequisites
