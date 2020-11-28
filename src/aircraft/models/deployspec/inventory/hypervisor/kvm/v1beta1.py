@@ -2,14 +2,64 @@ from ipaddress import (
     AddressValueError,
     IPv4Interface,
 )
-from typing import (
-    List,
-    Optional,
-)
+import os
+from pathlib import Path
+import privy
 from pydantic import (
     BaseModel,
     validator,
 )
+from typing import (
+    List,
+    Optional,
+)
+
+
+#
+# TODO: Move this custom type and its companion get_secret_key() helper
+#       to more appropriate locations. They are objects that will be used
+#       acorss different kinds of inventory so place them in a commonly
+#       known location. Maybe models/deployspec/inventory/common.py?
+#
+
+# Ref: https://pydantic-docs.helpmanual.io/usage/types/#custom-data-types
+class StringOrVariableName(str):
+    """
+    Custom pydantic data type used to accept a key value that may be a
+    string literal or it may be a variable name in the form of
+    [secrets|variables]/name_of_variable.
+    """
+
+    @classmethod
+    def __get_validators__(cls):
+        yield cls.load_if_variable
+
+    @classmethod
+    def load_if_variable(cls, value):
+        if str(value).startswith(("secrets/", "variables/")):
+            base_path = Path(os.environ['AIRCRAFT_DEPLOYSPEC'])
+            with open(base_path / value) as variable_fh:
+                data = variable_fh.read()
+
+            if str(value).startswith("secrets/"):
+                # TODO: We'll need to create CLI commands secret and secret key CRUD
+                data = privy.peek(data, get_secret_key())
+        else:
+            data = str(value)
+
+        return data
+
+
+def get_secret_key():
+    base_path = Path(os.environ['AIRCRAFT_DEPLOYSPEC'])
+    with open(base_path / "cluster_id") as cluster_id_fh:
+        cluster_id = cluster_id_fh.readline()
+
+    secret_keys_base_path = Path().home() / '.local' / 'aircraft' / 'secret_keys'
+    with open(secret_keys_base_path / cluster_id) as secret_key_fh:
+        secret_key = secret_key_fh.read()
+
+    return secret_key
 
 
 # =======
@@ -61,10 +111,11 @@ class InvalidIPAddressError(ValueError):
 # MODELS
 # ======
 
+
 class BaseData(BaseModel):
-    interface: Optional[str]
-    gateway: Optional[str]
-    nameservers: Optional[List[str]]
+    interface: Optional[StringOrVariableName]
+    gateway: Optional[StringOrVariableName]
+    nameservers: Optional[List[StringOrVariableName]]
 
     class Config:
         extra = 'forbid'
@@ -80,12 +131,12 @@ class BaseData(BaseModel):
 
 
 class GuestSpec(BaseModel):
-    name: str
+    name: StringOrVariableName
 
 
 class HostData(BaseData):
     guests: Optional[List[GuestSpec]]
-    ip_address: Optional[str]
+    ip_address: Optional[StringOrVariableName]
 
     @validator('ip_address')
     def must_be_a_valid_ip_address(cls, ip_address):
@@ -94,7 +145,7 @@ class HostData(BaseData):
 
 
 class HostSpec(BaseModel):
-    name: str
+    name: StringOrVariableName
     data: HostData = HostData()
 
 
@@ -103,9 +154,9 @@ class GroupData(BaseData):
 
 
 class GroupSpec(BaseModel):
-    name: str
+    name: StringOrVariableName
     data: GroupData = GroupData()
-    members: Optional[List[str]] = []
+    members: Optional[List[StringOrVariableName]] = []
 
 
 class InventorySpec(BaseModel):

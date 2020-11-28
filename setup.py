@@ -6,6 +6,7 @@
 # project's README.md file
 runtime_requirements = [
     "click~=7.0",
+    "privy~=6.0",
     "pydantic~=1.6",
     "pyinfra~=1.2",
     "pyyaml~=5.0",
