@@ -1,3 +1,23 @@
+# 2020-11-28T12:05:00+0800
+
+With the previous idea implemented, the next thing to do is to change
+aircraft.deployment.inventory.py to iterate through the YAML files in
+a DEPLOYSPEC dir in lexicographic order and then run pyinfra against
+each.
+
+A separate but related feature would be the option to provide aircraft
+with an inventory file in the DEPLOYSPEC. In that case, aircraft should
+process that file directly.
+
+---
+
+Keep this thought in mind: with your previous Ansible-based projects,
+you had the option to define hooks that do preparatory work on local
+dev environments (See relaxdiego/cicd for example). While you had to
+create bash hackery to make that work, this could be a built in feature
+of aircraft.
+
+
 # 2020-11-26T20:05:00+0800
 
 I'm starting to think that `operations.yml` is redundant. For example,
