@@ -16,12 +16,12 @@ class LoadTest(unittest.TestCase):
                                          mock_import_module_func):
         # Prep
         inventory_dict = {
-            'kind': f'{uuid4()}.{uuid4()}',
-            'api_version': f'v{uuid4()}',
+            'kind': f'kind_{uuid4()}.{uuid4()}',
+            'api_version': f'version_v{uuid4()}',
             'spec': {}
         }
         mock_module = mock_import_module_func.return_value
-        mock_model = mock_module.main.return_value
+        mock_model = mock_module.Inventory.return_value
 
         # Exercise
         returned_model = inventory.load(inventory_dict)
@@ -32,6 +32,6 @@ class LoadTest(unittest.TestCase):
             "aircraft.models.deployspec.inventory."
             f"{inventory_dict['kind']}.{inventory_dict['api_version']}"
         )
-        assert mock_module.main.call_count == 1
-        assert mock_module.main.call_args == call(inventory_dict)
+        assert mock_module.Inventory.call_count == 1
+        assert mock_module.Inventory.call_args == call(**inventory_dict)
         assert returned_model == mock_model

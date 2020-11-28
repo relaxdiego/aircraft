@@ -3,9 +3,7 @@ from pathlib import Path
 import os
 import yaml
 
-from pyinfra import host
-
-from aircraft.models.operations import OperationSetSpec
+from aircraft.models.deployspec import inventory
 
 
 class BlueprintNotFoundError(ValueError):
@@ -22,25 +20,28 @@ class MainNotFoundError(AttributeError):
         super().__init__(msg)
 
 
+# Opening the inventory file a second time (once in inventory.py and then
+# another time here) isn't the most optimal solution so consider other
+# options at anothe time. The best option would be for us to be able to
+# obtain the inventory kind and api_version without re-opening the file.
+
 deploy_spec = Path(os.environ['AIRCRAFT_DEPLOYSPEC'])
+inventory_path = deploy_spec / 'inventory.yml'
 
-operations_path = deploy_spec / 'operations.yml'
+with open(inventory_path, 'r') as inventory_fh:
+    inventory = inventory.load(yaml.safe_load(inventory_fh))
 
-with open(operations_path, 'r') as operations_fh:
-    operation_set_spec = OperationSetSpec(**yaml.safe_load(operations_fh))
+blueprint_shortname = f"{inventory.kind}.{inventory.api_version}"
+blueprint_fullname = f"aircraft.blueprints.{blueprint_shortname}.main"
 
-for operation_spec in operation_set_spec.operations:
-    if set(operation_spec.targets).intersection(host.groups + [str(host)]):
-        for blueprint_shortname in operation_spec.blueprints:
-            blueprint_fullname = f"aircraft.blueprints.{blueprint_shortname}"
-            try:
-                blueprint = import_module(blueprint_fullname)
-            except ModuleNotFoundError as e:
-                raise BlueprintNotFoundError(blueprint_shortname) from e
+try:
+    blueprint = import_module(blueprint_fullname)
+except ModuleNotFoundError as e:
+    raise BlueprintNotFoundError(blueprint_shortname) from e
 
-            try:
-                main_func = getattr(blueprint, 'main')
-            except AttributeError as e:
-                raise MainNotFoundError(blueprint_shortname) from e
+try:
+    main_func = getattr(blueprint, 'main')
+except AttributeError as e:
+    raise MainNotFoundError(blueprint_shortname) from e
 
-            main_func()
+main_func()

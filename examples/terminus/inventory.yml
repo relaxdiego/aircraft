@@ -1,24 +1,34 @@
-hosts:
-  kvm-1:
+kind: hypervisor.kvm
+api_version: v1beta1
+spec:
+  hosts:
+  - name: kvm-1
     data:
       ip_address: 192.168.100.11/24
-      infra_vm_count: 3
-  kvm-2:
+      guests:
+      - name: config
+      - name: infra-1
+      - name: infra-2
+      - name: infra-3
+  - name: kvm-2
     data:
       ip_address: 192.168.100.12/24
+      guests:
+      - name: node-1
+      - name: node-2
 
-groups:
-  all:
+  groups:
+  - name: all
     data:
       interface: eno1
 
-  hypervisors:
+  - name: group-1
     data:
       gateway: 192.168.100.1
       nameservers:
       - 1.1.1.1
       - 8.8.8.8
       - 8.8.4.4
-    hosts:
+    members:
     - kvm-1
     - kvm-2

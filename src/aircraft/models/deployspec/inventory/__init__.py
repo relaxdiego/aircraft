@@ -7,7 +7,7 @@ def load(d):
     inventory_spec = GenericInventorySpec(**d)
     module = import_module('aircraft.models.deployspec.inventory.'
                            f'{inventory_spec.kind}.{inventory_spec.api_version}')
-    return module.main(d)
+    return module.Inventory(**d)
 
 
 class GenericInventorySpec(BaseModel):

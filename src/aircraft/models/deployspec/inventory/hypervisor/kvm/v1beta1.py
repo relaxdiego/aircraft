@@ -105,12 +105,12 @@ class GroupData(BaseData):
 class GroupSpec(BaseModel):
     name: str
     data: GroupData = GroupData()
-    members: List[str]
+    members: Optional[List[str]] = []
 
 
 class InventorySpec(BaseModel):
     hosts: List[HostSpec]
-    groups: List[GroupSpec] = []
+    groups: Optional[List[GroupSpec]] = []
 
     @validator('groups')
     def groups_members_must_be_known_hosts(cls, groups, values):
@@ -122,7 +122,7 @@ class InventorySpec(BaseModel):
         defined_host_names = [host.name for host in values['hosts']]
 
         for group in groups:
-            if group.members is None:
+            if group.members is None and group.name != 'all':
                 raise GroupHasNoMembersError(group)
 
             unknown_hosts = [member for member in group.members
