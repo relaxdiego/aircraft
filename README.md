@@ -1,4 +1,4 @@
-AirCraft
+Aircraft
 ========
 
 > BUYER BEWARE: This project is still in very early stages. Its architecture
@@ -8,6 +8,45 @@ AirCraft
 > to browse incomplete code and gain an understanding of how a project is
 > designed, this might just be the thing for you!
 
+
+# Project Rationale
+
+I work with infrastructure. The kind of infrastructure where you have a bunch
+of baremetal machines that don't have an OS installed. Where the only access
+you have at the onset are their BMC IPs. In that case, I need some sort of
+machine provisioning tool that is agentless. Truly agentless, not just Ansible
+agentless.
+
+In other situations, I might need to set up a CI/CD cluster. Now if you're like
+me, you'd prefer to configure this cluster on top of as thin a technology stack
+as possible (read: just bare OSes). The reason for this is because if you want
+to deploy your CI/CD cluster on top of the best whiz-bang technology stack,
+such as Kubernetes, you have to ensure that you have a CI/CD infrastructure in
+place before you do...but that's exactly what's missing and what we're trying
+to deploy! Again, what's needed here is an agentless infrastructure automation
+tool.
+
+In both situations, I've found Ansible usable for a time. However, after years
+of using it, I've come to find it cumbersome. With its supposed-declarative
+YAML-based DSL slowly transforming into a turing-complete language. At this point
+one wonders why we don't just use an already proper language itself like, oh
+I don't know, Python?
+
+This is what brought be to [pyinfra](https://pyinfra.com/). This project builds
+on top of pyinfra's good-enough implementation. It is an attempt at replicating
+the Ansible project structure that I've been using for years as exemplified in
+another project called [relaxdiego/cicd](https://github.com/relaxdiego/cicd).
+
+
+## Why Didn't You Just Use Terraform?
+
+I have ample experience with Terraform in the past too and I've maintained the
+"Terraform for provisioning, Ansible for configuration" dichotomy for some time.
+I maintain that stand for this project but have changed it to "Terraform for
+provisioning, Aircraft for configuration."
+
+
+# Usage
 
 Declaratively specify your cluster's configuration:
 
