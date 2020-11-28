@@ -1,3 +1,16 @@
+# 2020-11-28T15:50:00+0800
+
+Commit 77fb2e7 illustrates how secrets management could be implemented.
+Yeah, the secrets management thing which I claimed to be of top priority
+4 days ago but promptly ignored until now. I've decided to skip sops and
+go with [privy](https://pypi.org/project/privy/) instead since the latter
+is just another Python library while the former is a separate binary.
+
+Having said that, the door on sops isn't entirely closed just yet. Because
+it implements so much more than privy, it's still a viable option. However,
+it makes sense to experiment with privy too for the sake of thorougness.
+
+
 # 2020-11-28T12:05:00+0800
 
 With the previous idea implemented, the next thing to do is to change
