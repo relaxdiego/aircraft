@@ -1,3 +1,12 @@
+# 2020-11-30T09:50:00+0800
+
+The StringOrLocator class could potentially support an RFC-1808-compliant
+URL but that can be saved for a later time since we also have to consider
+the ability to cache retreived values at runtime so as not to slow down
+the parsing process too much. This is considerable work in itself but is
+not necessary for the MVP.
+
+
 # 2020-11-28T15:50:00+0800
 
 Commit 77fb2e7 illustrates how secrets management could be implemented.

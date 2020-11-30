@@ -5,6 +5,13 @@ spec:
   - name: kvm-1
     data:
       ip_address:   192.168.100.11/24
+      interface:    vars/hypervisors/interface
+      gateway:      vars/hypervisors/gateway
+      nameservers:  [
+                      vars/hypervisors/nameserver-1,
+                      vars/hypervisors/nameserver-2,
+                      vars/hypervisors/nameserver-3,
+                    ],
       ssh_user:     secrets/ssh_user
       ssh_password: secrets/ssh_password
       guests:
@@ -12,25 +19,19 @@ spec:
       - name: infra-1
       - name: infra-2
       - name: infra-3
+
   - name: kvm-2
     data:
       ip_address: 192.168.100.12/24
+      interface:    vars/hypervisors/interface
+      gateway:      vars/hypervisors/gateway
+      nameservers:  [
+                      vars/hypervisors/nameserver-1,
+                      vars/hypervisors/nameserver-2,
+                      vars/hypervisors/nameserver-3,
+                    ],
+      ssh_user:     secrets/ssh_user
+      ssh_password: secrets/ssh_password
       guests:
       - name: node-1
       - name: node-2
-
-  groups:
-  - name: all
-    data:
-      interface: eno1
-
-  - name: group-1
-    data:
-      gateway: 192.168.100.1
-      nameservers:
-      - 1.1.1.1
-      - 8.8.8.8
-      - 8.8.4.4
-    members:
-    - kvm-1
-    - kvm-2

@@ -2,7 +2,10 @@ import os
 
 import click
 
-from aircraft import aircraft_dir
+from aircraft import (
+    aircraft_dir,
+    set_deployspec_path,
+)
 
 
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
@@ -29,7 +32,7 @@ def apply(deployspec, verbose):
     operations that must be executed against the deployment. DEPLOYSPEC
     may either be a relative or absolute path.
     """
-    os.environ['AIRCRAFT_DEPLOYSPEC'] = deployspec
+    set_deployspec_path(deployspec)
 
     verbosity = ''
     if verbose > 0:
@@ -54,7 +57,7 @@ def debug(deployspec):
     and then exits. It will connect to the hosts to be able to generate
     the oeprations list but it will not execute any of them.
     """
-    os.environ['AIRCRAFT_DEPLOYSPEC'] = deployspec
+    set_deployspec_path(deployspec)
 
     old_path = os.getcwd()
     os.chdir(aircraft_dir / 'deployment')
