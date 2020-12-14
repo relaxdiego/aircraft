@@ -1,3 +1,78 @@
+# 2020-12-15T06:06:00+0800
+
+The `blueprints/` directory really holds a bunch of pyinfra packaged deploys that
+do their own thing. So why are their models separated into a totally different
+directory (`models/`)? These need to be merged. The end result might be a
+manifest file that contains multiple blueprints and could look something
+like this (subject to change):
+
+```yaml
+kind:        deployment
+api_version: v1beta1
+name:        Mandanov
+
+inventory:
+  hosts:
+  - name:        compute-1:
+    ip_address:  192.168.100.21/24
+
+  - name:        compute-2
+    ip_address:  192.168.100.22/24
+
+  groups:
+  - name:         group-1
+    ssh_user:     secrets/ssh_user
+    ssh_password: secrets/ssh_password
+    gateway:      192.168.100.1
+    nameservers:
+    - 1.1.1.1
+    - 8.8.8.8
+    - 8.8.4.4
+    members:
+    - compute-1
+    - compute-2
+
+blueprints:
+-  kind:        hypervisor.kvm
+   api_version: v1beta1
+   data:
+     # This will contain a declaration of the hypervisor hosts
+     # and which of the hosts (VMs) declared in the above inventory
+     # belong where. This is going to be an odd blueprint because
+     # whereas all other blueprints will use the above inventory
+     # to determine which servers to configure, this one will have
+     # it's own inventory and will use the above inventory to
+     # determine where to create them. I wonder if that's a sign
+     # of scope screep.
+     ...
+
+- kind:        cicd.gitlab
+  api_version: v1
+  data:
+     # This will contain a declaration of which groups are servers
+     # and which ones are runners. It will also contain all other
+     # data needed by the blueprint to install gitlab
+    ...
+
+- kind:        lma.prometheus
+  api_version: v1beta1
+  data:
+    # This will contain a declaration of which servers will host
+    # prometheus plus all other data needed to intall prome.
+    ...
+```
+
+
+
+# 2020-11-30T09:50:00+0800
+
+The StringOrLocator class could potentially support an RFC-1808-compliant
+URL but that can be saved for a later time since we also have to consider
+the ability to cache retreived values at runtime so as not to slow down
+the parsing process too much. This is considerable work in itself but is
+not necessary for the MVP.
+
+
 # 2020-11-28T15:50:00+0800
 
 Commit 77fb2e7 illustrates how secrets management could be implemented.
