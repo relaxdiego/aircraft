@@ -1,32 +1,44 @@
-kind: hypervisor.kvm
+
+kind:        deployment
 api_version: v1beta1
-spec:
+name:        Terminus
+inventory:
   hosts:
   - name: kvm-1
     data:
       ip_address:   192.168.100.11/24
-      ssh_user:     secrets/ssh_user
-      ssh_password: secrets/ssh_password
+      ssh_user:     secrets://ssh_user
+      ssh_password: secrets://ssh_password
       guests:
-      - name: config
-      - name: infra-1
-      - name: infra-2
-      - name: infra-3
+      - name:       config
+        ip_address: 192.168.100.20/24
+
+      - name:       infra-1
+        ip_address: 192.168.100.21/24
+
+      - name:       infra-2
+        ip_address: 192.168.100.22/24
+
+      - name:       infra-3
+        ip_address: 192.168.100.23/24
+
   - name: kvm-2
     data:
       ip_address: 192.168.100.12/24
       guests:
-      - name: node-1
-      - name: node-2
+      - name:       compute-1
+        ip_address: 192.168.100.31/24
+
+      - name:       compute-2
+        ip_address: 192.168.100.32/24
 
   groups:
-  - name: all
-    data:
-      interface: eno1
-
   - name: group-1
     data:
-      gateway: 192.168.100.1
+      ethernetes:
+
+      interface: eno1
+      gateway:   192.168.100.1
       nameservers:
       - 1.1.1.1
       - 8.8.8.8
@@ -34,3 +46,7 @@ spec:
     members:
     - kvm-1
     - kvm-2
+
+blueprints:
+- kind:        hypervisor.kvm.bridged_guests
+  api_version: v1beta1

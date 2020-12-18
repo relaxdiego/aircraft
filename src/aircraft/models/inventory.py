@@ -110,3 +110,4 @@ class InventorySpec(BaseModel):
 
     class Config:
         allow_mutation = False
+
