@@ -1,3 +1,13 @@
+# 2020-12-19T08:00:00+0800
+
+Prototype 1 was abstracting away too much of pyinfra and was becoming
+unweildy. For this next prototype, let's aim to re-use as much of pyinfra's
+structure, vocabulary, and tooling as possible while allowing for parameterized
+re-usable deploys.
+
+Let's see how this one goes.
+
+
 # 2020-12-15T06:06:00+0800
 
 The `blueprints/` directory really holds a bunch of pyinfra packaged deploys that

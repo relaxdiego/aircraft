@@ -1,0 +1,12 @@
+#!/bin/bash
+set -e
+
+runcfg=/opt/vyatta/sbin/vyatta-cfg-cmd-wrapper
+
+$runcfg begin
+
+$runcfg delete service dhcp-server
+
+$runcfg commit
+$runcfg save
+$runcfg end
