@@ -6,7 +6,7 @@ from pyinfra.operations import (
     server,
 )
 
-blueprint_dir = Path(__file__).parent
+deploy_dir = Path(__file__).parent
 
 
 class UnsupportedSchemaVersion(ValueError):
@@ -35,7 +35,7 @@ def configure(state=None, host=None):
 
     files.template(
         name="Configure DHCP server",
-        src=blueprint_dir / 'templates' / filename,
+        src=deploy_dir / 'templates' / filename,
         dest=file_path,
         mode='700',
         state=state, host=host,
@@ -50,10 +50,10 @@ def configure(state=None, host=None):
     )
 
 
-# @deploy('Configure the DHCP server')
-# def unconfigure(state=None, host=None):
-#     server.script_template(
-#         name="Unconfigure DHCP server",
-#         src=blueprint_dir / 'templates' / 'unconfigure.j2',
-#         state=state, host=host,
-#     )
+@deploy('Unconfigure the DHCP server')
+def unconfigure(state=None, host=None):
+    server.script_template(
+        name="Unconfigure DHCP server",
+        src=deploy_dir / 'templates' / 'unconfigure.j2',
+        state=state, host=host,
+    )
