@@ -40,6 +40,10 @@ $runcfg set service dhcp-server \
     subnet {{host.data.dhcp.subnet}} \
     bootfile-name {{host.data.dhcp.bootfile_name}}
 
+$runcfg delete service dhcp-server \
+    shared-network-name {{host.data.dhcp.shared_network_name}} \
+    disable
+
 $runcfg commit
 $runcfg save
 $runcfg end

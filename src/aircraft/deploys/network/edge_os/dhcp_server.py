@@ -50,8 +50,8 @@ def configure(state=None, host=None):
     )
 
 
-@deploy('Unconfigure the DHCP server')
-def unconfigure(state=None, host=None):
+@deploy('Disable DHCP server')
+def disable(state=None, host=None):
     server.script_template(
         name="Unconfigure DHCP server",
         src=deploy_dir / 'templates' / 'unconfigure.j2',

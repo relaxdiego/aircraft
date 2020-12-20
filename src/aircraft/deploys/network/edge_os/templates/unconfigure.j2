@@ -5,7 +5,9 @@ runcfg=/opt/vyatta/sbin/vyatta-cfg-cmd-wrapper
 
 $runcfg begin
 
-$runcfg delete service dhcp-server
+$runcfg set service dhcp-server \
+    shared-network-name {{host.data.dhcp.shared_network_name}} \
+    disable
 
 $runcfg commit
 $runcfg save
