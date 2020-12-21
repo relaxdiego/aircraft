@@ -41,7 +41,6 @@ def validate_cidr_notation(ip_address):
         IPv4Interface(ip_address)
     except AddressValueError:
         raise InvalidIPAddressError(ip_address)
-    return ip_address
 
 
 def validate_schema_version(data, supported_schema_versions):
