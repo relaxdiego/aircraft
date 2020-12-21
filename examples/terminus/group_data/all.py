@@ -7,9 +7,15 @@ from aircraft.deploys.network.synology.models.v1beta1 import PxeData
 
 machines = [
     MachineData(
+        hostname='kvm-01',
+        mac_address='f4:4d:30:63:1c:41',
+        provisioning_ip='192.168.100.201',
+        static_ip='192.168.100.11/24',
+    ),
+    MachineData(
         hostname='kvm-02',
         mac_address='f4:4d:30:63:56:21',
-        provisioning_ip='192.168.100.200',
+        provisioning_ip='192.168.100.202',
         static_ip='192.168.100.12/24',
     ),
 ]
