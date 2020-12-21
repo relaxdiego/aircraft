@@ -10,7 +10,7 @@ machines = [
         hostname='kvm-02',
         mac_address='f4:4d:30:63:56:21',
         provisioning_ip='192.168.100.200',
-        static_ip='192.168.100.12',
+        static_ip='192.168.100.12/24',
     ),
 ]
 
