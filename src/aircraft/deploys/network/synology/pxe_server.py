@@ -82,6 +82,19 @@ def configure(state=None, host=None):
         host=host, state=state,
     )
 
+    # Synology's SFTP permissions are unusual in that they don't allow
+    # you to create directories (which we want to do in the files.tenplate
+    # operation after this one). As a workaround to that, we're going to
+    # ensure the directory via the files.directory operation since it uses
+    # just SSH.
+    files.directory(
+        name='Ensure grub/ directory exists',
+        path=str(host.data.pxe['ssh_rootdir'] / 'grub'),
+        present=True,
+
+        host=host, state=state,
+    )
+
     files.template(
         name='Render GRUB config',
         src=str(templates_base / 'grub.cfg.j2'),
