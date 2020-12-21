@@ -20,6 +20,11 @@ class PxeData(BaseModel):
     model_name: str = Schema('PxeData', const=True)
 
     ssh_rootdir: Path
+    # Certain pyinfra file operations use SFTP to transfer files so we
+    # have to use a different base path in the case of Synology which
+    # presents a different filesystem hierarchy depending on which protocol
+    # you're on.
+    # Related bug: https://github.com/Fizzadar/pyinfra/issues/499
     sftp_rootdir: Path
 
     tftp_address: IPv4Address

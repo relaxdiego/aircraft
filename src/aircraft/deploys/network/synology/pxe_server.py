@@ -51,6 +51,7 @@ def configure(state=None, host=None):
         # files.template uses SFTP to transfer files so we have to use
         # a different base path in the case of Synology which presents a
         # different filesystem hierarchy depending on which protocol you're on.
+        # Related bug: https://github.com/Fizzadar/pyinfra/issues/499
         dest=str(host.data.pxe['sftp_rootdir'] / 'grub' / 'grub.cfg'),
         create_remote_dir=False,
 
@@ -68,9 +69,10 @@ def configure(state=None, host=None):
     files.put(
         name='Ensure user-data/index.php',
         src=str(files_base / 'user-data' / 'index.php'),
-        # files.template uses SFTP to transfer files so we have to use
+        # files.put uses SFTP to transfer files so we have to use
         # a different base path in the case of Synology which presents a
         # different filesystem hierarchy depending on which protocol you're on.
+        # Related bug: https://github.com/Fizzadar/pyinfra/issues/499
         dest=str(host.data.pxe['sftp_rootdir'] / 'user-data' / 'index.php'),
         create_remote_dir=False,
 
@@ -85,6 +87,7 @@ def configure(state=None, host=None):
             # files.template uses SFTP to transfer files so we have to use
             # a different base path in the case of Synology which presents a
             # different filesystem hierarchy depending on which protocol you're on.
+            # Related bug: https://github.com/Fizzadar/pyinfra/issues/499
             dest=str(user_data_dir / str(machine.provisioning_ip)),
             create_remote_dir=False,
             machine=machine,

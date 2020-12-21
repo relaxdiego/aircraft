@@ -22,6 +22,11 @@ machines = [
 
 pxe = PxeData(
     ssh_rootdir=Path('/') / 'volume4' / 'pxe',
+    # Certain pyinfra file operations use SFTP to transfer files so we
+    # have to use a different base path in the case of Synology which
+    # presents a different filesystem hierarchy depending on which protocol
+    # you're on.
+    # Related bug: https://github.com/Fizzadar/pyinfra/issues/499
     sftp_rootdir=Path('/') / 'pxe',
 
     tftp_address='192.168.100.3',
