@@ -1,8 +1,9 @@
 Given
 -----
 
-* Ubiquiti EdgeOS remote as the temporary DHCP server for an L2 network that
-  has a route to the Internet with SSH key auth enabled
+* Ubiquiti EdgeOS providing an L2 network separate from your home network
+  but provides a gateway allowing connected devices to get to the Internet.
+  SSH key auth should also be enabled
 
 * Synology DSM OS remote as the PXE server with the following services enabled:
   * SSH (key auth enabled)
