@@ -34,7 +34,7 @@ pxe = PxeData(
     grub_image_sha256sum='279a5a755bc248d22799434a261b92698740ab817d8aeccbd0cb7409959a1463',  # NOQA
 
     machines=machines,
-).dict()
+).dict()  # BUG https://github.com/Fizzadar/pyinfra/issues/496
 
 dhcp = DhcpData(
     shared_network_name='pxe.lan',
@@ -45,4 +45,4 @@ dhcp = DhcpData(
     dns_server='192.168.86.1',
     bootfile_server=pxe['address'],
     machines=machines,
-).dict()
+).dict()  # BUG https://github.com/Fizzadar/pyinfra/issues/496
