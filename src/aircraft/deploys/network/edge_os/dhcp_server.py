@@ -19,7 +19,7 @@ def configure(state=None, host=None):
 
     validate_schema_version(host.data.dhcp, supported_schema_versions)
 
-    filename = f"dhcp-configure.sh.{host.data.dhcp['schema_version']}.j2"
+    filename = f"{host.data.dhcp['schema_version']}/dhcp-configure.sh.j2"
     file_path = './dhcp-configure.sh'
 
     files.template(
@@ -47,7 +47,7 @@ def disable(state=None, host=None):
 
     validate_schema_version(host.data.dhcp, supported_schema_versions)
 
-    filename = f"dhcp-disable.sh.{host.data.dhcp['schema_version']}.j2"
+    filename = f"{host.data.dhcp['schema_version']}/dhcp-disable.sh.j2"
     file_path = './dhcp-disable.sh'
 
     files.template(
