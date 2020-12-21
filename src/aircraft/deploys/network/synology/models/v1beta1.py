@@ -7,14 +7,12 @@ from pydantic import (
     AnyUrl,
     BaseModel,
     Schema,
-    validator,
 )
 from typing import (
     List,
 )
 
 from aircraft.deploys.compute.baremetal.models.v1beta1 import MachineData
-from aircraft.validators import validate_url
 
 
 class PxeData(BaseModel):
@@ -39,8 +37,3 @@ class PxeData(BaseModel):
         allow_mutation = False
         # Prevent arbitrary fields from being provided upon initialization
         extra = 'forbid'
-
-    @validator('source_image_url')
-    def source_image_url_must_be_valid(cls, url):
-        validate_url(url)
-        return url
