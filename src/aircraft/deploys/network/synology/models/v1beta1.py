@@ -10,9 +10,9 @@ from pydantic import (
 )
 
 
-class TftpData(BaseModel):
+class PxeData(BaseModel):
     schema_version: str = Schema('v1beta1', const=True)
-    model_name: str = Schema('TftpData', const=True)
+    model_name: str = Schema('PxeData', const=True)
 
     address: IPv4Address
     ssh_rootdir: Path

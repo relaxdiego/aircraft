@@ -10,16 +10,16 @@ from pyinfra.operations import (
 from aircraft.validators import validate_schema_version
 
 
-@deploy('Configure the TFTP server')
+@deploy('Configure the PXE server')
 def configure(state=None, host=None):
     supported_schema_versions = [
         'v1beta1'
     ]
 
-    validate_schema_version(host.data.tftp, supported_schema_versions)
+    validate_schema_version(host.data.pxe, supported_schema_versions)
 
     src = Path(__file__).parent / 'templates' / 'grub.cfg.j2'
-    dest = host.data.tftp['sftp_rootdir'] / 'grub' / 'grub.cfg'
+    dest = host.data.pxe['sftp_rootdir'] / 'grub' / 'grub.cfg'
 
     files.template(
         src=str(src),

@@ -1,10 +1,10 @@
 from pathlib import Path
 
 from aircraft.deploys.network.edge_os.models.v1beta1 import DhcpData
-from aircraft.deploys.network.synology.models.v1beta1 import TftpData
+from aircraft.deploys.network.synology.models.v1beta1 import PxeData
 
 
-tftp = TftpData(
+pxe = PxeData(
     address='192.168.100.3',
     ssh_rootdir=Path('/') / 'volume4' / 'tftp' / 'pxe-boot',
     sftp_rootdir=Path('/') / 'tftp' / 'pxe-boot',
@@ -19,5 +19,5 @@ dhcp = DhcpData(
     stop='192.168.100.254',
     default_router='192.168.100.1',
     dns_server='192.168.86.1',
-    bootfile_server=tftp['address'],
+    bootfile_server=pxe['address'],
 ).dict()
