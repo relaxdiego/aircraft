@@ -55,7 +55,7 @@ of this project.
 
 Once you're comfortable with pyinfra and you start browsing the `examples/`
 dir, you'll see that all I'm doing is adding [pyinfra packaged deploys](https://docs.pyinfra.com/en/1.x/api/deploys.html)
-to you can use in your operations files. I've also created some [pydantic](https://pydantic-docs.helpmanual.io/)
+that you can use in your operations files. I've also created some [pydantic](https://pydantic-docs.helpmanual.io/)
 models that go with the packaged deploys to help with validating inventory
 data. Anyway, check out the `examples/` directory before I keep blabbering
 for ages.
