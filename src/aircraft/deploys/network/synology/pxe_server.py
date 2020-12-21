@@ -33,6 +33,7 @@ def configure(state=None, host=None):
     )
 
     files.template(
+        name='Render GRUB config',
         src=str(templates_base / 'grub.cfg.j2'),
         # files.template uses SFTP to transfer files so we have to use
         # a different base path in the case of Synology which presents a
@@ -52,6 +53,7 @@ def configure(state=None, host=None):
     )
 
     files.put(
+        name='Ensure user-data/index.php',
         src=str(files_base / 'user-data' / 'index.php'),
         # files.template uses SFTP to transfer files so we have to use
         # a different base path in the case of Synology which presents a
@@ -65,6 +67,7 @@ def configure(state=None, host=None):
     for machine in host.data.machines:
         user_data_dir = host.data.pxe['sftp_rootdir'] / 'user-data'
         files.template(
+            name=f'Add user-data for {machine.hostname}',
             src=str(templates_base / 'user-data.j2'),
             # files.template uses SFTP to transfer files so we have to use
             # a different base path in the case of Synology which presents a

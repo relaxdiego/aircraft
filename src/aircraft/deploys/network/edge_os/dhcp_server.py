@@ -23,7 +23,7 @@ def configure(state=None, host=None):
     file_path = './dhcp-configure.sh'
 
     files.template(
-        name="Configure DHCP server",
+        name='Render configuration script',
         src=deploy_dir / 'templates' / filename,
         dest=file_path,
         mode='700',
@@ -51,7 +51,7 @@ def disable(state=None, host=None):
     file_path = './dhcp-disable.sh'
 
     files.template(
-        name="Configure DHCP server",
+        name='Render configuration script',
         src=deploy_dir / 'templates' / filename,
         dest=file_path,
         mode='700',
