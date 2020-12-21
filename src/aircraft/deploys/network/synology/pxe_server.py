@@ -26,7 +26,7 @@ def configure(state=None, host=None):
     downloaded_iso_path = \
         str(host.data.pxe['ssh_rootdir'] / host.data.pxe['os_image_filename'])
 
-    files.download(
+    download_iso = files.download(
         name='Download OS Image',
         src=str(host.data.pxe['os_image_source_url']),
         dest=downloaded_iso_path,
@@ -39,7 +39,8 @@ def configure(state=None, host=None):
     initrd_path = str(host.data.pxe['ssh_rootdir'] / 'initrd')
 
     if host.fact.file(kernel_path) is None or \
-       host.fact.file(initrd_path) is None:
+       host.fact.file(initrd_path) is None or \
+       download_iso.changed:
         server.shell(
             name='Mount the ISO to /mnt',
             commands=[
