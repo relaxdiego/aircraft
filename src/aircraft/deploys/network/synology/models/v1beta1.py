@@ -8,6 +8,11 @@ from pydantic import (
     BaseModel,
     Schema,
 )
+from typing import (
+    List,
+)
+
+from aircraft.deploys.compute.baremetal.models.v1beta1 import MachineData
 
 
 class PxeData(BaseModel):
@@ -19,6 +24,7 @@ class PxeData(BaseModel):
     sftp_rootdir: Path
     image_base_url: AnyUrl
     image_filename: str
+    machines: List[MachineData]
 
     class Config:
         allow_mutation = False

@@ -6,8 +6,12 @@ from pydantic import (
     Schema,
     validator,
 )
+from typing import (
+    List,
+)
 
 from aircraft.validators import validate_cidr_notation
+from aircraft.deploys.compute.baremetal.models.v1beta1 import MachineData
 
 
 class DhcpData(BaseModel):
@@ -23,6 +27,7 @@ class DhcpData(BaseModel):
     bootfile_server: IPv4Address
     subnet_parameters: str = 'filename &quot;/pxelinux.0&quot;;'
     bootfile_name: str = 'pxelinux.0'
+    machines: List[MachineData]
 
     class Config:
         allow_mutation = False
