@@ -1,7 +1,5 @@
 from ipaddress import (
-    AddressValueError,
     IPv4Address,
-    IPv4Interface,
 )
 from pydantic import (
     BaseModel,
@@ -9,28 +7,7 @@ from pydantic import (
     validator,
 )
 
-
-# =======
-# HELPERS
-# =======
-
-def validate_cidr_notation(ip_address):
-    try:
-        IPv4Interface(ip_address)
-    except AddressValueError:
-        raise InvalidIPAddressError(ip_address)
-    return ip_address
-
-
-# ==========
-# EXCEPTIONS
-# ==========
-
-class InvalidIPAddressError(ValueError):
-
-    def __init__(self, ip_address):
-        msg = f"'{ip_address}' must use CIDR notation."
-        super().__init__(msg)
+from aircraft.validators import validate_cidr_notation
 
 
 class DhcpData(BaseModel):
@@ -44,8 +21,8 @@ class DhcpData(BaseModel):
     default_router: IPv4Address
     dns_server: IPv4Address
     bootfile_server: IPv4Address
-    subnet_parameters: str = 'filename &quot;/pxe-boot/pxelinux.0&quot;;'
-    bootfile_name: str = '/pxe-boot/pxelinux.0'
+    subnet_parameters: str = 'filename &quot;/pxelinux.0&quot;;'
+    bootfile_name: str = 'pxelinux.0'
 
     class Config:
         allow_mutation = False
