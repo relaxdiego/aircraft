@@ -7,7 +7,7 @@ menuentry "Focal Live Installer - automated" --id=autoinstall {
     linux /vmlinuz ip=dhcp url={{host.data.pxe.image_base_url}}/{{host.data.pxe.image_filename}} autoinstall ds=nocloud-net\;s={{host.data.pxe.image_base_url}}/
     echo "Loading Ram Disk..."
     initrd /initrd
-
+}
 menuentry "Focal Live Installer" --id=install {
     echo "Loading Kernel..."
     linux /vmlinuz ip=dhcp url={{host.data.pxe.image_base_url}}/{{host.data.pxe.image_filename}}
