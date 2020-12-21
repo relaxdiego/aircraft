@@ -23,6 +23,15 @@ def configure(state=None, host=None):
     templates_base = deploy_dir / 'templates' / host.data.pxe['schema_version']
     files_base = deploy_dir / 'files'
 
+    files.download(
+        name='Download OS Image',
+        src=str(host.data.pxe['source_image_url']),
+        dest=str(host.data.pxe['ssh_rootdir'] / host.data.pxe['image_filename']),
+        sha256sum=host.data.pxe['image_sha256sum'],
+
+        host=host, state=state,
+    )
+
     files.template(
         src=str(templates_base / 'grub.cfg.j2'),
         # files.template uses SFTP to transfer files so we have to use
