@@ -24,10 +24,15 @@ pxe = PxeData(
     address='192.168.100.3',
     ssh_rootdir=Path('/') / 'volume4' / 'pxe',
     sftp_rootdir=Path('/') / 'pxe',
-    source_image_url='https://releases.ubuntu.com/20.04.1/ubuntu-20.04.1-live-server-amd64.iso',  # NOQA
-    image_sha256sum='443511f6bf12402c12503733059269a2e10dec602916c0a75263e5d990f6bb93',
-    image_base_url='http://192.168.100.3:8080',
-    image_filename='ubuntu-20.04.1-live-server-amd64.iso',
+
+    os_image_source_url='https://releases.ubuntu.com/20.04.1/ubuntu-20.04.1-live-server-amd64.iso',  # NOQA
+    os_image_sha256sum='443511f6bf12402c12503733059269a2e10dec602916c0a75263e5d990f6bb93',  # NOQA
+    os_image_base_url='http://192.168.100.3:8080',
+    os_image_filename='ubuntu-20.04.1-live-server-amd64.iso',
+
+    grub_image_source_url='http://archive.ubuntu.com/ubuntu/dists/focal/main/uefi/grub2-amd64/current/grubnetx64.efi.signed',  # NOQA
+    grub_image_sha256sum='279a5a755bc248d22799434a261b92698740ab817d8aeccbd0cb7409959a1463',  # NOQA
+
     machines=machines,
 ).dict()
 

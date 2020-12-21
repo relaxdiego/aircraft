@@ -24,10 +24,15 @@ class PxeData(BaseModel):
     address: IPv4Address
     ssh_rootdir: Path
     sftp_rootdir: Path
-    source_image_url: str
-    image_sha256sum: str
-    image_base_url: AnyUrl
-    image_filename: str
+
+    os_image_source_url: AnyUrl
+    os_image_sha256sum: str
+    os_image_base_url: AnyUrl
+    os_image_filename: str
+
+    grub_image_source_url: AnyUrl
+    grub_image_sha256sum: str
+
     machines: List[MachineData]
 
     class Config:

@@ -25,9 +25,22 @@ def configure(state=None, host=None):
 
     files.download(
         name='Download OS Image',
-        src=str(host.data.pxe['source_image_url']),
-        dest=str(host.data.pxe['ssh_rootdir'] / host.data.pxe['image_filename']),
-        sha256sum=host.data.pxe['image_sha256sum'],
+        src=str(host.data.pxe['os_image_source_url']),
+        dest=str(host.data.pxe['ssh_rootdir'] / host.data.pxe['os_image_filename']),
+        sha256sum=host.data.pxe['os_image_sha256sum'],
+
+        host=host, state=state,
+    )
+
+    # Mount iso
+    # Extract /mnt/casper/vmlinuz
+    # Extract /mnt/casper/initrd
+
+    files.download(
+        name='Download GRUB image',
+        src=str(host.data.pxe['grub_image_source_url']),
+        dest=str(host.data.pxe['ssh_rootdir'] / 'pxelinux.0'),
+        sha256sum=host.data.pxe['grub_image_sha256sum'],
 
         host=host, state=state,
     )
@@ -45,7 +58,7 @@ def configure(state=None, host=None):
     )
 
     files.directory(
-        name=f"Ensure {host.data.pxe['image_base_url']}/user-data/ exists",
+        name=f"Ensure {host.data.pxe['os_image_base_url']}/user-data/ exists",
         path=str(host.data.pxe['ssh_rootdir'] / 'user-data'),
         present=True,
 
