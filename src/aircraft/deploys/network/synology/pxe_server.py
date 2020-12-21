@@ -129,6 +129,19 @@ def configure(state=None, host=None):
         host=host, state=state,
     )
 
+    files.put(
+        name='Ensure meta-data file',
+        src=str(files_base / 'meta-data'),
+        # files.put uses SFTP to transfer files so we have to use
+        # a different base path in the case of Synology which presents a
+        # different filesystem hierarchy depending on which protocol you're on.
+        # Related bug: https://github.com/Fizzadar/pyinfra/issues/499
+        dest=str(host.data.pxe['sftp_rootdir'] / 'meta-data'),
+        create_remote_dir=False,
+
+        host=host, state=state,
+    )
+
     for machine in host.data.machines:
         user_data_dir = host.data.pxe['sftp_rootdir'] / 'user-data'
         files.template(
