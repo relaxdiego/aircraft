@@ -1,3 +1,13 @@
+# 2020-12-12T17:30:00+0800
+
+This new structure which removes the unnecessary abstraction provided by
+Aircraft is much cleaner and easier to work with. I also no longer have to
+spend any more time thinking about DSLs. I just work with what pyinfra provides,
+freeing me for the more important stuff.
+
+I've deleted the old structure via commit 5d024eb
+
+
 # 2020-12-19T08:00:00+0800
 
 Prototype 1 was abstracting away too much of pyinfra and was becoming
