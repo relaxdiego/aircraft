@@ -21,13 +21,14 @@ machines = [
 ]
 
 pxe = PxeData(
-    address='192.168.100.3',
     ssh_rootdir=Path('/') / 'volume4' / 'pxe',
     sftp_rootdir=Path('/') / 'pxe',
 
+    tftp_address='192.168.100.3',
+    http_base_url='http://192.168.100.3:8080',
+
     os_image_source_url='https://releases.ubuntu.com/20.04.1/ubuntu-20.04.1-live-server-amd64.iso',  # NOQA
     os_image_sha256sum='443511f6bf12402c12503733059269a2e10dec602916c0a75263e5d990f6bb93',  # NOQA
-    os_image_base_url='http://192.168.100.3:8080',
     os_image_filename='ubuntu-20.04.1-live-server-amd64.iso',
 
     grub_image_source_url='http://archive.ubuntu.com/ubuntu/dists/focal/main/uefi/grub2-amd64/current/grubnetx64.efi.signed',  # NOQA
@@ -43,6 +44,6 @@ dhcp = DhcpData(
     stop='192.168.100.254',
     default_router='192.168.100.1',
     dns_server='192.168.86.1',
-    bootfile_server=pxe['address'],
+    bootfile_server=pxe['tftp_address'],
     machines=machines,
 ).dict()  # BUG https://github.com/Fizzadar/pyinfra/issues/496

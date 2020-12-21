@@ -19,13 +19,14 @@ class PxeData(BaseModel):
     schema_version: str = Schema('v1beta1', const=True)
     model_name: str = Schema('PxeData', const=True)
 
-    address: IPv4Address
     ssh_rootdir: Path
     sftp_rootdir: Path
 
+    tftp_address: IPv4Address
+    http_base_url: AnyUrl
+
     os_image_source_url: AnyUrl
     os_image_sha256sum: str
-    os_image_base_url: AnyUrl
     os_image_filename: str
 
     grub_image_source_url: AnyUrl

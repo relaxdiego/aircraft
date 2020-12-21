@@ -58,7 +58,7 @@ def configure(state=None, host=None):
     )
 
     files.directory(
-        name=f"Ensure {host.data.pxe['os_image_base_url']}/user-data/ exists",
+        name=f"Ensure {host.data.pxe['http_base_url']}/user-data/ exists",
         path=str(host.data.pxe['ssh_rootdir'] / 'user-data'),
         present=True,
 
