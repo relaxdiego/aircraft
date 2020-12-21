@@ -48,62 +48,17 @@ provisioning, Aircraft for configuration."
 
 # Usage
 
-Declaratively specify your cluster's configuration:
+This project doesn't add wrappers around pyinfra, so once you get the hang
+of [how to use pyinfra](https://docs.pyinfra.com/en/1.x/getting_started.html),
+then you can easily move on to some of the stuff I do in the `examples/` dir
+of this project.
 
-```yaml
-kind: hypervisor.kvm
-api_version: v1beta1
-spec:
-  hosts:
-  - name: kvm-1
-    data:
-      ip_address:   192.168.100.11/24
-      ssh_user:     secrets/ssh_user
-      ssh_password: secrets/ssh_password
-      guests:
-      - name: config
-      - name: infra-1
-      - name: infra-2
-      - name: infra-3
-  - name: kvm-2
-    data:
-      ip_address: 192.168.100.12/24
-      guests:
-      - name: node-1
-      - name: node-2
-
-  groups:
-  - name: all
-    data:
-      interface: eno1
-
-  - name: group-1
-    data:
-      gateway: 192.168.100.1
-      nameservers:
-      - 1.1.1.1
-      - 8.8.8.8
-      - 8.8.4.4
-    members:
-    - kvm-1
-    - kvm-2
-```
-
-
-Apply your cluster configuration:
-
-```
-aircraft apply path/to/inventory/file
-```
-
-Alternatively, if you have a directory full of inventory files, just
-provide `aircraft apply` the directory itself:
-
-```
-aircraft apply path/to/inventory/dir
-```
-
-Aircraft will iterate through the inventory files in lexicographic order.
+Once you're comfortable with pyinfra and you start browsing the `examples/`
+dir, you'll see that all I'm doing is adding [pyinfra packaged deploys](https://docs.pyinfra.com/en/1.x/api/deploys.html)
+to you can use in your operations files. I've also created some [pydantic](https://pydantic-docs.helpmanual.io/)
+models that go with the packaged deploys to help with validating inventory
+data. Anyway, check out the `examples/` directory before I keep blabbering
+for ages.
 
 
 # Developer's Guide
