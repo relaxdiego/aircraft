@@ -5,6 +5,7 @@ from pyinfra.api import (
 )
 from pyinfra.operations import (
     files,
+    server,
 )
 
 from aircraft.validators import validate_schema_version
@@ -22,19 +23,54 @@ def configure(state=None, host=None):
 
     templates_base = deploy_dir / 'templates' / host.data.pxe['schema_version']
     files_base = deploy_dir / 'files'
+    downloaded_iso_path = \
+        str(host.data.pxe['ssh_rootdir'] / host.data.pxe['os_image_filename'])
 
     files.download(
         name='Download OS Image',
         src=str(host.data.pxe['os_image_source_url']),
-        dest=str(host.data.pxe['ssh_rootdir'] / host.data.pxe['os_image_filename']),
+        dest=downloaded_iso_path,
         sha256sum=host.data.pxe['os_image_sha256sum'],
 
         host=host, state=state,
     )
 
-    # Mount iso
-    # Extract /mnt/casper/vmlinuz
-    # Extract /mnt/casper/initrd
+    kernel_path = str(host.data.pxe['ssh_rootdir'] / 'vmlinuz')
+    initrd_path = str(host.data.pxe['ssh_rootdir'] / 'initrd')
+
+    if host.fact.file(kernel_path) is None or \
+       host.fact.file(initrd_path) is None:
+        server.shell(
+            name='Mount the ISO to /mnt',
+            commands=[
+                f'mount | grep "{downloaded_iso_path} on /mnt" || '
+                f'mount {downloaded_iso_path} /mnt',
+            ],
+            sudo=True,
+
+            host=host, state=state
+        )
+
+        server.shell(
+            name="Extract kernel and initrd from ISO",
+            commands=[
+                f'cp /mnt/casper/vmlinuz {kernel_path}',
+                f'cp /mnt/casper/initrd {initrd_path}',
+            ],
+            sudo=True,
+
+            host=host, state=state,
+        )
+
+        server.shell(
+            name='Unmount the ISO',
+            commands=[
+                'umount /mnt',
+            ],
+            sudo=True,
+
+            host=host, state=state
+        )
 
     files.download(
         name='Download GRUB image',
