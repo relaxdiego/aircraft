@@ -11,7 +11,7 @@
 .PHONY: build
 build: .last-build
 
-.last-build: $(shell find src/ -name "*.*") .last-pip-sync
+.last-build: $(shell find src/ -name "*.*") .last-pip-sync MANIFEST.in
 	@rm -rf dist
 	@(python setup.py sdist || echo "build error") | tee .last-build
 	@(twine check dist/* || echo "build error") | tee -a .last-build

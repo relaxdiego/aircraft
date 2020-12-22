@@ -1,1 +1,3 @@
 global-exclude *.py[cod] __pycache__/* *.so *.dylib
+recursive-include src/**/templates *
+recursive-include src/**/files *
