@@ -9,6 +9,11 @@ Aircraft
 > designed, this might just be the thing for you!
 
 
+# Video Introduction
+
+[View on YouTube](https://youtu.be/-wF3zPSiHOk)
+
+
 # Project Rationale
 
 I work with infrastructure. The kind of infrastructure where you have a bunch
