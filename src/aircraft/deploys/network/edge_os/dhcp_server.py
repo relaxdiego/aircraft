@@ -14,12 +14,12 @@ deploy_dir = Path(__file__).parent
 @deploy('Configure the DHCP server')
 def configure(state=None, host=None):
     supported_schema_versions = [
-        'v1beta1'
+        'v1beta1',
     ]
 
     validate_schema_version(host.data.dhcp, supported_schema_versions)
 
-    filename = f"{host.data.dhcp['schema_version']}/dhcp-configure.sh.j2"
+    filename = f"{host.data.dhcp.schema_version}/dhcp-configure.sh.j2"
     file_path = './dhcp-configure.sh'
 
     files.template(
@@ -47,7 +47,7 @@ def disable(state=None, host=None):
 
     validate_schema_version(host.data.dhcp, supported_schema_versions)
 
-    filename = f"{host.data.dhcp['schema_version']}/dhcp-disable.sh.j2"
+    filename = f"{host.data.dhcp.schema_version}/dhcp-disable.sh.j2"
     file_path = './dhcp-disable.sh'
 
     files.template(

@@ -16,27 +16,27 @@ deploy_dir = Path(__file__).parent
 @deploy('Configure the PXE server')
 def configure(state=None, host=None):
     supported_schema_versions = [
-        'v1beta1'
+        'v1beta1',
     ]
 
     validate_schema_version(host.data.pxe, supported_schema_versions)
 
-    templates_base = deploy_dir / 'templates' / host.data.pxe['schema_version']
+    templates_base = deploy_dir / 'templates' / host.data.pxe.schema_version
     files_base = deploy_dir / 'files'
     downloaded_iso_path = \
-        str(host.data.pxe['ssh_rootdir'] / host.data.pxe['os_image_filename'])
+        str(host.data.pxe.ssh_rootdir / host.data.pxe.os_image_filename)
 
     download_iso = files.download(
         name='Download OS Image',
-        src=str(host.data.pxe['os_image_source_url']),
+        src=str(host.data.pxe.os_image_source_url),
         dest=downloaded_iso_path,
-        sha256sum=host.data.pxe['os_image_sha256sum'],
+        sha256sum=host.data.pxe.os_image_sha256sum,
 
         host=host, state=state,
     )
 
-    kernel_path = str(host.data.pxe['ssh_rootdir'] / 'vmlinuz')
-    initrd_path = str(host.data.pxe['ssh_rootdir'] / 'initrd')
+    kernel_path = str(host.data.pxe.ssh_rootdir / 'vmlinuz')
+    initrd_path = str(host.data.pxe.ssh_rootdir / 'initrd')
 
     if host.fact.file(kernel_path) is None or \
        host.fact.file(initrd_path) is None or \
@@ -75,9 +75,9 @@ def configure(state=None, host=None):
 
     files.download(
         name='Download GRUB image',
-        src=str(host.data.pxe['grub_image_source_url']),
-        dest=str(host.data.pxe['ssh_rootdir'] / 'pxelinux.0'),
-        sha256sum=host.data.pxe['grub_image_sha256sum'],
+        src=str(host.data.pxe.grub_image_source_url),
+        dest=str(host.data.pxe.ssh_rootdir / 'pxelinux.0'),
+        sha256sum=host.data.pxe.grub_image_sha256sum,
 
         host=host, state=state,
     )
@@ -89,7 +89,7 @@ def configure(state=None, host=None):
     # just SSH.
     files.directory(
         name='Ensure grub/ directory exists',
-        path=str(host.data.pxe['ssh_rootdir'] / 'grub'),
+        path=str(host.data.pxe.ssh_rootdir / 'grub'),
         present=True,
 
         host=host, state=state,
@@ -102,15 +102,15 @@ def configure(state=None, host=None):
         # a different base path in the case of Synology which presents a
         # different filesystem hierarchy depending on which protocol you're on.
         # Related bug: https://github.com/Fizzadar/pyinfra/issues/499
-        dest=str(host.data.pxe['sftp_rootdir'] / 'grub' / 'grub.cfg'),
+        dest=str(host.data.pxe.sftp_rootdir / 'grub' / 'grub.cfg'),
         create_remote_dir=False,
 
         host=host, state=state,
     )
 
     files.directory(
-        name=f"Ensure {host.data.pxe['http_base_url']}/user-data/ exists",
-        path=str(host.data.pxe['ssh_rootdir'] / 'user-data'),
+        name=f"Ensure {host.data.pxe.http_base_url}/user-data/ exists",
+        path=str(host.data.pxe.ssh_rootdir / 'user-data'),
         present=True,
 
         host=host, state=state,
@@ -123,7 +123,7 @@ def configure(state=None, host=None):
         # a different base path in the case of Synology which presents a
         # different filesystem hierarchy depending on which protocol you're on.
         # Related bug: https://github.com/Fizzadar/pyinfra/issues/499
-        dest=str(host.data.pxe['sftp_rootdir'] / 'user-data' / 'index.php'),
+        dest=str(host.data.pxe.sftp_rootdir / 'user-data' / 'index.php'),
         create_remote_dir=False,
 
         host=host, state=state,
@@ -136,14 +136,14 @@ def configure(state=None, host=None):
         # a different base path in the case of Synology which presents a
         # different filesystem hierarchy depending on which protocol you're on.
         # Related bug: https://github.com/Fizzadar/pyinfra/issues/499
-        dest=str(host.data.pxe['sftp_rootdir'] / 'meta-data'),
+        dest=str(host.data.pxe.sftp_rootdir / 'meta-data'),
         create_remote_dir=False,
 
         host=host, state=state,
     )
 
     for machine in host.data.machines:
-        user_data_dir = host.data.pxe['sftp_rootdir'] / 'user-data'
+        user_data_dir = host.data.pxe.sftp_rootdir / 'user-data'
         files.template(
             name=f'Add user-data for {machine.hostname}',
             src=str(templates_base / 'user-data.j2'),

@@ -1,9 +1,14 @@
 from pathlib import Path
 
+from pydantic import BaseModel
+from pyinfra_cli import inventory
+
 from aircraft.deploys.compute.baremetal.models.v1beta1 import MachineData
 from aircraft.deploys.network.edge_os.models.v1beta1 import DhcpData
 from aircraft.deploys.network.synology.models.v1beta1 import PxeData
 
+# Workaround for bug https://github.com/Fizzadar/pyinfra/issues/496
+inventory.ALLOWED_DATA_TYPES = tuple(inventory.ALLOWED_DATA_TYPES + (BaseModel,))
 
 machines = [
     MachineData(
@@ -41,7 +46,7 @@ pxe = PxeData(
     grub_image_sha256sum='279a5a755bc248d22799434a261b92698740ab817d8aeccbd0cb7409959a1463',  # NOQA
 
     machines=machines,
-).dict()  # BUG https://github.com/Fizzadar/pyinfra/issues/496
+)
 
 dhcp = DhcpData(
     shared_network_name='pxe.lan',
@@ -50,6 +55,6 @@ dhcp = DhcpData(
     stop='192.168.100.254',
     default_router='192.168.100.1',
     dns_server='192.168.86.1',
-    bootfile_server=pxe['tftp_address'],
+    bootfile_server=pxe.tftp_address,
     machines=machines,
-).dict()  # BUG https://github.com/Fizzadar/pyinfra/issues/496
+)

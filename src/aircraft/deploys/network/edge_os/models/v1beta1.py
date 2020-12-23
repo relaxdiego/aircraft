@@ -16,7 +16,6 @@ from aircraft.deploys.compute.baremetal.models.v1beta1 import MachineData
 
 class DhcpData(BaseModel):
     schema_version: str = Schema('v1beta1', const=True)
-    model_name: str = Schema('DhcpData', const=True)
 
     shared_network_name: str
     subnet: str

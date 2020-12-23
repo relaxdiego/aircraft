@@ -17,7 +17,6 @@ from aircraft.deploys.compute.baremetal.models.v1beta1 import MachineData
 
 class PxeData(BaseModel):
     schema_version: str = Schema('v1beta1', const=True)
-    model_name: str = Schema('PxeData', const=True)
 
     ssh_rootdir: Path
     # Certain pyinfra file operations use SFTP to transfer files so we
