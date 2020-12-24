@@ -1,0 +1,21 @@
+# Options: http://www.thekelleys.org.uk/dnsmasq/docs/dnsmasq-man.html
+interface={{dnsmasq.interface}}
+bind-interfaces
+domain={{dnsmasq.domain}}
+
+{% if dnsmasq.dhcp is not none -%} 
+{%- for range in dnsmasq.dhcp.ranges -%}
+dhcp-range={{dnsmasq.interface}},{{range.start}},{{range.end}},{{dnsmasq.dhcp.subnet.netmask}},2m
+{%- endfor %}
+dhcp-option=option:router,{{dnsmasq.dhcp.router}}
+{%- for dns_server in dnsmasq.dhcp.dns_servers %}
+dhcp-option=option:dns-server,{{dns_server}}
+{%- endfor %}
+{%- endif %}
+ 
+{% if dnsmasq.tftp is not none -%}
+enable-tftp
+tftp-root={{dnsmasq.tftp.root_path}}
+dhcp-boot=pxelinux.0
+pxe-service=x86PC, "Install OS via PXE",pxelinux.0
+{%- endif -%}
