@@ -11,6 +11,7 @@ from pydantic import (
 )
 from typing import (
     List,
+    Optional,
 )
 
 
@@ -69,5 +70,5 @@ class TftpData(V1Beta1BaseModel):
 class DnsmasqData(V1Beta1BaseModel):
     interface: str
     domain: str
-    dhcp: DhcpData = None
-    tftp: TftpData = None
+    dhcp: Optional[DhcpData]
+    tftp: Optional[TftpData]

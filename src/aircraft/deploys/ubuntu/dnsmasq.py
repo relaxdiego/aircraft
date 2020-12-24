@@ -29,15 +29,16 @@ def configure(state=None, host=None):
         state=state, host=host,
     )
 
-    files.directory(
-        name=f'Ensure TFTP root dir {host.data.dnsmasq.tftp.root_path}',
-        path=host.data.dnsmasq.tftp.root_path,
-        present=True,
-        recursive=True,
-        sudo=True,
+    if host.data.dnsmasq.tftp is not None:
+        files.directory(
+            name=f'Ensure TFTP root dir {host.data.dnsmasq.tftp.root_path}',
+            path=host.data.dnsmasq.tftp.root_path,
+            present=True,
+            recursive=True,
+            sudo=True,
 
-        state=state, host=host,
-    )
+            state=state, host=host,
+        )
 
     dnsmasq_conf = files.template(
         name='Render the dnsmasq config',
