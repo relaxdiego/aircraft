@@ -13,7 +13,7 @@ from aircraft.validators import validate_schema_version
 deploy_dir = Path(__file__).parent
 
 
-@deploy('Configure the TFTP server')
+@deploy('Configure tftpd-hpa')
 def configure(state=None, host=None):
     supported_schema_versions = [
         'v1beta1',
@@ -22,33 +22,19 @@ def configure(state=None, host=None):
     validate_schema_version(host.data.tftp, supported_schema_versions)
 
     apt.packages(
-        name='Install tftp-hpa',
-        packages=['tftp-hpa'],
+        name='Install package',
+        packages=['tftpd-hpa'],
         update=True,
         sudo=True,
 
         state=state, host=host,
     )
 
-    server.group(
-        name="Ensure tftpd group",
-        group="tftpd",
+    files.directory(
+        name=f'Ensure directory {host.data.tftp.root_dir}',
+        path=str(host.data.tftp.root_dir),
         present=True,
-        system=True,
-        sudo=True,
-
-        state=state, host=host,
-    )
-
-    server.user(
-        name="Ensure tftpd user",
-        user="tftpd",
-        present=True,
-        home=None,
-        shell=None,
-        group="tftpd",
-        ensure_home=False,
-        system=True,
+        recursive=True,
         sudo=True,
 
         state=state, host=host,
@@ -57,10 +43,7 @@ def configure(state=None, host=None):
     tftpd_conf = files.template(
         name='Render the tftpd config',
         src=str(deploy_dir / 'templates' / 'tftpd-hpa.conf.j2'),
-        dest=str(Path('/etc') / 'default' / 'tftpd-hpa.conf'),
-        mode='744',
-        user='tftpd',
-        group='tftpd',
+        dest=str(Path('/etc') / 'default' / 'tftpd-hpa'),
         sudo=True,
         tftp=host.data.tftp,
 
