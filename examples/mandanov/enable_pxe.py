@@ -1,5 +1,9 @@
 from aircraft.deploys.ubuntu import (
-    dnsmasq,
+    isc_dhcp_server,
+    # tftp_hpa,
+    # pxe,
 )
 
-dnsmasq.configure()
+isc_dhcp_server.configure()
+# tftp_hpa.configure()
+# pxe.configure()

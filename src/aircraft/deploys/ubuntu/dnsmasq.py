@@ -31,8 +31,8 @@ def configure(state=None, host=None):
 
     if host.data.dnsmasq.tftp is not None:
         files.directory(
-            name=f'Ensure TFTP root dir {host.data.dnsmasq.tftp.root_path}',
-            path=host.data.dnsmasq.tftp.root_path,
+            name=f'Ensure TFTP root dir {host.data.dnsmasq.tftp.root_dir}',
+            path=host.data.dnsmasq.tftp.root_dir,
             present=True,
             recursive=True,
             sudo=True,
@@ -63,29 +63,51 @@ def configure(state=None, host=None):
         state=state, host=host,
     )
 
-# @deploy('Disable DHCP server')
-# def disable(state=None, host=None):
-#     supported_schema_versions = [
-#         'v1beta1'
-#     ]
-#
-#     validate_schema_version(host.data.dhcp, supported_schema_versions)
-#
-#     filename = f"{host.data.dhcp.schema_version}/dhcp-disable.sh.j2"
-#     file_path = './dhcp-disable.sh'
-#
-#     files.template(
-#         name='Render configuration script',
-#         src=deploy_dir / 'templates' / filename,
-#         dest=file_path,
-#         mode='700',
-#         state=state, host=host,
-#     )
-#
-#     server.shell(
-#         name="Execute configuration script",
-#         commands=[
-#             file_path
-#         ],
-#         state=state, host=host,
-#     )
+
+@deploy('Remove dnsmasq')
+def uninstall(state=None, host=None):
+    supported_schema_versions = [
+        'v1beta1',
+    ]
+
+    validate_schema_version(host.data.dnsmasq, supported_schema_versions)
+
+    if 'dnsmasq.service' in host.fact.systemd_status:
+        systemd.service(
+            name='Stop dnsmasq',
+            service='dnsmasq',
+            running=False,
+            sudo=True,
+
+            state=state, host=host,
+        )
+
+    files.file(
+        name='Remove dnsmasq config',
+        path=str(Path('/etc') / 'dnsmasq.conf'),
+        present=False,
+        sudo=True,
+
+        state=state, host=host,
+    )
+
+    if host.data.dnsmasq is not None:
+        files.directory(
+            name='Ensure dnsmasq TFTP root dir does not exist',
+            path=host.data.dnsmasq.tftp.root_dir,
+            present=False,
+            recursive=False,
+            sudo=True,
+
+            state=state, host=host,
+        )
+
+    apt.packages(
+        name='Ensure dnsmasq package is not present',
+        packages=['dnsmasq'],
+        present=False,
+        update=False,
+        sudo=True,
+
+        state=state, host=host,
+    )
