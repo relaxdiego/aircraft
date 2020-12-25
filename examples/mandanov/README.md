@@ -15,3 +15,19 @@ to a private network that has DHCP turned off and NAT enabled.
    the PXE server. Configure however you like as long as the IP matches
    what's in `inventories/pxe_server.py` and that passwordless sudo is
    enabled (Hint: `sudo sed -i -E 's/^(%sudo.*) ALL$/\1 NOPASSWD:ALL/g' /etc/sudoers`)
+
+
+Troubleshooting
+---------------
+
+In the PXE server, monitor the DHCP transactions via:
+
+```
+sudo tcpdump -i eno1 port 67 or port 68 -e -n -vv
+```
+
+While in another window, monitor the TFTP transactions via:
+
+```
+sudo tcpdump port 69
+```
