@@ -4,7 +4,6 @@ from pyinfra.api import deploy
 from pyinfra.operations import (
     apt,
     files,
-    server,
     systemd,
 )
 
@@ -56,6 +55,34 @@ def configure(state=None, host=None):
         running=True,
         daemon_reload=True,
         restarted=tftpd_conf.changed,
+        sudo=True,
+
+        state=state, host=host,
+    )
+
+
+@deploy('Uninstall tftpd-hpa')
+def uninstall(state=None, host=None):
+    supported_schema_versions = [
+        'v1beta1',
+    ]
+
+    validate_schema_version(host.data.tftp, supported_schema_versions)
+
+    if 'tftpd-hpa' in host.fact.systemd_status:
+        systemd.service(
+            name='Stop tftp-hpa service',
+            service='tftpd-hpa',
+            running=False,
+            sudo=True,
+
+            state=state, host=host,
+        )
+
+    apt.packages(
+        name='Remove package',
+        packages=['tftpd-hpa'],
+        present=False,
         sudo=True,
 
         state=state, host=host,

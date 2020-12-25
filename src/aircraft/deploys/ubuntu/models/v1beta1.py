@@ -6,6 +6,7 @@ from ipaddress import (
     IPv4Network,
 )
 from pydantic import (
+    AnyUrl,
     BaseModel,
     Schema,
     validator,
@@ -93,6 +94,15 @@ class MachineData(V1Beta1BaseModel):
 class PxeData(V1Beta1BaseModel):
     tftp_root_dir: Path
     http_root_dir: Path
+    http_server: IPv4Address
+
+    os_image_source_url: AnyUrl
+    os_image_sha256sum: str
+    os_image_filename: str
+
+    grub_image_source_url: AnyUrl
+    grub_image_sha256sum: str
+
     machines: List[MachineData]
 
     # Seems like an anti-pattern

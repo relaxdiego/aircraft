@@ -12,13 +12,13 @@ from aircraft.validators import validate_schema_version
 deploy_dir = Path(__file__).parent
 
 
-@deploy('Configure PXE server')
+@deploy('Configure PXE files')
 def configure(state=None, host=None):
     supported_schema_versions = [
         'v1beta1',
     ]
 
-    validate_schema_version(host.data.dnsmasq, supported_schema_versions)
+    validate_schema_version(host.data.pxe, supported_schema_versions)
 
     bootloader_files = apt.packages(
         name='Install bootloader files',
@@ -36,7 +36,7 @@ def configure(state=None, host=None):
         ]
 
         server.shell(
-            name=f'Copy PXE boot files to {host.data.pxe.tftp_root_dir}',
+            name=f'Copy bootloader files to {host.data.pxe.tftp_root_dir}',
             commands=[
                 f'cp -v {f} {host.data.pxe.tftp_root_dir}/' for f in boot_files
             ],
@@ -57,7 +57,89 @@ def configure(state=None, host=None):
                 create_remote_dir=True,
                 machine=machine,
                 ethernet=ethernet,
+                http_server=host.data.pxe.http_server,
                 sudo=True,
 
                 host=host, state=state,
             )
+
+    files.directory(
+        name=f'Ensure directory {host.data.pxe.http_root_dir} exists',
+        path=str(host.data.pxe.http_root_dir),
+        present=True,
+        sudo=True,
+
+        host=host, state=state,
+    )
+
+    downloaded_iso_path = \
+        Path(host.data.pxe.http_root_dir) / host.data.pxe.os_image_filename
+
+    download_iso = files.download(
+        name='Download OS Image',
+        src=str(host.data.pxe.os_image_source_url),
+        dest=str(downloaded_iso_path),
+        sha256sum=host.data.pxe.os_image_sha256sum,
+        sudo=True,
+
+        host=host, state=state,
+    )
+
+    kernel_path = str(host.data.pxe.tftp_root_dir / 'vmlinuz')
+    initrd_path = str(host.data.pxe.tftp_root_dir / 'initrd')
+
+    if host.fact.file(kernel_path) is None or \
+       host.fact.file(initrd_path) is None or \
+       download_iso.changed:
+        server.shell(
+            name='Mount the ISO to /mnt',
+            commands=[
+                f'mount | grep "{downloaded_iso_path} on /mnt" || '
+                f'mount {downloaded_iso_path} /mnt',
+            ],
+            sudo=True,
+
+            host=host, state=state
+        )
+
+        server.shell(
+            name="Extract kernel and initrd from ISO",
+            commands=[
+                f'cp /mnt/casper/vmlinuz {kernel_path}',
+                f'cp /mnt/casper/initrd {initrd_path}',
+            ],
+            sudo=True,
+
+            host=host, state=state,
+        )
+
+        server.shell(
+            name='Unmount the ISO',
+            commands=[
+                'umount /mnt',
+            ],
+            sudo=True,
+
+            host=host, state=state
+        )
+
+    files.download(
+        name='Download GRUB image',
+        src=str(host.data.pxe.grub_image_source_url),
+        dest=str(host.data.pxe.tftp_root_dir / 'pxelinux.0'),
+        sha256sum=host.data.pxe.grub_image_sha256sum,
+        sudo=True,
+
+        host=host, state=state,
+    )
+
+    files.template(
+        name='Render GRUB config',
+        src=str(deploy_dir / 'templates' / 'grub.cfg.j2'),
+        dest=str(host.data.pxe.tftp_root_dir / 'grub' / 'grub.cfg'),
+        create_remote_dir=True,
+        pxe=host.data.pxe,
+        sudo=True,
+
+        host=host, state=state,
+    )
