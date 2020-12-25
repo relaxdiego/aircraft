@@ -15,7 +15,8 @@ from aircraft.deploys.ubuntu.models.v1beta1 import (
 parent_dir = Path('/opt') / 'relaxdiego.com'
 
 tftp = TftpData(
-    ip_address='192.168.222.10',
+    ip_address='192.168.100.11',
+    # ip_address='192.168.222.10',
     root_dir=str(parent_dir / 'tftpboot')
 )
 
@@ -26,11 +27,14 @@ dnsmasq = DnsmasqData(
 )
 
 dhcp = DhcpData(
-    subnet='192.168.222.0/24',
+    subnet='192.168.100.0/24',
+    # subnet='192.168.222.0/24',
     ranges=[
-        dict(start='192.168.222.200', end='192.168.222.254')
+        dict(start='192.168.100.200', end='192.168.100.254')
+        # dict(start='192.168.222.200', end='192.168.222.254')
     ],
-    router='192.168.222.2',
+    router='192.168.100.1',
+    # router='192.168.222.2',
     dns_servers=[
         '1.1.1.1',
         '8.8.8.8',
@@ -49,8 +53,10 @@ pxe = PxeData(
     # TODO: Compute this from the filename part of os_image_source_url
     os_image_filename='ubuntu-20.04.1-live-server-amd64.iso',
 
-    grub_image_source_url='http://archive.ubuntu.com/ubuntu/dists/focal/main/uefi/grub2-amd64/current/grubnetx64.efi.signed',  # NOQA
-    grub_image_sha256sum='279a5a755bc248d22799434a261b92698740ab817d8aeccbd0cb7409959a1463',  # NOQA
+    # grub_image_source_url='http://archive.ubuntu.com/ubuntu/dists/focal/main/uefi/grub2-amd64/current/grubnetx64.efi.signed',  # NOQA
+    # grub_image_sha256sum='279a5a755bc248d22799434a261b92698740ab817d8aeccbd0cb7409959a1463',  # NOQA
+    # grub_image_source_url='http://archive.ubuntu.com/ubuntu/dists/focal/main/uefi/grub-efi-amd64-amd64/current/grubx64.efi.signed',  # NOQA
+    # grub_image_sha256sum='ef000d902be2566f289a4e8cccd4668c8e4de583a03e3d3114fca80088640ea9',  # NOQA
 
     machines=[
         dict(
@@ -59,7 +65,8 @@ pxe = PxeData(
                 dict(
                     name='ens33',
                     mac_address='f4:4d:30:63:1c:41',
-                    final_ip='192.168.222.11/24',
+                    # final_ip='192.168.222.11/24',
+                    final_ip='192.168.100.11/24',
                     nameservers=dhcp.dns_servers,
                     gateway=dhcp.router,
                 ),
@@ -71,7 +78,8 @@ pxe = PxeData(
                 dict(
                     name='ens33',
                     mac_address='f4:4d:30:63:56:21',
-                    final_ip='192.168.222.12/24',
+                    final_ip='192.168.100.12/24',
+                    # final_ip='192.168.222.12/24',
                     nameservers=dhcp.dns_servers,
                     gateway=dhcp.router,
                 ),

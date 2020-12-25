@@ -31,8 +31,8 @@ def configure(state=None, host=None):
 
     if bootloader_files.changed:
         boot_files = [
-            '/usr/lib/PXELINUX/pxelinux.0',
-            '/usr/lib/syslinux/modules/bios/ldlinux.c32'
+            '/usr/lib/PXELINUX/lpxelinux.0',
+            '/usr/lib/syslinux/modules/efi64/*.c32'
         ]
 
         server.shell(
@@ -122,24 +122,3 @@ def configure(state=None, host=None):
 
             host=host, state=state
         )
-
-    files.download(
-        name='Download GRUB image',
-        src=str(host.data.pxe.grub_image_source_url),
-        dest=str(host.data.pxe.tftp_root_dir / 'pxelinux.0'),
-        sha256sum=host.data.pxe.grub_image_sha256sum,
-        sudo=True,
-
-        host=host, state=state,
-    )
-
-    files.template(
-        name='Render GRUB config',
-        src=str(deploy_dir / 'templates' / 'grub.cfg.j2'),
-        dest=str(host.data.pxe.tftp_root_dir / 'grub' / 'grub.cfg'),
-        create_remote_dir=True,
-        pxe=host.data.pxe,
-        sudo=True,
-
-        host=host, state=state,
-    )
