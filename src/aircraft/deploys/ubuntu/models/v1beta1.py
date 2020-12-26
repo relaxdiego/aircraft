@@ -21,6 +21,7 @@ class V1Beta1BaseModel(BaseModel):
     schema_version: str = Schema('v1beta1', const=True)
 
     class Config:
+        # Quasi-immutable model
         allow_mutation = False
         # Prevent arbitrary fields from being provided upon initialization
         extra = 'forbid'
@@ -28,17 +29,31 @@ class V1Beta1BaseModel(BaseModel):
 
 class TftpData(V1Beta1BaseModel):
     root_dir: Path
-    ip_address: IPv4Address
 
-    # Seems like an anti-pattern
-    @validator('root_dir')
-    def coerce_root_path_to_string_after_all_validations(cls, path):
-        return str(path)
+
+class HttpData(V1Beta1BaseModel):
+    root_dir: Path
+
+
+class BootfileData(V1Beta1BaseModel):
+    # The PXE client architecture for which this bootfile is for. PXE client
+    # architecture values are listd in RFC 4578
+    # https://tools.ietf.org/html/rfc4578#section-2.1
+    client_arch: int
+
+    image_source_url: AnyUrl
+    image_sha256sum: str
+
+    # Where the bootfile should be saved relative to tftp.root_dir. The actual
+    # saving will be done by the consumer of the pxe data whereas it will
+    # just be referenced by the consumer of the dhcp data via Option 67
+    path: Path
 
 
 class DhcpRangeData(V1Beta1BaseModel):
     start: IPv4Address
     end: IPv4Address
+    lease_time: str = '1m'
 
     @validator('end')
     def end_must_be_more_than_start(cls, end, values):
@@ -54,7 +69,7 @@ class DhcpData(V1Beta1BaseModel):
     ranges: List[DhcpRangeData]
     router: IPv4Address
     dns_servers: List[IPv4Address]
-    tftp_server: IPv4Address
+    bootfiles: List[BootfileData]
 
     @validator('ranges')
     def range_must_be_within_subnet(cls, ranges, values):
@@ -72,16 +87,14 @@ class DhcpData(V1Beta1BaseModel):
 
 
 class DnsmasqData(V1Beta1BaseModel):
-    interface: str
-    domain: str
+    interfaces: List[str] = []
     dhcp: Optional[DhcpData]
     tftp: Optional[TftpData]
 
 
 class EthernetInterfaceData(V1Beta1BaseModel):
     name: str
-    mac_address: str
-    final_ip: IPv4Interface
+    ip_address: IPv4Interface
     nameservers: List[IPv4Address]
     gateway: IPv4Address
 
@@ -92,20 +105,14 @@ class MachineData(V1Beta1BaseModel):
 
 
 class PxeData(V1Beta1BaseModel):
-    tftp_root_dir: Path
-    http_root_dir: Path
-    http_server: IPv4Address
+    tftp: TftpData
+    http: HttpData
 
     os_image_source_url: AnyUrl
     os_image_sha256sum: str
-    os_image_filename: str
 
-    grub_image_source_url: AnyUrl
-    grub_image_sha256sum: str
+    bootfiles: List[BootfileData]
 
     machines: List[MachineData]
 
-    # Seems like an anti-pattern
-    @validator('http_root_dir')
-    def coerce_root_path_to_string_after_all_validations(cls, path):
-        return str(path)
+    preserve_files_on_uninstall: bool = False

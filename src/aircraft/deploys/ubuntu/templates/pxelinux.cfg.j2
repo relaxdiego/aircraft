@@ -1,6 +1,0 @@
-DEFAULT install
- LABEL install
- MENU LABEL ^Install Ubuntu for {{machine.hostname}} (auto)
- KERNEL vmlinuz
- INITRD initrd
- APPEND autoinstall ip=dhcp ds=nocloud-net;s=http://{{http_server}}/ubuntu2004/autoinstall/test/ url=http://{{http_server}}/ubuntu2004/ubuntu-20.04-live-server-amd64.iso

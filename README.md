@@ -249,6 +249,8 @@ tox
 
 # References
 
+* [SecureBoot-Compatible UEFI netboot](https://wiki.ubuntu.com/UEFI/SecureBoot/PXE-IPv6)
+* [dnsmasq](https://wiki.archlinux.org/index.php/dnsmasq#Configuration)
 * [Fully Automated Ubuntu 20.04 Install](https://askubuntu.com/a/1235724)
 * [Configuring PXE Network Boot Server on Ubuntu 18.04 LTS](https://linuxhint.com/pxe_boot_ubuntu_server/)
 * [Ubuntu Network installation with PXE](https://xinau.ch/notes/ubuntu-network-installation-with-pxe/)

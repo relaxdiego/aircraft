@@ -3,7 +3,7 @@ from pathlib import Path
 from pyinfra.api import deploy
 from pyinfra.operations import (
     apt,
-    files,
+    # files,
     server,
 )
 
@@ -31,7 +31,7 @@ def configure(state=None, host=None):
 
     if bootloader_files.changed:
         boot_files = [
-            '/usr/lib/PXELINUX/lpxelinux.0',
+            '/usr/lib/PXELINUX/pxelinux.0',
             '/usr/lib/syslinux/modules/efi64/*.c32'
         ]
 
@@ -45,80 +45,80 @@ def configure(state=None, host=None):
             state=state, host=host,
         )
 
-    pxelinux_cfg_dir = Path(host.data.pxe.tftp_root_dir) / 'pxelinux.cfg'
-
-    for machine in host.data.pxe.machines:
-        for ethernet in machine.ethernets:
-            filename = ethernet.mac_address.lower().replace(':', '-')
-            files.template(
-                name=f'Ensure bootloader config for {machine.hostname}',
-                src=str(deploy_dir / 'templates' / 'pxelinux.cfg.j2'),
-                dest=str(pxelinux_cfg_dir / filename),
-                create_remote_dir=True,
-                machine=machine,
-                ethernet=ethernet,
-                http_server=host.data.pxe.http_server,
-                sudo=True,
-
-                host=host, state=state,
-            )
-
-    files.directory(
-        name=f'Ensure directory {host.data.pxe.http_root_dir} exists',
-        path=str(host.data.pxe.http_root_dir),
-        present=True,
-        sudo=True,
-
-        host=host, state=state,
-    )
-
-    downloaded_iso_path = \
-        Path(host.data.pxe.http_root_dir) / host.data.pxe.os_image_filename
-
-    download_iso = files.download(
-        name='Download OS Image',
-        src=str(host.data.pxe.os_image_source_url),
-        dest=str(downloaded_iso_path),
-        sha256sum=host.data.pxe.os_image_sha256sum,
-        sudo=True,
-
-        host=host, state=state,
-    )
-
-    kernel_path = str(host.data.pxe.tftp_root_dir / 'vmlinuz')
-    initrd_path = str(host.data.pxe.tftp_root_dir / 'initrd')
-
-    if host.fact.file(kernel_path) is None or \
-       host.fact.file(initrd_path) is None or \
-       download_iso.changed:
-        server.shell(
-            name='Mount the ISO to /mnt',
-            commands=[
-                f'mount | grep "{downloaded_iso_path} on /mnt" || '
-                f'mount {downloaded_iso_path} /mnt',
-            ],
-            sudo=True,
-
-            host=host, state=state
-        )
-
-        server.shell(
-            name="Extract kernel and initrd from ISO",
-            commands=[
-                f'cp /mnt/casper/vmlinuz {kernel_path}',
-                f'cp /mnt/casper/initrd {initrd_path}',
-            ],
-            sudo=True,
-
-            host=host, state=state,
-        )
-
-        server.shell(
-            name='Unmount the ISO',
-            commands=[
-                'umount /mnt',
-            ],
-            sudo=True,
-
-            host=host, state=state
-        )
+    # pxelinux_cfg_dir = Path(host.data.pxe.tftp_root_dir) / 'pxelinux.cfg'
+    #
+    # for machine in host.data.pxe.machines:
+    #     for ethernet in machine.ethernets:
+    #         filename = ethernet.mac_address.lower().replace(':', '-')
+    #         files.template(
+    #             name=f'Ensure bootloader config for {machine.hostname}',
+    #             src=str(deploy_dir / 'templates' / 'pxelinux.cfg.j2'),
+    #             dest=str(pxelinux_cfg_dir / filename),
+    #             create_remote_dir=True,
+    #             machine=machine,
+    #             ethernet=ethernet,
+    #             http_server=host.data.pxe.http_server,
+    #             sudo=True,
+    #
+    #             host=host, state=state,
+    #         )
+    #
+    # files.directory(
+    #     name=f'Ensure directory {host.data.pxe.http_root_dir} exists',
+    #     path=str(host.data.pxe.http_root_dir),
+    #     present=True,
+    #     sudo=True,
+    #
+    #     host=host, state=state,
+    # )
+    #
+    # downloaded_iso_path = \
+    #     Path(host.data.pxe.http_root_dir) / host.data.pxe.os_image_filename
+    #
+    # download_iso = files.download(
+    #     name='Download OS Image',
+    #     src=str(host.data.pxe.os_image_source_url),
+    #     dest=str(downloaded_iso_path),
+    #     sha256sum=host.data.pxe.os_image_sha256sum,
+    #     sudo=True,
+    #
+    #     host=host, state=state,
+    # )
+    #
+    # kernel_path = str(host.data.pxe.tftp_root_dir / 'vmlinuz')
+    # initrd_path = str(host.data.pxe.tftp_root_dir / 'initrd')
+    #
+    # if host.fact.file(kernel_path) is None or \
+    #    host.fact.file(initrd_path) is None or \
+    #    download_iso.changed:
+    #     server.shell(
+    #         name='Mount the ISO to /mnt',
+    #         commands=[
+    #             f'mount | grep "{downloaded_iso_path} on /mnt" || '
+    #             f'mount {downloaded_iso_path} /mnt',
+    #         ],
+    #         sudo=True,
+    #
+    #         host=host, state=state
+    #     )
+    #
+    #     server.shell(
+    #         name="Extract kernel and initrd from ISO",
+    #         commands=[
+    #             f'cp /mnt/casper/vmlinuz {kernel_path}',
+    #             f'cp /mnt/casper/initrd {initrd_path}',
+    #         ],
+    #         sudo=True,
+    #
+    #         host=host, state=state,
+    #     )
+    #
+    #     server.shell(
+    #         name='Unmount the ISO',
+    #         commands=[
+    #             'umount /mnt',
+    #         ],
+    #         sudo=True,
+    #
+    #         host=host, state=state
+    #     )

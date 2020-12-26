@@ -1,7 +1,14 @@
 from aircraft.deploys.ubuntu import (
-    isc_dhcp_server,
-    tftpd_hpa,
+    apache2,
+    dnsmasq,
+    pxe,
 )
 
-isc_dhcp_server.uninstall()
-tftpd_hpa.uninstall()
+# Consumes host.data.dnsmasq
+dnsmasq.uninstall()
+
+# Consumes host.data.http
+apache2.uninstall()
+
+# Consumes host.data.pxe
+pxe.uninstall()

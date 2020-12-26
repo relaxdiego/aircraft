@@ -32,7 +32,7 @@ def configure(state=None, host=None):
     if host.data.dnsmasq.tftp is not None:
         files.directory(
             name=f'Ensure TFTP root dir {host.data.dnsmasq.tftp.root_dir}',
-            path=host.data.dnsmasq.tftp.root_dir,
+            path=str(host.data.dnsmasq.tftp.root_dir),
             present=True,
             recursive=True,
             sudo=True,
@@ -64,7 +64,7 @@ def configure(state=None, host=None):
     )
 
 
-@deploy('Remove dnsmasq')
+@deploy('Uninstall dnsmasq')
 def uninstall(state=None, host=None):
     supported_schema_versions = [
         'v1beta1',
@@ -91,9 +91,9 @@ def uninstall(state=None, host=None):
         state=state, host=host,
     )
 
-    if host.data.dnsmasq is not None:
+    if host.data.dnsmasq.tftp is not None:
         files.directory(
-            name='Ensure dnsmasq TFTP root dir does not exist',
+            name=f'Remove TFTP root dir {host.data.dnsmasq.tftp.root_dir}',
             path=host.data.dnsmasq.tftp.root_dir,
             present=False,
             recursive=False,

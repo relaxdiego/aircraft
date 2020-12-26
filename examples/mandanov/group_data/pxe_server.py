@@ -6,57 +6,73 @@ from pyinfra_cli import inventory
 inventory.ALLOWED_DATA_TYPES = tuple(inventory.ALLOWED_DATA_TYPES + (BaseModel,))
 
 from aircraft.deploys.ubuntu.models.v1beta1 import (
+    BootfileData,
     DhcpData,
     DnsmasqData,
+    HttpData,
     PxeData,
     TftpData,
 )
 
+# Directory in the remote host where PXE-related files
+# are going to be created
 parent_dir = Path('/opt') / 'relaxdiego.com'
 
 tftp = TftpData(
-    ip_address='192.168.100.11',
-    # ip_address='192.168.222.10',
-    root_dir=str(parent_dir / 'tftpboot')
+    root_dir=str(parent_dir / 'tftpboot'),
 )
 
-dnsmasq = DnsmasqData(
-    interface='ens33',
-    domain='pxe.lan',
-    tftp=tftp,
+http = HttpData(
+    root_dir=str(parent_dir / 'http'),
 )
+
+bootfiles = [
+    BootfileData(
+        # The PXE client architecture for which this bootfile is for. PXE client
+        # architecture values are listd in RFC 4578
+        # https://tools.ietf.org/html/rfc4578#section-2.1
+        client_arch=7,  # EFI byte code https://en.wikipedia.org/wiki/Unified_Extensible_Firmware_Interface#Device_drivers  # NOQA
+
+        image_source_url='http://archive.ubuntu.com/ubuntu/dists/focal/main/uefi/grub2-amd64/current/grubnetx64.efi.signed',  # NOQA
+        image_sha256sum='279a5a755bc248d22799434a261b92698740ab817d8aeccbd0cb7409959a1463',  # NOQA
+
+        # Where the bootfile should be saved relative to tftp.root_dir. The actual
+        # saving will be done by the consumer of the pxe data whereas it will
+        # just be referenced by the consumer of the dhcp data via Option 67
+        path='grubx64.efi',
+    ),
+]
 
 dhcp = DhcpData(
-    subnet='192.168.100.0/24',
-    # subnet='192.168.222.0/24',
+    subnet='192.168.222.0/24',
     ranges=[
-        dict(start='192.168.100.200', end='192.168.100.254')
-        # dict(start='192.168.222.200', end='192.168.222.254')
+        # The pool of IP addresses that will be used during machine
+        # provisioning, before they are assigned their static IP
+        # addresses during installation.
+        dict(start='192.168.222.200', end='192.168.222.254')
     ],
-    router='192.168.100.1',
-    # router='192.168.222.2',
+    router='192.168.222.2',
     dns_servers=[
         '1.1.1.1',
         '8.8.8.8',
         '192.168.86.1',
     ],
-    tftp_server=tftp.ip_address,
+    bootfiles=bootfiles,
+)
+
+dnsmasq = DnsmasqData(
+    dhcp=dhcp,
+    tftp=tftp,
 )
 
 pxe = PxeData(
-    tftp_root_dir=tftp.root_dir,
-    http_root_dir=parent_dir / 'http',
-    http_server=tftp.ip_address,
+    tftp=tftp,
+    http=http,
 
     os_image_source_url='https://releases.ubuntu.com/20.04.1/ubuntu-20.04.1-live-server-amd64.iso',  # NOQA
     os_image_sha256sum='443511f6bf12402c12503733059269a2e10dec602916c0a75263e5d990f6bb93',  # NOQA
-    # TODO: Compute this from the filename part of os_image_source_url
-    os_image_filename='ubuntu-20.04.1-live-server-amd64.iso',
 
-    # grub_image_source_url='http://archive.ubuntu.com/ubuntu/dists/focal/main/uefi/grub2-amd64/current/grubnetx64.efi.signed',  # NOQA
-    # grub_image_sha256sum='279a5a755bc248d22799434a261b92698740ab817d8aeccbd0cb7409959a1463',  # NOQA
-    # grub_image_source_url='http://archive.ubuntu.com/ubuntu/dists/focal/main/uefi/grub-efi-amd64-amd64/current/grubx64.efi.signed',  # NOQA
-    # grub_image_sha256sum='ef000d902be2566f289a4e8cccd4668c8e4de583a03e3d3114fca80088640ea9',  # NOQA
+    bootfiles=bootfiles,
 
     machines=[
         dict(
@@ -64,9 +80,7 @@ pxe = PxeData(
             ethernets=[
                 dict(
                     name='ens33',
-                    mac_address='f4:4d:30:63:1c:41',
-                    # final_ip='192.168.222.11/24',
-                    final_ip='192.168.100.11/24',
+                    ip_address='192.168.100.11/24',
                     nameservers=dhcp.dns_servers,
                     gateway=dhcp.router,
                 ),
@@ -77,13 +91,13 @@ pxe = PxeData(
             ethernets=[
                 dict(
                     name='ens33',
-                    mac_address='f4:4d:30:63:56:21',
-                    final_ip='192.168.100.12/24',
-                    # final_ip='192.168.222.12/24',
+                    ip_address='192.168.100.12/24',
                     nameservers=dhcp.dns_servers,
                     gateway=dhcp.router,
                 ),
             ],
         ),
     ],
+
+    preserve_files_on_uninstall=True,
 )

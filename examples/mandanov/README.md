@@ -8,13 +8,11 @@ to a private network that has DHCP turned off and NAT enabled.
 
 3. Match the NAT address with the `dhcp.router` value in the same file.
 
-4. For the two PXE clients, match their MAC addresses with the addresses
-   specified in `pxe.machines` in the same file.
-
-5. And, of course, you have to set up an Ubuntu VM which will serve as
-   the PXE server. Configure however you like as long as the IP matches
-   what's in `inventories/pxe_server.py` and that passwordless sudo is
-   enabled (Hint: `sudo sed -i -E 's/^(%sudo.*) ALL$/\1 NOPASSWD:ALL/g' /etc/sudoers`)
+4. And, of course, you have to manually set up an Ubuntu VM which will serve as
+   the PXE server. Configure however you like as long its IP address is within the
+   private network's subnet but outside the ranges in dhcp.ranges. Also make sure
+   it allows for passwordless sudo.
+   (Hint: `sudo sed -i -E 's/^(%sudo.*) ALL$/\1 NOPASSWD:ALL/g' /etc/sudoers`)
 
 
 Troubleshooting
@@ -23,11 +21,11 @@ Troubleshooting
 In the PXE server, monitor the DHCP transactions via:
 
 ```
-sudo tcpdump -i eno1 port 67 or port 68 -e -n -vv
+sudo tcpdump port 67 or port 68 -e -n -vv -i <INTERFACE>
 ```
 
 While in another window, monitor the TFTP transactions via:
 
 ```
-sudo tcpdump port 69
+sudo tcpdump port 69 -e -n -vv -i <INTERFACE>
 ```
