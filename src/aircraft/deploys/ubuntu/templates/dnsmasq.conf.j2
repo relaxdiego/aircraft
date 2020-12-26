@@ -341,9 +341,7 @@ dhcp-range={{range.start}},{{range.end}},{{dnsmasq.dhcp.subnet.netmask}},{{range
 
 dhcp-option=option:router,{{dnsmasq.dhcp.router}}
 
-{% for dns_server in dnsmasq.dhcp.dns_servers %}
-dhcp-option=option:dns-server,{{dns_server}}
-{%- endfor %}
+dhcp-option=option:dns-server,{{dnsmasq.dhcp.dns_servers | join(',')}}
 
 # Override the default route supplied by dnsmasq and send no default
 # route at all. Note that this only works for the options sent by
