@@ -18,7 +18,7 @@ fi
 menuentry "Autoinstall {{os_name}} for {{machine.hostname}}" --id=autoinstall-{{machine.hostname}} {
     echo "Loading Kernel..."
     # Make sure to escape the ';'
-    linux /vmlinuz ip=dhcp url=http://{{pxe.http.address}}{{pxe.os_image_source_url.path}} autoinstall ds=nocloud-net\;s=http://{{pxe.http.address}}/{{machine.hostname}}
+    linux /vmlinuz ip=dhcp url=http://{{pxe.http.address}}{{pxe.os_image_source_url.path}} autoinstall ds=nocloud-net\;s=http://{{pxe.http.address}}/{{machine.hostname}}/
     echo "Loading Ram Disk..."
     initrd /initrd
 }

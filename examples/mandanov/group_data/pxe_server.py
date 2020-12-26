@@ -14,17 +14,19 @@ from aircraft.deploys.ubuntu.models.v1beta1 import (
     TftpData,
 )
 
+pxe_server_address = '192.168.222.10'
+
 # Directory in the remote host where PXE-related files
 # are going to be created
 parent_dir = Path('/opt') / 'relaxdiego.com'
 
 tftp = TftpData(
-    root_dir=str(parent_dir / 'tftpboot'),
+    root_dir=parent_dir / 'tftpboot',
 )
 
 http = HttpData(
-    root_dir=str(parent_dir / 'http'),
-    address='192.168.100.10'
+    root_dir=parent_dir / 'http',
+    address=pxe_server_address
 )
 
 bootfiles = [
