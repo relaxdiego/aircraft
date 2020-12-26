@@ -11,6 +11,7 @@ from aircraft.deploys.ubuntu.models.v1beta1 import (
     DnsmasqData,
     HttpData,
     PxeData,
+    StorageConfigData,
     TftpData,
 )
 
@@ -68,6 +69,54 @@ dnsmasq = DnsmasqData(
     tftp=tftp,
 )
 
+storage_config = StorageConfigData(
+    disks=[
+        {
+            'path': '/dev/sda',
+            'partitions': [
+                {
+                    'size': 536870912,  # 512MB
+                    'format': 'fat32',
+                    'mount_path': '/boot/efi',
+                    'flag': 'boot',
+                    'grub_device': True,
+                },
+                {
+                    'size': 1073741824,  # 1GB
+                    'format': 'ext4',
+                    'mount_path': '/boot',
+                },
+                {
+                    # "id" is optional but we're giving this partition one so that
+                    # we can reference it in the lvm_volgroup below.
+                    'id': 'partition-2',
+                    'size': 19327352832,  # 18GB
+                    # We're not mounting and formatting it here since we're going
+                    # to create an LVM volgroup out of this partition below.
+                },
+            ],
+        },
+    ],
+    lvm_volgroups=[
+        {
+            'name': 'ubuntu-vg',
+            'devices': [
+                'partition-2'
+            ],
+            'logical_volumes': [
+                {
+                    'name': 'ubuntu-lv',
+                    'size': 19327352832,  # 18GB
+                    'format': 'ext4',
+                    'mount_path': '/',
+                }
+            ]
+        }
+    ]
+)
+
+import devtools; devtools.debug(storage_config)  # NOQA: E702, E501
+
 pxe = PxeData(
     tftp=tftp,
     http=http,
@@ -80,6 +129,7 @@ pxe = PxeData(
     machines=[
         dict(
             hostname='machine-1',
+            storage=storage_config,
             ethernets=[
                 dict(
                     name='ens33',
@@ -91,6 +141,7 @@ pxe = PxeData(
         ),
         dict(
             hostname='machine-2',
+            storage=storage_config,
             ethernets=[
                 dict(
                     name='ens33',
