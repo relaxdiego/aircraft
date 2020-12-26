@@ -23,7 +23,6 @@ def configure(state=None, host=None):
     apt.packages(
         name='Install dnsmasq',
         packages=['dnsmasq'],
-        update=True,
         sudo=True,
 
         state=state, host=host,
@@ -106,7 +105,6 @@ def uninstall(state=None, host=None):
         name='Ensure dnsmasq package is not present',
         packages=['dnsmasq'],
         present=False,
-        update=False,
         sudo=True,
 
         state=state, host=host,

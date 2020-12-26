@@ -7,6 +7,7 @@ from ipaddress import (
 )
 from pydantic import (
     AnyUrl,
+    AnyHttpUrl,
     BaseModel,
     Schema,
     validator,
@@ -33,6 +34,7 @@ class TftpData(V1Beta1BaseModel):
 
 class HttpData(V1Beta1BaseModel):
     root_dir: Path
+    address: IPv4Address
 
 
 class BootfileData(V1Beta1BaseModel):
@@ -108,7 +110,7 @@ class PxeData(V1Beta1BaseModel):
     tftp: TftpData
     http: HttpData
 
-    os_image_source_url: AnyUrl
+    os_image_source_url: AnyHttpUrl
     os_image_sha256sum: str
 
     bootfiles: List[BootfileData]

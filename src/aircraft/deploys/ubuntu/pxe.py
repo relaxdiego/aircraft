@@ -2,9 +2,7 @@ from pathlib import Path
 
 from pyinfra.api import deploy
 from pyinfra.operations import (
-    apt,
-    # files,
-    server,
+    files,
 )
 
 from aircraft.validators import validate_schema_version
@@ -20,73 +18,42 @@ def configure(state=None, host=None):
 
     validate_schema_version(host.data.pxe, supported_schema_versions)
 
-    bootloader_files = apt.packages(
-        name='Install bootloader files',
-        packages=['syslinux', 'pxelinux'],
-        update=True,
-        sudo=True,
-
-        state=state, host=host,
-    )
-
-    if bootloader_files.changed:
-        boot_files = [
-            '/usr/lib/PXELINUX/pxelinux.0',
-            '/usr/lib/syslinux/modules/efi64/*.c32'
-        ]
-
-        server.shell(
-            name=f'Copy bootloader files to {host.data.pxe.tftp_root_dir}',
-            commands=[
-                f'cp -v {f} {host.data.pxe.tftp_root_dir}/' for f in boot_files
-            ],
+    for bootfile in host.data.pxe.bootfiles:
+        files.download(
+            name=f'Download bootfile {bootfile.path}',
+            src=str(bootfile.image_source_url),
+            dest=str(host.data.pxe.tftp.root_dir / bootfile.path),
+            sha256sum=bootfile.image_sha256sum,
             sudo=True,
 
-            state=state, host=host,
+            host=host, state=state,
         )
 
-    # pxelinux_cfg_dir = Path(host.data.pxe.tftp_root_dir) / 'pxelinux.cfg'
-    #
-    # for machine in host.data.pxe.machines:
-    #     for ethernet in machine.ethernets:
-    #         filename = ethernet.mac_address.lower().replace(':', '-')
-    #         files.template(
-    #             name=f'Ensure bootloader config for {machine.hostname}',
-    #             src=str(deploy_dir / 'templates' / 'pxelinux.cfg.j2'),
-    #             dest=str(pxelinux_cfg_dir / filename),
-    #             create_remote_dir=True,
-    #             machine=machine,
-    #             ethernet=ethernet,
-    #             http_server=host.data.pxe.http_server,
-    #             sudo=True,
-    #
-    #             host=host, state=state,
-    #         )
-    #
-    # files.directory(
-    #     name=f'Ensure directory {host.data.pxe.http_root_dir} exists',
-    #     path=str(host.data.pxe.http_root_dir),
-    #     present=True,
-    #     sudo=True,
-    #
-    #     host=host, state=state,
-    # )
-    #
-    # downloaded_iso_path = \
-    #     Path(host.data.pxe.http_root_dir) / host.data.pxe.os_image_filename
-    #
-    # download_iso = files.download(
-    #     name='Download OS Image',
-    #     src=str(host.data.pxe.os_image_source_url),
-    #     dest=str(downloaded_iso_path),
-    #     sha256sum=host.data.pxe.os_image_sha256sum,
-    #     sudo=True,
-    #
-    #     host=host, state=state,
-    # )
-    #
-    # kernel_path = str(host.data.pxe.tftp_root_dir / 'vmlinuz')
-    # initrd_path = str(host.data.pxe.tftp_root_dir / 'initrd')
+    files.template(
+        name='Render GRUB config',
+        src=str(deploy_dir / 'templates' / 'grub.cfg.j2'),
+        dest=str(host.data.pxe.tftp.root_dir / 'grub' / 'grub.cfg'),
+        pxe=host.data.pxe,
+        sudo=True,
+        os_name=Path(host.data.pxe.os_image_source_url.path).stem,
+
+        host=host, state=state,
+    )
+
+    iso_path = host.data.pxe.http.root_dir / host.data.pxe.os_image_source_url.path
+
+    download_iso = files.download(
+        name='Download OS Image',
+        src=str(host.data.pxe.os_image_source_url),
+        dest=str(iso_path),
+        sha256sum=host.data.pxe.os_image_sha256sum,
+        sudo=True,
+
+        host=host, state=state,
+    )
+
+    # kernel_path = str(host.data.pxe.ssh_rootdir / 'vmlinuz')
+    # initrd_path = str(host.data.pxe.ssh_rootdir / 'initrd')
     #
     # if host.fact.file(kernel_path) is None or \
     #    host.fact.file(initrd_path) is None or \
@@ -121,4 +88,65 @@ def configure(state=None, host=None):
     #         sudo=True,
     #
     #         host=host, state=state
+    #     )
+    # # Synology's SFTP permissions are unusual in that they don't allow
+    # # you to create directories (which we want to do in the files.tenplate
+    # # operation after this one). As a workaround to that, we're going to
+    # # ensure the directory via the files.directory operation since it uses
+    # # just SSH.
+    # files.directory(
+    #     name='Ensure grub/ directory exists',
+    #     path=str(host.data.pxe.ssh_rootdir / 'grub'),
+    #     present=True,
+    #
+    #     host=host, state=state,
+    # )
+    # files.directory(
+    #     name=f"Ensure {host.data.pxe.http_base_url}/user-data/ exists",
+    #     path=str(host.data.pxe.ssh_rootdir / 'user-data'),
+    #     present=True,
+    #
+    #     host=host, state=state,
+    # )
+    #
+    # files.put(
+    #     name='Ensure user-data/index.php',
+    #     src=str(files_base / 'user-data' / 'index.php'),
+    #     # files.put uses SFTP to transfer files so we have to use
+    #     # a different base path in the case of Synology which presents a
+    #     # different filesystem hierarchy depending on which protocol you're on.
+    #     # Related bug: https://github.com/Fizzadar/pyinfra/issues/499
+    #     dest=str(host.data.pxe.sftp_rootdir / 'user-data' / 'index.php'),
+    #     create_remote_dir=False,
+    #
+    #     host=host, state=state,
+    # )
+    #
+    # files.put(
+    #     name='Ensure meta-data file',
+    #     src=str(files_base / 'meta-data'),
+    #     # files.put uses SFTP to transfer files so we have to use
+    #     # a different base path in the case of Synology which presents a
+    #     # different filesystem hierarchy depending on which protocol you're on.
+    #     # Related bug: https://github.com/Fizzadar/pyinfra/issues/499
+    #     dest=str(host.data.pxe.sftp_rootdir / 'meta-data'),
+    #     create_remote_dir=False,
+    #
+    #     host=host, state=state,
+    # )
+    #
+    # for machine in host.data.machines:
+    #     user_data_dir = host.data.pxe.sftp_rootdir / 'user-data'
+    #     files.template(
+    #         name=f'Add user-data for {machine.hostname}',
+    #         src=str(templates_base / 'user-data.j2'),
+    #         # files.template uses SFTP to transfer files so we have to use
+    #         # a different base path in the case of Synology which presents a
+    #         # different filesystem hierarchy depending on which protocol you're on.
+    #         # Related bug: https://github.com/Fizzadar/pyinfra/issues/499
+    #         dest=str(user_data_dir / str(machine.provisioning_ip)),
+    #         create_remote_dir=False,
+    #         machine=machine,
+    #
+    #         host=host, state=state,
     #     )

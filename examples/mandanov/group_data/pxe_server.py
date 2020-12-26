@@ -24,6 +24,7 @@ tftp = TftpData(
 
 http = HttpData(
     root_dir=str(parent_dir / 'http'),
+    address='192.168.100.10'
 )
 
 bootfiles = [
