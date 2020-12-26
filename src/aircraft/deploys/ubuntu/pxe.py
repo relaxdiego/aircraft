@@ -100,55 +100,30 @@ def configure(state=None, host=None):
         host=host, state=state
     )
 
-    # files.directory(
-    #     name=f"Ensure {host.data.pxe.http_base_url}/user-data/ exists",
-    #     path=str(host.data.pxe.ssh_rootdir / 'user-data'),
-    #     present=True,
-    #
-    #     host=host, state=state,
-    # )
-    #
-    # files.put(
-    #     name='Ensure user-data/index.php',
-    #     src=str(files_base / 'user-data' / 'index.php'),
-    #     # files.put uses SFTP to transfer files so we have to use
-    #     # a different base path in the case of Synology which presents a
-    #     # different filesystem hierarchy depending on which protocol you're on.
-    #     # Related bug: https://github.com/Fizzadar/pyinfra/issues/499
-    #     dest=str(host.data.pxe.sftp_rootdir / 'user-data' / 'index.php'),
-    #     create_remote_dir=False,
-    #
-    #     host=host, state=state,
-    # )
-    #
-    # files.put(
-    #     name='Ensure meta-data file',
-    #     src=str(files_base / 'meta-data'),
-    #     # files.put uses SFTP to transfer files so we have to use
-    #     # a different base path in the case of Synology which presents a
-    #     # different filesystem hierarchy depending on which protocol you're on.
-    #     # Related bug: https://github.com/Fizzadar/pyinfra/issues/499
-    #     dest=str(host.data.pxe.sftp_rootdir / 'meta-data'),
-    #     create_remote_dir=False,
-    #
-    #     host=host, state=state,
-    # )
-    #
-    # for machine in host.data.machines:
-    #     user_data_dir = host.data.pxe.sftp_rootdir / 'user-data'
-    #     files.template(
-    #         name=f'Add user-data for {machine.hostname}',
-    #         src=str(templates_base / 'user-data.j2'),
-    #         # files.template uses SFTP to transfer files so we have to use
-    #         # a different base path in the case of Synology which presents a
-    #         # different filesystem hierarchy depending on which protocol you're on.
-    #         # Related bug: https://github.com/Fizzadar/pyinfra/issues/499
-    #         dest=str(user_data_dir / str(machine.provisioning_ip)),
-    #         create_remote_dir=False,
-    #         machine=machine,
-    #
-    #         host=host, state=state,
-    #     )
+    for machine in host.data.pxe.machines:
+        meta_data_path = host.data.pxe.http.root_dir / machine.hostname / 'meta-data'
+        files.template(
+            name=f'Render {meta_data_path}',
+            src=str(deploy_dir / 'templates' / 'meta-data.j2'),
+            dest=str(meta_data_path),
+            create_remote_dir=True,
+            sudo=True,
+            machine=machine,
+
+            host=host, state=state,
+        )
+
+        user_data_path = host.data.pxe.http.root_dir / machine.hostname / 'user-data'
+        files.template(
+            name=f'Render {user_data_path}',
+            src=str(deploy_dir / 'templates' / 'user-data.j2'),
+            dest=str(user_data_path),
+            create_remote_dir=True,
+            sudo=True,
+            machine=machine,
+
+            host=host, state=state,
+        )
 
     files.directory(
         name=f"Ensure www-data has read permissions in {host.data.pxe.http.root_dir}",

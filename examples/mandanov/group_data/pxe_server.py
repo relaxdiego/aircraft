@@ -83,7 +83,7 @@ pxe = PxeData(
             ethernets=[
                 dict(
                     name='ens33',
-                    ip_address='192.168.100.11/24',
+                    ip_addresses=['192.168.100.11/24'],
                     nameservers=dhcp.dns_servers,
                     gateway=dhcp.router,
                 ),
@@ -94,7 +94,7 @@ pxe = PxeData(
             ethernets=[
                 dict(
                     name='ens33',
-                    ip_address='192.168.100.12/24',
+                    ip_addresses=['192.168.100.12/24'],
                     nameservers=dhcp.dns_servers,
                     gateway=dhcp.router,
                 ),
