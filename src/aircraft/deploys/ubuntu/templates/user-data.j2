@@ -41,46 +41,32 @@ autoinstall:
         relaxdiego@github/47224202 # ssh-import-id gh:relaxdiego']
   storage:
     config:
-  # - {ptable: gpt, path: /dev/sda, wipe: superblock, preserve: false, name: '', grub_device: false, type: disk, id: disk-sda}
+    # DISKS
     {%- for disk in machine.storage.export_disks() %}
     - {{disk | tojson}}
     {%- endfor %}
 
-
-
-  # - {device: disk-sda, size: 536870912, wipe: superblock, flag: boot, number: 1, preserve: false, grub_device: true, type: partition, id: partition-0}
-  # - {device: disk-sda, size: 1073741824, wipe: superblock, flag: '', number: 2, preserve: false, type: partition, id: partition-1}
-  # - {device: disk-sda, size: 19862126592, wipe: superblock, flag: '', number: 3, preserve: false, type: partition, id: partition-2}
+    # PHYSICAL PARTITIONS
     {%- for partition in machine.storage.export_partitions() %}
     - {{partition | tojson}}
     {%- endfor %}
 
-
-
-  # - {fstype: fat32, volume: partition-0, preserve: false, type: format, id: format-0}
-  # - {fstype: ext4, volume: partition-1, preserve: false, type: format, id: format-1}
-    {%- for format in machine.storage.export_formats() %}
-    - {{format | tojson}}
-    {%- endfor %}
-
-  # - {name: ubuntu-vg, devices: [partition-2], preserve: false, type: lvm_volgroup, id: lvm_volgroup-0}
+    # LVM VOLUME GROUPS
     {%- for volgroup in machine.storage.export_lvm_volgroups() %}
     - {{volgroup | tojson}}
     {%- endfor %}
 
-  # - {name: ubuntu-lv, volgroup: lvm_volgroup-0, size: 19860029440B, preserve: false, type: lvm_partition, id: lvm_partition-0}
+    # LVM LOGICAL VOLUMES
     {%- for lv in machine.storage.export_lvm_logical_volumes() %}
     - {{lv | tojson}}
     {%- endfor %}
 
-  # - {fstype: ext4, volume: lvm_partition-0, preserve: false, type: format, id: format-2}
-    {%- for format in machine.storage.export_lvm_formats() %}
+    # FILESYSTEM FORMATS FOR EVERY PARTITION AND LOGICAL VOLUME
+    {%- for format in machine.storage.export_formats() %}
     - {{format | tojson}}
     {%- endfor %}
 
-  # - {device: format-2, path: /, type: mount, id: mount-2}
-  # - {device: format-1, path: /boot, type: mount, id: mount-1}
-  # - {device: format-0, path: /boot/efi, type: mount, id: mount-0}
+    # MOUNT POINT FOR EVERY FILESYSTEM
     {%- for mount in machine.storage.export_mounts() %}
     - {{mount | tojson}}
     {%- endfor %}
