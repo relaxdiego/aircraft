@@ -89,7 +89,7 @@ storage_config = StorageConfigData(
                 {
                     # "id" is optional but we're giving this partition one so that
                     # we can reference it in the lvm_volgroup below.
-                    'id': 'partition-2',
+                    'id': 'partition-for-ubuntu-vg',
                     'size': 19327352832,  # 18GB
                     # We're not mounting and formatting it here since we're going
                     # to create an LVM volgroup out of this partition below.
@@ -101,12 +101,17 @@ storage_config = StorageConfigData(
         {
             'name': 'ubuntu-vg',
             'devices': [
-                'partition-2'
+                'partition-for-ubuntu-vg'
             ],
             'logical_volumes': [
                 {
                     'name': 'ubuntu-lv',
-                    'size': 19327352832,  # 18GB
+                    # TIP: Don't just copy and paste the partition's size from above
+                    #      since the volume group also needs some of the partition's
+                    #      space for metadata. In the future, we can add an an 'extents'
+                    #      option (same arguments as lvcreate's --extents aka -l arg)
+                    #      which will be mutually exclusive with 'size'.
+                    'size': 10737418240,  # 10GB
                     'format': 'ext4',
                     'mount_path': '/',
                 }
