@@ -237,7 +237,10 @@ class StorageConfigData(V1Beta1BaseModel):
     def export_formats(self):
         return [fmt
                 for disk in self.disks
-                for fmt in disk.export_formats()]
+                for fmt in disk.export_formats()] + \
+               [fmt
+                for volgroup in self.lvm_volgroups
+                for fmt in volgroup.export_formats()]
 
     def export_lvm_volgroups(self):
         return [lvm_volgroup.export() for lvm_volgroup in self.lvm_volgroups]
@@ -246,11 +249,6 @@ class StorageConfigData(V1Beta1BaseModel):
         return [logical_volume
                 for lvm_volgroup in self.lvm_volgroups
                 for logical_volume in lvm_volgroup.export_logical_volumes()]
-
-    def export_lvm_formats(self):
-        return [fmt
-                for volgroup in self.lvm_volgroups
-                for fmt in volgroup.export_formats()]
 
     def export_mounts(self):
         return [mount
