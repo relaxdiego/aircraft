@@ -163,7 +163,9 @@ port=0
 # don't need to worry about this.
 #dhcp-range=192.168.0.50,192.168.0.150,255.255.255.0,12h
 
-dhcp-range=192.168.222.200,192.168.222.254,255.255.255.0,1m
+{%- for range in dnsmasq.dhcp.ranges %}
+dhcp-range={{range.start}},{{range.end}},{{dnsmasq.dhcp.subnet.netmask}},1m
+{%- endfor %}
 
 # This is an example of a DHCP range which sets a tag, so that
 # some DHCP options may be set only for this network.
@@ -336,9 +338,9 @@ dhcp-range=192.168.222.200,192.168.222.254,255.255.255.0,1m
 # Do the same thing, but using the option name
 #dhcp-option=option:router,1.2.3.4
 
-dhcp-option=option:router,192.168.222.2
+dhcp-option=option:router,{{dnsmasq.dhcp.router}}
 
-dhcp-option=option:dns-server,1.1.1.1,8.8.8.8,192.168.86.1
+dhcp-option=option:dns-server,{{dnsmasq.dhcp.dns_servers|join(',')}}
 
 # Override the default route supplied by dnsmasq and send no default
 # route at all. Note that this only works for the options sent by
@@ -509,7 +511,7 @@ dhcp-option=option:dns-server,1.1.1.1,8.8.8.8,192.168.86.1
 #tftp-root=/var/ftpd
 
 enable-tftp
-tftp-root=/opt/relaxdiego.com/tftpboot
+tftp-root={{dnsmasq.tftp.root_dir}}
 
 # Do not abort if the tftp-root is unavailable
 #tftp-no-fail
@@ -688,5 +690,7 @@ log-dhcp
 #dhcp-name-match=set:wpad-ignore,wpad
 #dhcp-ignore-names=tag:wpad-ignore
 
-dhcp-match=set:pxe_client_arch_7,option:client-arch,7
-dhcp-boot=tag:pxe_client_arch_7,grubx64.efi
+{%- for bootfile in dnsmasq.dhcp.bootfiles %}
+dhcp-match=set:pxe_client_arch_{{bootfile.client_arch}},option:client-arch,{{bootfile.client_arch}}
+dhcp-boot=tag:pxe_client_arch_7,{{bootfile.path}}
+{%- endfor %}

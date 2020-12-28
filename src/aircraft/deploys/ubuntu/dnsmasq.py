@@ -93,7 +93,7 @@ def uninstall(state=None, host=None):
     if host.data.dnsmasq.tftp is not None:
         files.directory(
             name=f'Remove TFTP root dir {host.data.dnsmasq.tftp.root_dir}',
-            path=host.data.dnsmasq.tftp.root_dir,
+            path=str(host.data.dnsmasq.tftp.root_dir),
             present=False,
             recursive=False,
             sudo=True,
