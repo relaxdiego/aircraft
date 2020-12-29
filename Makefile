@@ -37,7 +37,7 @@ coverage-server:
 	@cd htmlcov && python3 -m http.server 5000
 
 
-## dependenceis   : Ensures pip-tools is installed and then ensures
+## dependencies   : Ensures pip-tools is installed and then ensures
 ##                  the right dependency versions are installed.
 ##
 .PHONY: dependencies
