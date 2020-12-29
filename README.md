@@ -11,7 +11,8 @@ Aircraft
 
 # Video Introduction
 
-[View on YouTube](https://youtu.be/-wF3zPSiHOk)
+* [View on YouTube](https://youtu.be/-wF3zPSiHOk)
+* [Configure PXE on a Pi](https://youtu.be/HzXiBUNrDkg)
 
 
 # Project Rationale
