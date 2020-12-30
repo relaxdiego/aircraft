@@ -11,6 +11,10 @@ from pyinfra.operations import (
 from aircraft.deploys.synology.models import v1beta1
 from aircraft.validators import validate_schema_version
 
+# This is bad. Each deploy dir should be independent. I'm just
+# too lazy to copy the templates and files right now because it
+# would mean modifying two copies at the same time. Some fix is
+# needed down the road.
 deploy_dir = Path(__file__).parent.parent / 'ubuntu'
 
 
