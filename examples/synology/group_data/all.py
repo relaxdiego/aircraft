@@ -120,7 +120,7 @@ pxe = PxeData(
 
     machines=[
         dict(
-            hostname='kvm-1',
+            hostname='maas-1',
             storage=storage_config,
             ethernets=[
                 dict(
@@ -132,7 +132,7 @@ pxe = PxeData(
             ],
         ),
         dict(
-            hostname='kvm-2',
+            hostname='maas-2',
             storage=storage_config,
             ethernets=[
                 dict(
@@ -144,6 +144,4 @@ pxe = PxeData(
             ],
         ),
     ],
-
-    preserve_files_on_uninstall=True,
 )

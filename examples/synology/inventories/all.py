@@ -1,5 +1,8 @@
+# All servers listed here must have key-based SSH aut and password-less
+# sudo configured for pyinfra to function correctly.
+
 dhcp_server = [
-    # Raspberry Pi
+    # Any Ubuntu server
     '192.168.86.21'
 ]
 pxe_server = [
