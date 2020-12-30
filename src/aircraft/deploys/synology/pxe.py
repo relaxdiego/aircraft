@@ -111,7 +111,7 @@ def configure(state=None, host=None):
         )
 
     # Synology's SFTP permissions are unusual in that they don't allow
-    # you to create directories (which we want to do in the files.tenplate
+    # you to create directories (which we want to do in the files.template
     # operation after this one). As a workaround to that, we're going to
     # ensure the directory via the files.directory operation since it uses
     # just SSH.
