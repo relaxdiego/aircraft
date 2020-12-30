@@ -21,31 +21,26 @@ pxe_server_address = '192.168.100.2'
 # are going to be created
 parent_dir = Path('/opt') / 'relaxdiego.com'
 
-tftp = TftpData(
-    root_dir=parent_dir / 'tftpboot',
-)
-
-http = HttpData(
-    root_dir=parent_dir / 'http',
-    address=pxe_server_address
-)
-
 bootfiles = [
     BootfileData(
         # The PXE client architecture for which this bootfile is for. PXE client
         # architecture values are listd in RFC 4578
         # https://tools.ietf.org/html/rfc4578#section-2.1
-        client_arch=7,  # EFI byte code https://en.wikipedia.org/wiki/Unified_Extensible_Firmware_Interface#Device_drivers  # NOQA
-
-        image_source_url='http://archive.ubuntu.com/ubuntu/dists/focal/main/uefi/grub2-amd64/current/grubnetx64.efi.signed',  # NOQA
-        image_sha256sum='279a5a755bc248d22799434a261b92698740ab817d8aeccbd0cb7409959a1463',  # NOQA
-
-        # Where the bootfile should be saved relative to tftp.root_dir. The actual
-        # saving will be done by the consumer of the pxe data whereas it will
-        # just be referenced by the consumer of the dhcp data via Option 67
-        path='grubx64.efi',
+        client_arch=7,  # EFI byte code https://en.wikipedia.org/wiki/Unified_Extensible_Firmware_Interface#Device_drivers  # NOQA: E501
+        image_source_url='http://archive.ubuntu.com/ubuntu/dists/focal/main/uefi/grub2-amd64/current/grubnetx64.efi.signed',  # NOQA: E501
+        image_sha256sum='279a5a755bc248d22799434a261b92698740ab817d8aeccbd0cb7409959a1463',  # NOQA: E501
     ),
 ]
+
+tftp = TftpData(
+    hostname=pxe_server_address,
+    root_dir=parent_dir / 'tftpboot',
+)
+
+http = HttpData(
+    hostname=pxe_server_address,
+    root_dir=parent_dir / 'http',
+)
 
 dhcp = DhcpData(
     subnet='192.168.100.0/24',
@@ -65,6 +60,7 @@ dhcp = DhcpData(
 )
 
 dnsmasq = DnsmasqData(
+    interfaces=['eth0'],
     dhcp=dhcp,
     tftp=tftp,
 )
@@ -87,12 +83,8 @@ storage_config = StorageConfigData(
                     'mount_path': '/boot',
                 },
                 {
-                    # "id" is optional but we're giving this partition one so that
-                    # we can reference it in the lvm_volgroup below.
                     'id': 'partition-for-ubuntu-vg',
-                    'size': 214748364800,  # 200GB
-                    # We're not mounting and formatting it here since we're going
-                    # to create an LVM volgroup out of this partition below.
+                    'size': 429496729600,  # 400GB
                 },
             ],
         },
@@ -106,12 +98,7 @@ storage_config = StorageConfigData(
             'logical_volumes': [
                 {
                     'name': 'ubuntu-lv',
-                    # TIP: Don't just copy and paste the partition's size from above
-                    #      since the volume group also needs some of the partition's
-                    #      space for metadata. In the future, we can add an an 'extents'
-                    #      option (same arguments as lvcreate's --extents aka -l arg)
-                    #      which will be mutually exclusive with 'size'.
-                    'size': 161061273600,  # 150GB
+                    'size': 397284474880,  # 370GB
                     'format': 'ext4',
                     'mount_path': '/',
                 }
@@ -130,18 +117,18 @@ pxe = PxeData(
     bootfiles=bootfiles,
 
     machines=[
-        # dict(
-        #     hostname='machine-1',
-        #     storage=storage_config,
-        #     ethernets=[
-        #         dict(
-        #             name='ens33',
-        #             ip_addresses=['192.168.100.11/24'],
-        #             nameservers=dhcp.dns_servers,
-        #             gateway=dhcp.router,
-        #         ),
-        #     ],
-        # ),
+        dict(
+            hostname='maas-1',
+            storage=storage_config,
+            ethernets=[
+                dict(
+                    name='ens33',
+                    ip_addresses=['192.168.100.11/24'],
+                    nameservers=dhcp.dns_servers,
+                    gateway=dhcp.router,
+                ),
+            ],
+        ),
         dict(
             hostname='maas-2',
             storage=storage_config,
@@ -155,6 +142,4 @@ pxe = PxeData(
             ],
         ),
     ],
-
-    preserve_files_on_uninstall=True,
 )

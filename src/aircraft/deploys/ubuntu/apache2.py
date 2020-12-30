@@ -8,6 +8,7 @@ from pyinfra.operations import (
     systemd,
 )
 
+from aircraft.deploys.ubuntu.models import v1beta1
 from aircraft.validators import validate_schema_version
 
 deploy_dir = Path(__file__).parent
@@ -16,7 +17,7 @@ deploy_dir = Path(__file__).parent
 @deploy('Configure apache2')
 def configure(state=None, host=None):
     supported_schema_versions = [
-        'v1beta1',
+        v1beta1.HttpData,
     ]
 
     validate_schema_version(host.data.http, supported_schema_versions)
@@ -76,7 +77,7 @@ def configure(state=None, host=None):
 @deploy('Uninstall apache2')
 def uninstall(state=None, host=None):
     supported_schema_versions = [
-        'v1beta1',
+        v1beta1.HttpData,
     ]
 
     validate_schema_version(host.data.http, supported_schema_versions)

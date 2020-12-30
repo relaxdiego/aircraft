@@ -6,6 +6,7 @@ from pyinfra.operations import (
     server,
 )
 
+from aircraft.deploys.ubuntu.models import v1beta1
 from aircraft.validators import validate_schema_version
 
 deploy_dir = Path(__file__).parent
@@ -14,16 +15,27 @@ deploy_dir = Path(__file__).parent
 @deploy('Configure PXE files')
 def configure(state=None, host=None):
     supported_schema_versions = [
-        'v1beta1',
+        v1beta1.PxeData,
     ]
 
     validate_schema_version(host.data.pxe, supported_schema_versions)
 
     for bootfile in host.data.pxe.bootfiles:
+        bootfile_dir = (host.data.pxe.tftp.root_dir / bootfile.get_path()).parent
+
+        files.directory(
+            name='Ensure bootfile directory',
+            path=str(bootfile_dir),
+            present=True,
+            sudo=True,
+
+            host=host, state=state,
+        )
+
         files.download(
-            name=f'Download bootfile {bootfile.path}',
+            name=f'Download bootfile {bootfile.get_path()}',
             src=str(bootfile.image_source_url),
-            dest=str(host.data.pxe.tftp.root_dir / bootfile.path),
+            dest=str(host.data.pxe.tftp.root_dir / bootfile.get_path()),
             sha256sum=bootfile.image_sha256sum,
             sudo=True,
 
