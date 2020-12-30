@@ -149,7 +149,7 @@ pxe = PxeData(
                             },
                             {
                                 'id': 'partition-for-ubuntu-vg',
-                                'size': 214748364800,  # 200GB
+                                'size': 429496729600,  # 400GB
                             },
                         ],
                     },
@@ -163,7 +163,7 @@ pxe = PxeData(
                         'logical_volumes': [
                             {
                                 'name': 'ubuntu-lv',
-                                'size': 161061273600,  # 150GB
+                                'size': 397284474880,  # 370GB
                                 'format': 'ext4',
                                 'mount_path': '/',
                             }
