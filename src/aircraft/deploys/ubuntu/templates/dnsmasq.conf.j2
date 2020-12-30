@@ -1,3 +1,7 @@
+#
+# PLEASE REFER TO https://www.iana.org/assignments/bootp-dhcp-parameters/bootp-dhcp-parameters.xhtml#options
+# FOR A MORE THOROUGH EXPLANATION OF EACH DHCP OPTION
+#
 # Configuration file for dnsmasq.
 #
 # Format is one option per line, legal options are the same
@@ -7,7 +11,9 @@
 # Listen on this specific port instead of the standard DNS port
 # (53). Setting this to zero completely disables DNS function,
 # leaving only DHCP and/or TFTP.
+{%- if not dnsmasq.dns %}
 port=0
+{%- endif %}
 
 # The following two options make you a better netizen, since they
 # tell dnsmasq to filter out queries which the public DNS cannot
@@ -103,7 +109,9 @@ port=0
 # specified interfaces (and the loopback) give the name of the
 # interface (eg eth0) here.
 # Repeat the line for more than one interface.
-
+{%- for interface in dnsmasq.interfaces %}
+interface={{interface}}
+{%- endfor %}
 
 # Or you can specify which interface _not_ to listen on
 #except-interface=
@@ -510,8 +518,10 @@ dhcp-option=option:dns-server,{{dnsmasq.dhcp.dns_servers|join(',')}}
 # Set the root directory for files available via FTP.
 #tftp-root=/var/ftpd
 
+{%- if dnsmasq.tftp %}
 enable-tftp
 tftp-root={{dnsmasq.tftp.root_dir}}
+{%- endif %}
 
 # Do not abort if the tftp-root is unavailable
 #tftp-no-fail
@@ -692,5 +702,8 @@ log-dhcp
 
 {%- for bootfile in dnsmasq.dhcp.bootfiles %}
 dhcp-match=set:pxe_client_arch_{{bootfile.client_arch}},option:client-arch,{{bootfile.client_arch}}
-dhcp-boot=tag:pxe_client_arch_7,{{bootfile.path}}
+dhcp-boot=tag:pxe_client_arch_7,{{bootfile.get_path()}}
+{%- if dnsmasq.dhcp.tftp_server_name -%}
+,{{dnsmasq.dhcp.tftp_server_name}},{{dnsmasq.dhcp.tftp_server_name}}
+{%- endif %}
 {%- endfor %}

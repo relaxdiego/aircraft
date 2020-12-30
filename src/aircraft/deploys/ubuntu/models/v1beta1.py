@@ -10,7 +10,7 @@ from pydantic import (
     AnyUrl,
     AnyHttpUrl,
     BaseModel,
-    Schema,
+    Field,
     validator,
 )
 from typing import (
@@ -20,7 +20,7 @@ from typing import (
 
 
 class V1Beta1BaseModel(BaseModel):
-    schema_version: str = Schema('v1beta1', const=True)
+    schema_version: str = Field('v1beta1', const=True)
 
     class Config:
         # Quasi-immutable model
@@ -30,7 +30,21 @@ class V1Beta1BaseModel(BaseModel):
 
 
 class TftpData(V1Beta1BaseModel):
+    """
+    Holds information about where to reach the TFTP server as well as
+    the path in the server where the root directory is located. The
+    optional sftp_root_dir is available for systems where the SFTP
+    subsystem of the SSH service presents a different path. Example
+    systems that do this is Synology's DSM. If sftp_root_dir is not
+    provided, then it is assumed to have the same value as root_dir.
+    """
+    hostname: IPv4Address
     root_dir: Path
+    sftp_root_dir: Optional[Path]
+
+    @validator('sftp_root_dir', pre=True, always=True)
+    def ensure_sftp_root_dir_has_a_value(cls, value, values):
+        return value or values['root_dir']
 
 
 class HttpData(V1Beta1BaseModel):
@@ -39,18 +53,23 @@ class HttpData(V1Beta1BaseModel):
 
 
 class BootfileData(V1Beta1BaseModel):
-    # The PXE client architecture for which this bootfile is for. PXE client
-    # architecture values are listd in RFC 4578
-    # https://tools.ietf.org/html/rfc4578#section-2.1
+    """
+    Contains information on a bootfile (such as grub) as well as which
+    PXE client architecture it applies to. For more information on PXE
+    client architectures, see https://tools.ietf.org/html/rfc4578#section-2.1
+    """
     client_arch: int
-
     image_source_url: AnyUrl
     image_sha256sum: str
 
-    # Where the bootfile should be saved relative to tftp.root_dir. The actual
-    # saving will be done by the consumer of the pxe data whereas it will
-    # just be referenced by the consumer of the dhcp data via Option 67
-    path: Path
+    def get_path(self):
+        """
+        Returns the path to the file. This may be used by TFTP packaged
+        deploy to determine where to save the file as well as by the
+        DHCP packaged deploy to determine what value to provide in
+        DHCP Option 67 (Bootfile-Name)
+        """
+        return self.image_source_url.path.lstrip('/')
 
 
 class DhcpRangeData(V1Beta1BaseModel):
@@ -73,6 +92,7 @@ class DhcpData(V1Beta1BaseModel):
     router: IPv4Address
     dns_servers: List[IPv4Address]
     bootfiles: List[BootfileData]
+    tftp_server_name: Optional[IPv4Address]
 
     @validator('ranges')
     def range_must_be_within_subnet(cls, ranges, values):
@@ -89,8 +109,23 @@ class DhcpData(V1Beta1BaseModel):
         return ranges
 
 
+class DnsData(V1Beta1BaseModel):
+    """
+    TODO: Implement me
+    """
+    pass
+
+
 class DnsmasqData(V1Beta1BaseModel):
+    """
+    Contains information on which interfaces dnsmasq should listen to for client
+    requests. Note that all fields are optional. If the interfaces field is not
+    assigned, then it will be assumed that dnsmasq should listen on all interfaces.
+    Likewise if dhcp is not assigned, then it is assumed that dnsmasq should not
+    serve DHCP requests.
+    """
     interfaces: List[str] = []
+    dns: Optional[DnsData]
     dhcp: Optional[DhcpData]
     tftp: Optional[TftpData]
 
@@ -103,7 +138,7 @@ class EthernetInterfaceData(V1Beta1BaseModel):
 
 
 class StorageLvmLogicalVolumeConfigData(V1Beta1BaseModel):
-    type: str = Schema('lvm_partition', const=True)
+    type: str = Field('lvm_partition', const=True)
     id: str = None
     name: str
     size: int
@@ -122,7 +157,7 @@ class StorageLvmLogicalVolumeConfigData(V1Beta1BaseModel):
 
 
 class StorageLvmVolGroupConfigData(V1Beta1BaseModel):
-    type: str = Schema('lvm_volgroup', const=True)
+    type: str = Field('lvm_volgroup', const=True)
     id: str = None
     name: str
     devices: List[str]
@@ -160,7 +195,7 @@ class StorageLvmVolGroupConfigData(V1Beta1BaseModel):
 
 
 class StoragePartition(V1Beta1BaseModel):
-    type: str = Schema('partition', const=True)
+    type: str = Field('partition', const=True)
     id: str = None
     size: int
     wipe: str = 'superblock'
@@ -181,7 +216,7 @@ class StoragePartition(V1Beta1BaseModel):
 
 
 class StorageDiskConfigData(V1Beta1BaseModel):
-    type: str = Schema('disk', const=True)
+    type: str = Field('disk', const=True)
     id: str = None
     path: str
     ptable: str = 'gpt'

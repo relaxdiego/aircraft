@@ -7,6 +7,7 @@ from pyinfra.operations import (
     systemd,
 )
 
+from aircraft.deploys.ubuntu.models import v1beta1
 from aircraft.validators import validate_schema_version
 
 deploy_dir = Path(__file__).parent
@@ -14,11 +15,11 @@ deploy_dir = Path(__file__).parent
 
 @deploy('Configure dnsmasq')
 def configure(state=None, host=None):
-    supported_schema_versions = [
-        'v1beta1',
+    supported_schemas = [
+        v1beta1.DnsmasqData
     ]
 
-    validate_schema_version(host.data.dnsmasq, supported_schema_versions)
+    validate_schema_version(host.data.dnsmasq, supported_schemas)
 
     apt.packages(
         name='Install dnsmasq',
