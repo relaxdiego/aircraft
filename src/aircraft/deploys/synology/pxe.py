@@ -138,52 +138,50 @@ def configure(state=None, host=None):
         host=host, state=state,
     )
 
-    # files.directory(
-    #     name=f"Ensure {host.data.pxe.http_base_url}/user-data/ exists",
-    #     path=str(host.data.pxe.ssh_rootdir / 'user-data'),
-    #     present=True,
-    #
-    #     host=host, state=state,
-    # )
-    #
-    # files.put(
-    #     name='Ensure user-data/index.php',
-    #     src=str(files_base / 'user-data' / 'index.php'),
-    #     # files.put uses SFTP to transfer files so we have to use
-    #     # a different base path in the case of Synology which presents a
-    #     # different filesystem hierarchy depending on which protocol you're on.
-    #     # Related bug: https://github.com/Fizzadar/pyinfra/issues/499
-    #     dest=str(host.data.pxe.sftp_rootdir / 'user-data' / 'index.php'),
-    #     create_remote_dir=False,
-    #
-    #     host=host, state=state,
-    # )
-    #
-    # files.put(
-    #     name='Ensure meta-data file',
-    #     src=str(files_base / 'meta-data'),
-    #     # files.put uses SFTP to transfer files so we have to use
-    #     # a different base path in the case of Synology which presents a
-    #     # different filesystem hierarchy depending on which protocol you're on.
-    #     # Related bug: https://github.com/Fizzadar/pyinfra/issues/499
-    #     dest=str(host.data.pxe.sftp_rootdir / 'meta-data'),
-    #     create_remote_dir=False,
-    #
-    #     host=host, state=state,
-    # )
-    #
-    # for machine in host.data.machines:
-    #     user_data_dir = host.data.pxe.sftp_rootdir / 'user-data'
-    #     files.template(
-    #         name=f'Add user-data for {machine.hostname}',
-    #         src=str(templates_base / 'user-data.j2'),
-    #         # files.template uses SFTP to transfer files so we have to use
-    #         # a different base path in the case of Synology which presents a
-    #         # different filesystem hierarchy depending on which protocol you're on.
-    #         # Related bug: https://github.com/Fizzadar/pyinfra/issues/499
-    #         dest=str(user_data_dir / str(machine.provisioning_ip)),
-    #         create_remote_dir=False,
-    #         machine=machine,
-    #
-    #         host=host, state=state,
-    #     )
+    for machine in host.data.pxe.machines:
+
+        machine_ssh_root = host.data.pxe.http.root_dir / machine.hostname
+        machine_sftp_root = host.data.pxe.http.sftp_root_dir / machine.hostname
+
+        # Synology's SFTP permissions are unusual in that they don't allow
+        # you to create directories (which we want to do in the files.template
+        # operations after this one). As a workaround to that, we're going to
+        # ensure the directory via the files.directory operation since it uses
+        # just SSH.
+        files.directory(
+            name=f"Ensure {machine_ssh_root} exists",
+            path=str(machine_ssh_root),
+            present=True,
+
+            host=host, state=state,
+        )
+
+        # files.template uses SFTP to transfer files so we have to use
+        # a different base path in the case of Synology which presents a
+        # different filesystem hierarchy depending on which protocol you're on.
+        # Related bug: https://github.com/Fizzadar/pyinfra/issues/499
+        meta_data_path = machine_sftp_root / 'meta-data'
+        files.template(
+            name=f'Render {meta_data_path}',
+            src=str(deploy_dir / 'templates' / 'meta-data.j2'),
+            dest=str(meta_data_path),
+            create_remote_dir=False,
+            machine=machine,
+
+            host=host, state=state,
+        )
+
+        # files.template uses SFTP to transfer files so we have to use
+        # a different base path in the case of Synology which presents a
+        # different filesystem hierarchy depending on which protocol you're on.
+        # Related bug: https://github.com/Fizzadar/pyinfra/issues/499
+        user_data_path = machine_sftp_root / 'user-data'
+        files.template(
+            name=f'Render {user_data_path}',
+            src=str(deploy_dir / 'templates' / 'user-data.j2'),
+            dest=str(user_data_path),
+            create_remote_dir=False,
+            machine=machine,
+
+            host=host, state=state,
+        )
