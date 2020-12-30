@@ -66,11 +66,11 @@ def configure(state=None, host=None):
 
 @deploy('Uninstall dnsmasq')
 def uninstall(state=None, host=None):
-    supported_schema_versions = [
-        'v1beta1',
+    supported_schemas = [
+        v1beta1.DnsmasqData
     ]
 
-    validate_schema_version(host.data.dnsmasq, supported_schema_versions)
+    validate_schema_version(host.data.dnsmasq, supported_schemas)
 
     if 'dnsmasq.service' in host.fact.systemd_status:
         systemd.service(
