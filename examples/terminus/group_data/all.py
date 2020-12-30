@@ -38,6 +38,7 @@ tftp = TftpData(
 
 http = HttpData(
     hostname=pxe_server_address,
+    port=8080,
     root_dir=Path('/volume4') / 'pxe' / 'http',
     sftp_root_dir=Path('/pxe') / 'http',
 )

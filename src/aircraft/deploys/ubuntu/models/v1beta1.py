@@ -55,12 +55,19 @@ class HttpData(V1Beta1BaseModel):
     provided, then it is assumed to have the same value as root_dir.
     """
     hostname: IPv4Address
+    port: Optional[int] = 80
     root_dir: Path
     sftp_root_dir: Optional[Path]
 
     @validator('sftp_root_dir', pre=True, always=True)
     def ensure_sftp_root_dir_has_a_value(cls, value, values):
         return value or values['root_dir']
+
+    def get_address(self):
+        """
+        Returns the socket address (hostname:port) of the HTTP server
+        """
+        return f'{self.hostname}:{self.port}'
 
 
 class BootfileData(V1Beta1BaseModel):
