@@ -27,7 +27,6 @@ def configure(state=None, host=None):
     validate_schema_version(host.data.pxe, supported_schema_versions)
 
     templates_base = deploy_dir / 'templates'
-    files_base = deploy_dir / 'files'
     # Make sure to strip any trailing / in os_image_source_url.path
     # otherwise the whole thing will resolve into an absolute path
     # starting only with os_image_source_url.path.
@@ -93,8 +92,6 @@ def configure(state=None, host=None):
     for bootfile in host.data.pxe.bootfiles:
 
         bootfile_ssh_dir = (host.data.pxe.tftp.root_dir / bootfile.get_path()).parent
-        bootfile_sftp_dir = \
-            (host.data.pxe.tftp.sftp_root_dir / bootfile.get_path()).parent
 
         files.directory(
             name='Ensure bootfile directory',
