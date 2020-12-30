@@ -122,7 +122,7 @@ pxe = PxeData(
             storage=storage_config,
             ethernets=[
                 dict(
-                    name='ens33',
+                    name='eno1',
                     ip_addresses=['192.168.100.11/24'],
                     nameservers=dhcp.dns_servers,
                     gateway=dhcp.router,
