@@ -1,7 +1,5 @@
-from pathlib import Path
-
-from aircraft.deploys.ubuntu.models.v1beta1 import TftpData as BaseTftpData
+from aircraft.deploys.ubuntu.models.v1beta1 import PxeData as BasePxeData
 
 
-class TftpData(BaseTftpData):
-    sftp_root_dir: Path
+class PxeData(BasePxeData):
+    pass

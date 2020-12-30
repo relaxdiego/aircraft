@@ -8,23 +8,21 @@ from pyinfra.operations import (
     server,
 )
 
+from aircraft.deploys.synology.models import v1beta1
 from aircraft.validators import validate_schema_version
 
-deploy_dir = Path(__file__).parent
+ubuntu_dir = Path(__file__).parent.parent / 'ubuntu'
 
 
-@deploy('Configure the PXE server')
+@deploy('Configure the TFTP server')
 def configure(state=None, host=None):
     supported_schema_versions = [
-        'v1beta1',
+        v1beta1.TftpData
     ]
 
-    validate_schema_version(host.data.pxe, supported_schema_versions)
+    validate_schema_version(host.data.tftp, supported_schema_versions)
 
-    templates_base = deploy_dir / 'templates' / host.data.pxe.schema_version
-    files_base = deploy_dir / 'files'
-    downloaded_iso_path = \
-        str(host.data.pxe.ssh_rootdir / host.data.pxe.os_image_filename)
+    templates_base = ubuntu_dir / 'templates'
 
     download_iso = files.download(
         name='Download OS Image',

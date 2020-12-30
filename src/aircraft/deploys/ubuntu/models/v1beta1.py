@@ -20,8 +20,6 @@ from typing import (
 
 
 class V1Beta1BaseModel(BaseModel):
-    schema_version: str = Field('v1beta1', const=True)
-
     class Config:
         # Quasi-immutable model
         allow_mutation = False
@@ -48,8 +46,21 @@ class TftpData(V1Beta1BaseModel):
 
 
 class HttpData(V1Beta1BaseModel):
+    """
+    Holds information about where to reach the HTTP server as well as
+    the path in the server where the root directory is located. The
+    optional sftp_root_dir is available for systems where the SFTP
+    subsystem of the SSH service presents a different path. Example
+    systems that do this is Synology's DSM. If sftp_root_dir is not
+    provided, then it is assumed to have the same value as root_dir.
+    """
+    hostname: IPv4Address
     root_dir: Path
-    address: IPv4Address
+    sftp_root_dir: Optional[Path]
+
+    @validator('sftp_root_dir', pre=True, always=True)
+    def ensure_sftp_root_dir_has_a_value(cls, value, values):
+        return value or values['root_dir']
 
 
 class BootfileData(V1Beta1BaseModel):

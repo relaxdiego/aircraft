@@ -5,21 +5,19 @@ from pydantic import BaseModel
 from pyinfra_cli import inventory
 inventory.ALLOWED_DATA_TYPES = tuple(inventory.ALLOWED_DATA_TYPES + (BaseModel,))
 
+from aircraft.deploys.synology.models.v1beta1 import (
+    PxeData,
+)
 from aircraft.deploys.ubuntu.models.v1beta1 import (
     BootfileData,
     DhcpData,
     DnsmasqData,
-    # HttpData,
-    # PxeData,
-    # StorageConfigData,
+    HttpData,
+    StorageConfigData,
     TftpData,
 )
 
-tftp = TftpData(
-    hostname='192.168.86.43',
-    root_dir=Path('/volume') / 'pxe' / 'tftpboot',
-    sftp_root_dir=Path('/pxe') / 'tftpboot',
-)
+pxe_server_address = '192.168.86.43'
 
 bootfiles = [
     BootfileData(
@@ -32,6 +30,18 @@ bootfiles = [
     ),
 ]
 
+tftp = TftpData(
+    hostname=pxe_server_address,
+    root_dir=Path('/volume4') / 'pxe' / 'tftpboot',
+    sftp_root_dir=Path('/pxe') / 'tftpboot',
+)
+
+http = HttpData(
+    hostname=pxe_server_address,
+    root_dir=Path('/volume4') / 'pxe' / 'http',
+    sftp_root_dir=Path('/pxe') / 'http',
+)
+
 dhcp = DhcpData(
     subnet='192.168.100.0/24',
     ranges=[
@@ -40,7 +50,6 @@ dhcp = DhcpData(
         # addresses during installation.
         dict(start='192.168.100.200', end='192.168.100.254')
     ],
-    # AKA gateway
     router='192.168.100.1',
     dns_servers=[
         '1.1.1.1',
@@ -54,4 +63,123 @@ dhcp = DhcpData(
 dnsmasq = DnsmasqData(
     interfaces=['eth0'],
     dhcp=dhcp,
+)
+
+pxe = PxeData(
+    tftp=tftp,
+    http=http,
+
+    os_image_source_url='https://releases.ubuntu.com/20.04.1/ubuntu-20.04.1-live-server-amd64.iso',  # NOQA: E501
+    os_image_sha256sum='443511f6bf12402c12503733059269a2e10dec602916c0a75263e5d990f6bb93',  # NOQA: E501
+
+    bootfiles=bootfiles,
+
+    machines=[
+        dict(
+            hostname='kvm-1',
+            storage=StorageConfigData(
+                disks=[
+                    {
+                        'path': '/dev/sda',
+                        'partitions': [
+                            {
+                                'size': 536870912,  # 512MB
+                                'format': 'fat32',
+                                'mount_path': '/boot/efi',
+                                'flag': 'boot',
+                                'grub_device': True,
+                            },
+                            {
+                                'size': 1073741824,  # 1GB
+                                'format': 'ext4',
+                                'mount_path': '/boot',
+                            },
+                            {
+                                'id': 'partition-for-ubuntu-vg',
+                                'size': 214748364800,  # 200GB
+                            },
+                        ],
+                    },
+                ],
+                lvm_volgroups=[
+                    {
+                        'name': 'ubuntu-vg',
+                        'devices': [
+                            'partition-for-ubuntu-vg'
+                        ],
+                        'logical_volumes': [
+                            {
+                                'name': 'ubuntu-lv',
+                                'size': 161061273600,  # 150GB
+                                'format': 'ext4',
+                                'mount_path': '/',
+                            }
+                        ]
+                    }
+                ]
+            ),
+            ethernets=[
+                dict(
+                    name='eno1',
+                    ip_addresses=['192.168.100.11/24'],
+                    nameservers=dhcp.dns_servers,
+                    gateway=dhcp.router,
+                ),
+            ],
+        ),
+        dict(
+            hostname='kvm-2',
+            storage=StorageConfigData(
+                disks=[
+                    {
+                        'path': '/dev/sda',
+                        'partitions': [
+                            {
+                                'size': 536870912,  # 512MB
+                                'format': 'fat32',
+                                'mount_path': '/boot/efi',
+                                'flag': 'boot',
+                                'grub_device': True,
+                            },
+                            {
+                                'size': 1073741824,  # 1GB
+                                'format': 'ext4',
+                                'mount_path': '/boot',
+                            },
+                            {
+                                'id': 'partition-for-ubuntu-vg',
+                                'size': 214748364800,  # 200GB
+                            },
+                        ],
+                    },
+                ],
+                lvm_volgroups=[
+                    {
+                        'name': 'ubuntu-vg',
+                        'devices': [
+                            'partition-for-ubuntu-vg'
+                        ],
+                        'logical_volumes': [
+                            {
+                                'name': 'ubuntu-lv',
+                                'size': 161061273600,  # 150GB
+                                'format': 'ext4',
+                                'mount_path': '/',
+                            }
+                        ]
+                    }
+                ]
+            ),
+            ethernets=[
+                dict(
+                    name='eno1',
+                    ip_addresses=['192.168.100.12/24'],
+                    nameservers=dhcp.dns_servers,
+                    gateway=dhcp.router,
+                ),
+            ],
+        ),
+    ],
+
+    preserve_files_on_uninstall=True,
 )
