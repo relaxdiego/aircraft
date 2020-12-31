@@ -2,7 +2,6 @@ from ipaddress import (
     AddressValueError,
     IPv4Interface,
 )
-from urllib.parse import urlparse
 
 
 # ==========
@@ -13,13 +12,6 @@ class InvalidIPAddressError(ValueError):
 
     def __init__(self, ip_address):
         msg = f"'{ip_address}' must use CIDR notation."
-        super().__init__(msg)
-
-
-class StringIsNotAUrlError(ValueError):
-
-    def __init__(self, url):
-        msg = f"'{url}' is not a valid URL."
         super().__init__(msg)
 
 
@@ -48,9 +40,3 @@ def validate_schema_version(data, supported_schema_versions):
             data,
             supported_schema_versions
         )
-
-
-def validate_url(url):
-    result = urlparse(url)
-    if result.scheme == '' and result.netloc == '':
-        raise StringIsNotAUrlError(url)
