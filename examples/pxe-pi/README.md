@@ -4,8 +4,9 @@ Given
 * An L2 network that DOESN'T have a DCHP server but DOES have a gateway
   allowing outgoing connections all the way to the Internet.
 
-* An Pi running Ubuntu in the L2 network that provides key-based auth SSH
-  and passwordless sudo.
+* A Raspberry Pi running Ubuntu in the L2 network that provides key-based
+  auth SSH and passwordless sudo. TIP: If you don't have a Pi handy, it
+  can actually be any machine running Ubuntu.
 
 
 Network Layout
