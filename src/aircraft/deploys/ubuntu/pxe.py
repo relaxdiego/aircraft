@@ -20,6 +20,10 @@ def configure(state=None, host=None):
 
     validate_schema_version(host.data.pxe, supported_schema_versions)
 
+    #
+    # Download bootfile(s) and rener grubg.cfg
+    #
+
     for bootfile in host.data.pxe.bootfiles:
         bootfile_dir = (host.data.pxe.tftp.root_dir / bootfile.get_path()).parent
 
@@ -53,6 +57,10 @@ def configure(state=None, host=None):
         host=host, state=state,
     )
 
+    #
+    # Download the OS installer image
+    #
+
     iso_path = \
         host.data.pxe.http.root_dir / host.data.pxe.os_image_source_url.path.lstrip('/')
 
@@ -74,6 +82,10 @@ def configure(state=None, host=None):
 
         host=host, state=state,
     )
+
+    #
+    # Extract the kernel and ram disk image for use by the bootloader
+    #
 
     kernel_path = str(host.data.pxe.tftp.root_dir / 'vmlinuz')
     initrd_path = str(host.data.pxe.tftp.root_dir / 'initrd')
@@ -112,6 +124,10 @@ def configure(state=None, host=None):
         host=host, state=state
     )
 
+    #
+    # Render the machine-specific user-data and meta-data files
+    #
+
     for machine in host.data.pxe.machines:
         meta_data_path = host.data.pxe.http.root_dir / machine.hostname / 'meta-data'
         files.template(
@@ -137,6 +153,8 @@ def configure(state=None, host=None):
             host=host, state=state,
         )
 
+    # TODO: Check if this should be moved to apache2.py and if doing that requires
+    #       that pxe.configure be executed prior to apache2.configure
     files.directory(
         name=f"Ensure www-data has read permissions in {host.data.pxe.http.root_dir}",
         path=str(host.data.pxe.http.root_dir),
