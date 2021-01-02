@@ -1,0 +1,60 @@
+#!/bin/bash
+set -ex
+
+runcfg=/opt/vyatta/sbin/vyatta-cfg-cmd-wrapper
+runop=/opt/vyatta/bin/vyatta-op-cmd-wrapper
+
+$runcfg begin
+
+if $runcfg show service dhcp-server \
+        shared_network-name {{host.data.dhcp.shared_network_name}} \
+        subnet {{host.data.dhcp.subnet}} | grep -v 'path is not valid' &>/dev/null; then
+    echo "Deleting existing DHCP server for {{host.data.dhcp.subnet}}"
+    $runcfg delete service dhcp-server \
+        shared-network-name {{host.data.dhcp.shared_network_name}} \
+        subnet {{host.data.dhcp.subnet}}
+fi
+
+$runcfg set service dhcp-server \
+    shared-network-name {{host.data.dhcp.shared_network_name}} \
+    subnet {{host.data.dhcp.subnet}} \
+    start {{host.data.dhcp.ranges[0].start}} \
+    stop {{host.data.dhcp.ranges[0].end}}
+
+$runcfg set service dhcp-server \
+    shared-network-name {{host.data.dhcp.shared_network_name}} \
+    subnet {{host.data.dhcp.subnet}} \
+    default-router {{host.data.dhcp.router}}
+
+$runcfg set service dhcp-server \
+    shared-network-name {{host.data.dhcp.shared_network_name}} \
+    subnet {{host.data.dhcp.subnet}} \
+    dns-server {{host.data.dhcp.dns_servers[0]}}
+
+$runcfg set service dhcp-server \
+    shared-network-name {{host.data.dhcp.shared_network_name}} \
+    subnet {{host.data.dhcp.subnet}} \
+    bootfile-server {{host.data.dhcp.tftp_server_name}}
+
+$runcfg set service dhcp-server \
+    shared-network-name {{host.data.dhcp.shared_network_name}} \
+    subnet {{host.data.dhcp.subnet}} \
+    subnet-parameters "{{host.data.dhcp.subnet_parameters}}"
+
+$runcfg set service dhcp-server \
+    shared-network-name {{host.data.dhcp.shared_network_name}} \
+    subnet {{host.data.dhcp.subnet}} \
+    bootfile-name "{{host.data.dhcp.bootfiles[0].get_path()}}"
+
+if $runcfg show service dhcp-server \
+        shared_network-name {{host.data.dhcp.shared_network_name}} \
+        disable | grep -v 'path is not valid' &>/dev/null; then
+    echo "Enabling DHCP server for {{host.data.dhcp.subnet}}"
+    $runcfg delete service dhcp-server \
+        shared-network-name {{host.data.dhcp.shared_network_name}} \
+        disable
+fi
+
+$runcfg commit
+$runcfg save
+$runcfg end
