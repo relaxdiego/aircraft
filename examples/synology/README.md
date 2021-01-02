@@ -25,7 +25,7 @@ NOTE: As much as I wanted to automate all that Synology requirement, there's
 Network Layout
 --------------
 
-The network layout is illustrated in [this diagram](https://docs.google.com/drawings/d/1QUKOCMXUo2vTudtBiqDe79aknTaEWyukA7ucoZuZ5tk/edit).
+The network layout is illustrated in [this diagram](https://docs.google.com/drawings/d/1QUKOCMXUo2vTudtBiqDe79aknTaEWyukA7ucoZuZ5tk/edit?usp=sharing).
 Notice how the Synology NAS does not have to be located in the L2 Lab Net as
 long as it is routable. If you have the L2 gateway's configuration properly
 set up, then it should work as fine.
