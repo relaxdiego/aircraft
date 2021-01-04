@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from aircraft.deploys.ubuntu.models.v1beta1 import HttpData
+from aircraft.deploys.ubuntu.models.v1beta2 import HttpData
 
 
 class HttpDataTest(TestCase):
