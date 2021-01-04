@@ -1,7 +1,7 @@
 from unittest import TestCase
 
 
-from aircraft.deploys.ubuntu.models.v1beta1 import TftpData
+from aircraft.deploys.ubuntu.models.v1beta2 import TftpData
 
 
 class TftpDataTest(TestCase):
