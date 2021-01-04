@@ -8,6 +8,7 @@
 __pycache__
 build/
 dist/
+examples/_*
 htmlcov
 # Do not check in requirements.txt since aircraft is a library and
 # we need it to play nice with a wide number of other libraries
