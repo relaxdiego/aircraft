@@ -14,24 +14,7 @@ autoinstall:
     toggle: null
     variant: ''
   locale: C
-  network:
-    version: 2
-    ethernets:
-    {%- for eth in machine.ethernets %}
-      {{eth.name}}:
-        dhcp4: false
-        critical: true
-        addresses:
-        {%- for addr in eth.ip_addresses %}
-        - {{addr}}
-        {%- endfor %}
-        nameservers:
-          addresses:
-          {%- for addr in eth.nameservers %}
-          - {{addr}}
-          {%- endfor %}
-        gateway4: {{eth.gateway}}
-    {%- endfor %}
+{% machine.network.export_netplan_v2() %}
   ssh:
     allow-pw: false
     install-server: true
