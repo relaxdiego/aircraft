@@ -137,10 +137,24 @@ class NetworkConfigData(BaseModel):
     data and reducing errors. Example:
 
         network_config = NetworkConfigData({
-            ethernetes=[
+            ethernets=[
                 {
                     'name': 'eno1',
                     'dhcp4': False,
+                },
+                {
+                    'name': 'eno2',
+                    'dhcp4': False,
+                }
+            ],
+            bonds=[
+                {
+                    'name': 'bond0',
+                    'dhcp4': False,
+                    'interfaces': [
+                        'eno1',
+                        'eno2'
+                    ]
                     'vlans': [
                         {
                             'id': 147,
@@ -149,6 +163,21 @@ class NetworkConfigData(BaseModel):
                                 '192.168.93.132/24'
                             ]
                         }
+                    ],
+                    'parameters': {
+                        'mode': 'active-backup',
+                        'primary': 'enp3s0',
+                    }
+                }
+            ],
+            bridges=[
+                {
+                    'name': 'br0',
+                    'addresses': [
+                        '192.168.94.100/24',
+                    ],
+                    interfaces=[
+                        'bond0',
                     ]
                 }
             ]
@@ -161,6 +190,7 @@ class NetworkConfigData(BaseModel):
     bonds: List[NetworkBondConfigData] = []
     bridges: List[NetworkBridgeConfigData] = []
 
+    # TODO: Move to NetworkBondConfigData as export_netplan_v2()
     def export_bonds(self):
         return {
             'bonds': {
@@ -169,6 +199,7 @@ class NetworkConfigData(BaseModel):
             },
         }
 
+    # TODO: Move to NetworkBridgeConfigData as export_netplan_v2()
     def export_bridges(self):
         return {
             'bridges': {
@@ -179,6 +210,7 @@ class NetworkConfigData(BaseModel):
             }
         }
 
+    # TODO: Move to NetworkEthernetConfigData as export_netplan_v2()
     def export_ethernets(self):
         return {
             'ethernets': {
@@ -203,6 +235,8 @@ class NetworkConfigData(BaseModel):
 
         return textwrap.indent(yaml.dump(netplan_dict), " " * indent)
 
+    # TODO: Distribute across the various models it calls and (maybe)
+    #       make it a part of their export_netplan_v2() methods.
     def export_vlans(self):
         return {
             'vlans': {
