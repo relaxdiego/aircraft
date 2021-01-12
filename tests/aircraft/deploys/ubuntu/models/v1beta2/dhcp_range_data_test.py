@@ -1,7 +1,7 @@
 import pytest
 from unittest import TestCase
 
-from aircraft.deploys.ubuntu.models.v1beta1 import DhcpRangeData
+from aircraft.deploys.ubuntu.models.v1beta2 import DhcpRangeData
 
 
 class DhcpRangeDataTest(TestCase):
