@@ -102,6 +102,9 @@ class NetworkBondConfigParametersData(BaseModel):
 class NetworkVlanConfigData(NetworkDeviceBaseModel):
     id: int
 
+    def export_netplan_v2(self):
+        return self.dict(exclude_none=True)
+
 
 class NetworkBondConfigData(BaseModel):
     name: str
@@ -109,6 +112,9 @@ class NetworkBondConfigData(BaseModel):
     interfaces: List[str]
     parameters: NetworkBondConfigParametersData
     vlans: List[NetworkVlanConfigData] = []
+
+    def export_netplan_v2(self):
+        return self.dict(by_alias=True, exclude={'name', 'vlans'})
 
 
 class NetworkBridgeParametersData(BaseModel):
@@ -121,12 +127,19 @@ class NetworkBridgeConfigData(NetworkDeviceBaseModel):
     interfaces: List[str]
     name: str
     parameters: NetworkBridgeParametersData
+    vlans: List[NetworkVlanConfigData] = []
+
+    def export_netplan_v2(self):
+        return self.dict(by_alias=True, exclude={'name', 'vlans'}, exclude_none=True)
 
 
 class NetworkEthernetConfigData(BaseModel):
     name: str
     dhcp4: bool
     vlans: List[NetworkVlanConfigData] = []
+
+    def export_netplan_v2(self):
+        return self.dict(by_alias=True, exclude={'name', 'vlans'})
 
 
 class NetworkConfigData(BaseModel):
@@ -190,71 +203,33 @@ class NetworkConfigData(BaseModel):
     bonds: List[NetworkBondConfigData] = []
     bridges: List[NetworkBridgeConfigData] = []
 
-    # TODO: Move to NetworkBondConfigData as export_netplan_v2()
-    def export_bonds(self):
-        return {
-            'bonds': {
-                bond.name: bond.dict(by_alias=True, exclude={'name', 'vlans'})
-                for bond in self.bonds
-            },
-        }
-
-    # TODO: Move to NetworkBridgeConfigData as export_netplan_v2()
-    def export_bridges(self):
-        return {
-            'bridges': {
-                bridge.name: bridge.dict(by_alias=True,
-                                         exclude={'name'},
-                                         exclude_none=True)
-                for bridge in self.bridges
-            }
-        }
-
-    # TODO: Move to NetworkEthernetConfigData as export_netplan_v2()
-    def export_ethernets(self):
-        return {
-            'ethernets': {
-                ethernet.name: {
-                    'dhcp4': ethernet.dhcp4
-                }
-                for ethernet in self.ethernets
-            },
-        }
-
     def export_netplan_v2(self, format='yaml', indent=0):
+        # TODO: See if there's a cleaner way to export vlans below
         netplan_dict = {
             'network': {
                 'version': 2,
                 'renderer': 'networkd',
-                **self.export_ethernets(),
-                **self.export_bonds(),
-                **self.export_vlans(),
-                **self.export_bridges(),
+                'ethernets': {
+                    ethernet.name: ethernet.export_netplan_v2()
+                    for ethernet in self.ethernets
+                },
+                'bonds': {
+                    bond.name: bond.export_netplan_v2()
+                    for bond in self.bonds
+                },
+                'bridges': {
+                    bridge.name: bridge.export_netplan_v2()
+                    for bridge in self.bridges
+                },
+                'vlans': {
+                    f"{device.name}.{vlan.id}": {
+                        **vlan.export_netplan_v2(),
+                        'link': device.name
+                    }
+                    for device in self.ethernets + self.bonds + self.bridges
+                    for vlan in device.vlans
+                }
             }
         }
 
         return textwrap.indent(yaml.dump(netplan_dict), " " * indent)
-
-    # TODO: Distribute across the various models it calls and (maybe)
-    #       make it a part of their export_netplan_v2() methods.
-    def export_vlans(self):
-        return {
-            'vlans': {
-                **{
-                    f"{device.name}.{vlan.id}": {
-                        **vlan.dict(exclude_none=True),
-                        'link': device.name,
-                    }
-                    for device in self.ethernets
-                    for vlan in device.vlans
-                },
-                **{
-                    f"{device.name}.{vlan.id}": {
-                        **vlan.dict(exclude_none=True),
-                        'link': device.name,
-                    }
-                    for device in self.bonds
-                    for vlan in device.vlans
-                },
-            }
-        }

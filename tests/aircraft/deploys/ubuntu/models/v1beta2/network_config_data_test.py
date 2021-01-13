@@ -211,32 +211,3 @@ def test__exports_a_valid_netplan_v2_config_for_user_data(valid_config_dict):
             ),
             "  "
     )
-
-
-def test__exports_vlans(valid_config_dict):
-    assert NetworkConfigData(**valid_config_dict).export_vlans() == {
-        'vlans': {
-            'bond0.142': {
-                'id': 142,
-                'link': 'bond0',
-                'dhcp4': False
-            },
-            'bond0.143': {
-                'id': 143,
-                'link': 'bond0',
-                'dhcp4': False
-            },
-            'bond1.147': {
-                'id': 147,
-                'link': 'bond1',
-                'addresses': ['192.168.93.132/25'],
-                'dhcp4': False
-            },
-            'bond1.148': {
-                'id': 148,
-                'link': 'bond1',
-                'addresses': ['192.168.122.4/24'],
-                'dhcp4': False
-            },
-        }
-    }
