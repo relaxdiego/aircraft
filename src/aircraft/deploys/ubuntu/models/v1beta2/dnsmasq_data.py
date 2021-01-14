@@ -5,6 +5,7 @@ from typing import (
 
 from .base_model import BaseModel
 from .dhcp_data import DhcpData
+from .dns_data import DnsData
 from .tftp_data import TftpData
 
 
@@ -18,7 +19,5 @@ class DnsmasqData(BaseModel):
     """
     interfaces: List[str] = []
     dhcp: Optional[DhcpData]
+    dns: Optional[DnsData]
     tftp: Optional[TftpData]
-
-    # TODO: Implement me
-    # dns: Optional[DnsData]
