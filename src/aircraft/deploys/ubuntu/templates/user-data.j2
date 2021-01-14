@@ -14,7 +14,7 @@ autoinstall:
     toggle: null
     variant: ''
   locale: C
-{% machine.network.export_netplan_v2() %}
+{{ machine.network.export_netplan_v2(indent=2) }}
   ssh:
     allow-pw: false
     install-server: true
