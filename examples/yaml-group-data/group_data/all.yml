@@ -1,10 +1,18 @@
+# TIP: To validate this file, run:
+#
+#     python examples/yaml-group-data/all.py
+#
+# Any schema violations will be reported accordingly by pydantic
+
 pxe_server_address:  &pxe_server_address  192.168.86.43
 tftp_server_address: &tftp_server_address 192.168.86.43
+
 
 http: &http
   hostname: *pxe_server_address
   port:     8080
   root_dir: '/opt/relaxdiego.com/pxe/http'
+
 
 dnsmasq:
   interfaces:
