@@ -1,6 +1,4 @@
-from aircraft.deploys.ubuntu.models.v1beta1 import (
-    DhcpData as BaseDhcpData,
-)
+from aircraft.deploys.ubuntu.models.v1beta2 import DhcpData as BaseDhcpData
 
 
 class DhcpData(BaseDhcpData):
