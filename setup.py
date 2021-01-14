@@ -7,8 +7,8 @@
 runtime_requirements = [
     "click",
     "privy",
-    "pydantic",
-    "pyinfra",
+    "pydantic>=1.7.0,<2.0.0",
+    "pyinfra>=1.3.2,<2.0.0",
     "pyyaml",
 ]
 
