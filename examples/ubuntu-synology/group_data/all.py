@@ -1,14 +1,9 @@
 from pathlib import Path
 
-# Workaround for bug https://github.com/Fizzadar/pyinfra/issues/496
-from pydantic import BaseModel
-from pyinfra_cli import inventory
-inventory.ALLOWED_DATA_TYPES = tuple(inventory.ALLOWED_DATA_TYPES + (BaseModel,))
-
-from aircraft.deploys.synology.models.v1beta1 import (
+from aircraft.deploys.synology.models.v1beta2 import (
     PxeData,
 )
-from aircraft.deploys.ubuntu.models.v1beta1 import (
+from aircraft.deploys.ubuntu.models.v1beta2 import (
     BootfileData,
     DhcpData,
     DnsmasqData,
@@ -120,28 +115,38 @@ pxe = PxeData(
 
     machines=[
         dict(
-            hostname='maas-1',
+            hostname='kvm-1',
             storage=storage_config,
-            ethernets=[
-                dict(
-                    name='eno1',
-                    ip_addresses=['192.168.100.11/24'],
-                    nameservers=dhcp.dns_servers,
-                    gateway=dhcp.router,
-                ),
-            ],
+            network=dict(
+                ethernets=[
+                    dict(
+                        name='eno1',
+                        dhcp4=False,
+                        addresses=['192.168.100.11/24'],
+                        nameservers=dict(
+                            addresses=dhcp.dns_servers,
+                        ),
+                        gateway4=dhcp.router,
+                    ),
+                ],
+            ),
         ),
         dict(
-            hostname='maas-2',
+            hostname='kvm-2',
             storage=storage_config,
-            ethernets=[
-                dict(
-                    name='eno1',
-                    ip_addresses=['192.168.100.12/24'],
-                    nameservers=dhcp.dns_servers,
-                    gateway=dhcp.router,
-                ),
-            ],
+            network=dict(
+                ethernets=[
+                    dict(
+                        name='eno1',
+                        dhcp4=False,
+                        addresses=['192.168.100.12/24'],
+                        nameservers=dict(
+                            addresses=dhcp.dns_servers,
+                        ),
+                        gateway4=dhcp.router,
+                    ),
+                ],
+            ),
         ),
     ],
 )

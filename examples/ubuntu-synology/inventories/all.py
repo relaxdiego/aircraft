@@ -2,7 +2,7 @@
 # sudo configured for pyinfra to function correctly.
 
 dhcp_server = [
-    # Any Ubuntu server
+    # Any Ubuntu server. Could even be a Pi running Ubuntu
     '192.168.86.21'
 ]
 pxe_server = [
