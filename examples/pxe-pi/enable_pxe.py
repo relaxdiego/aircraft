@@ -12,6 +12,7 @@ apt.update(
     name="Update apt cache",
     cache_time=2592000,  # 30 days
     touch_periodic=True,
+    sudo=True,
 )
 
 # Consumes host.data.dnsmasq
