@@ -10,7 +10,6 @@ tftp_server_address: &tftp_server_address 192.168.86.43
 
 http: &http
   hostname: *pxe_server_address
-  port:     8080
   root_dir: '/opt/relaxdiego.com/pxe/http'
 
 
