@@ -9,6 +9,7 @@ from pydantic import (
 import textwrap
 from typing import (
     List,
+    Union,
 )
 import yaml
 
@@ -80,12 +81,13 @@ class NetworkNameServersBaseModel(BaseModel):
 class NetworkDeviceBaseModel(BaseModel):
     addresses: CidrAddressesList = None
     dhcp4: bool
-    gateway4: str = None
+    gateway4: Union[str, IPv4Address] = None
     nameservers: NetworkNameServersBaseModel = None
     mtu: int = None
 
     @validator('gateway4')
     def ensure_gateway_is_ip_address(cls, value):
+        value = str(value)
         try:
             IPv4Address(value)
         except ValueError as e:
@@ -106,15 +108,14 @@ class NetworkVlanConfigData(NetworkDeviceBaseModel):
         return self.dict(exclude_none=True)
 
 
-class NetworkBondConfigData(BaseModel):
+class NetworkBondConfigData(NetworkDeviceBaseModel):
     name: str
-    dhcp4: bool
     interfaces: List[str]
     parameters: NetworkBondConfigParametersData
     vlans: List[NetworkVlanConfigData] = []
 
     def export_netplan_v2(self):
-        return self.dict(by_alias=True, exclude={'name', 'vlans'})
+        return self.dict(by_alias=True, exclude={'name', 'vlans'}, exclude_none=True)
 
 
 class NetworkBridgeParametersData(BaseModel):
@@ -124,8 +125,8 @@ class NetworkBridgeParametersData(BaseModel):
 
 
 class NetworkBridgeConfigData(NetworkDeviceBaseModel):
-    interfaces: List[str]
     name: str
+    interfaces: List[str]
     parameters: NetworkBridgeParametersData
     vlans: List[NetworkVlanConfigData] = []
 
@@ -133,13 +134,12 @@ class NetworkBridgeConfigData(NetworkDeviceBaseModel):
         return self.dict(by_alias=True, exclude={'name', 'vlans'}, exclude_none=True)
 
 
-class NetworkEthernetConfigData(BaseModel):
+class NetworkEthernetConfigData(NetworkDeviceBaseModel):
     name: str
-    dhcp4: bool
     vlans: List[NetworkVlanConfigData] = []
 
     def export_netplan_v2(self):
-        return self.dict(by_alias=True, exclude={'name', 'vlans'})
+        return self.dict(by_alias=True, exclude={'name', 'vlans'}, exclude_none=True)
 
 
 class NetworkConfigData(BaseModel):

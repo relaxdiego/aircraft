@@ -6,7 +6,7 @@ from pyinfra.operations import (
     server,
 )
 
-from aircraft.deploys.edge_os.models import v1beta1
+from aircraft.deploys.edge_os.models import v1beta2
 from aircraft.validators import validate_schema_version
 
 deploy_dir = Path(__file__).parent
@@ -15,7 +15,7 @@ deploy_dir = Path(__file__).parent
 @deploy('Configure EdgeOS DHCP')
 def configure(state=None, host=None):
     supported_schema_versions = [
-        v1beta1.DhcpData,
+        v1beta2.DhcpData,
     ]
 
     validate_schema_version(host.data.dhcp, supported_schema_versions)
@@ -43,7 +43,7 @@ def configure(state=None, host=None):
 @deploy('Delete EdgeOS DHCP Service')
 def delete(state=None, host=None):
     supported_schema_versions = [
-        v1beta1.DhcpData,
+        v1beta2.DhcpData,
     ]
 
     validate_schema_version(host.data.dhcp, supported_schema_versions)
