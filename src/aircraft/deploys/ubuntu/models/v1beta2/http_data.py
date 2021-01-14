@@ -28,7 +28,7 @@ class HttpData(BaseModel):
 
     @validator('sftp_root_dir', pre=True, always=True)
     def ensure_sftp_root_dir_has_a_value(cls, value, values):
-        return value or values['root_dir']
+        return value or values.get('root_dir', None)
 
     def get_address(self):
         """
