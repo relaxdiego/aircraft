@@ -42,7 +42,7 @@ class AddressesList(list):
                 IPv4Address(addr)
             except ValueError as e:
                 raise ValueError(f"{addr} is not a valid IP address") from e
-        return addresses
+        return [str(address) for address in addresses]
 
 
 class CidrAddressesList(list):
@@ -71,7 +71,7 @@ class CidrAddressesList(list):
                 IPv4Interface(addr)
             except ValueError as e:
                 raise ValueError(f"{addr} must be in CIDR notation") from e
-        return addresses
+        return [str(address) for address in addresses]
 
 
 class NetworkNameServersBaseModel(BaseModel):

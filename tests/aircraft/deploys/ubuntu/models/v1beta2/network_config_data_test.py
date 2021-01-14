@@ -1,3 +1,7 @@
+from ipaddress import (
+    IPv4Address,
+    IPv4Interface,
+)
 import pytest
 import textwrap
 import yaml
@@ -12,6 +16,11 @@ def valid_config_dict():
             {
                 'name': 'eno1',
                 'dhcp4': False,
+                'nameservers': {
+                    'addresses': [
+                        IPv4Address('192.168.100.1'),
+                    ]
+                }
             },
             {
                 'name': 'eno2',
@@ -61,7 +70,7 @@ def valid_config_dict():
                         'id': 147,
                         'dhcp4': False,
                         'addresses': [
-                            '192.168.93.132/25',
+                            IPv4Interface('192.168.93.132/25'),
                         ]
                     },
                     {
@@ -133,6 +142,9 @@ def test__exports_a_valid_netplan_v2_config_for_user_data(valid_config_dict):
                       ethernets:
                         eno1:
                           dhcp4: no
+                          nameservers:
+                            addresses:
+                                - 192.168.100.1
                         eno2:
                           dhcp4: no
                         eno3:
