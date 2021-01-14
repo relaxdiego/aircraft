@@ -59,6 +59,8 @@ dhcp = DhcpData(
 dnsmasq = DnsmasqData(
     interfaces=['eth0'],
     dhcp=dhcp,
+    # tftp is served by synology so we don't define it here
+    # unlike in the pxe-pi and yaml-group-data examples
 )
 
 
