@@ -35,6 +35,7 @@ setup(
     url='https://github.com/relaxdiego/aircraft',
     python_requires='~=3.6',
     package_dir={'': 'src'},
+    include_package_data=True,
     packages=find_packages('src'),
     entry_points={
         'console_scripts': [
