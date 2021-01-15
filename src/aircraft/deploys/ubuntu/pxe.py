@@ -83,6 +83,22 @@ def configure(state=None, host=None):
         host=host, state=state,
     )
 
+    # This deploy only supports serving one OS version for now and
+    # to ensure that the extracted bootstrap kernel and ramdisk come
+    # from the correct ISO, we use this template as one of the signals
+    # in the extraction logic further down. Without this, the OS version
+    # being served might change but the bootstrap kernel and ramdisk
+    # might not.
+    current_os = files.template(
+        name='Signal Current OS',
+        src=str(deploy_dir / 'templates' / 'current-os.j2'),
+        dest=str(host.data.pxe.tftp.root_dir / 'current-os'),
+        pxe=host.data.pxe,
+        sudo=True,
+
+        host=host, state=state,
+    )
+
     #
     # Extract the kernel and ram disk image for use by the bootloader
     #
@@ -92,7 +108,8 @@ def configure(state=None, host=None):
 
     if host.fact.file(kernel_path) is None or \
        host.fact.file(initrd_path) is None or \
-       download_iso.changed:
+       download_iso.changed or \
+       current_os.changed:
         server.shell(
             name='Mount the ISO to /mnt',
             commands=[
