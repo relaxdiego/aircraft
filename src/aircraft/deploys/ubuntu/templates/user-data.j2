@@ -65,3 +65,5 @@ autoinstall:
       uri: http://archive.ubuntu.com/ubuntu
     - arches: [default]
       uri: http://ports.ubuntu.com/ubuntu-ports
+  late-commands:
+    - "curtin in-target --target=/target -- echo 'ubuntu ALL=(ALL) NOPASSWD:ALL' > /target/etc/sudoers.d/ubuntu"
