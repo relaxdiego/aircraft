@@ -21,7 +21,7 @@ def configure(state=None, host=None):
     validate_schema_version(host.data.pxe, supported_schema_versions)
 
     #
-    # Download bootfile(s) and rener grubg.cfg
+    # Download bootfile(s) and render grubg.cfg
     #
 
     for bootfile in host.data.pxe.bootfiles:
@@ -51,8 +51,8 @@ def configure(state=None, host=None):
         src=str(deploy_dir / 'templates' / 'grub.cfg.j2'),
         dest=str(host.data.pxe.tftp.root_dir / 'grub' / 'grub.cfg'),
         pxe=host.data.pxe,
+        os_name=Path(host.data.pxe.installer.image_source_url.path).stem,
         sudo=True,
-        os_name=Path(host.data.pxe.os_image_source_url.path).stem,
 
         host=host, state=state,
     )
@@ -61,8 +61,9 @@ def configure(state=None, host=None):
     # Download the OS installer image
     #
 
-    iso_path = \
-        host.data.pxe.http.root_dir / host.data.pxe.os_image_source_url.path.lstrip('/')
+    iso_path = host.data.pxe.http.root_dir.joinpath(
+        host.data.pxe.installer.image_source_url.path.lstrip('/')
+    )
 
     files.directory(
         name=f"Ensure {iso_path.parent}",
@@ -73,11 +74,11 @@ def configure(state=None, host=None):
         host=host, state=state,
     )
 
-    download_iso = files.download(
-        name=f'Download OS Image to {iso_path}',
-        src=str(host.data.pxe.os_image_source_url),
+    download_installer = files.download(
+        name=f'Download Installer Image to {iso_path}',
+        src=str(host.data.pxe.installer.image_source_url),
         dest=str(iso_path),
-        sha256sum=host.data.pxe.os_image_sha256sum,
+        sha256sum=host.data.pxe.installer.image_sha256sum,
         sudo=True,
 
         host=host, state=state,
@@ -89,8 +90,8 @@ def configure(state=None, host=None):
     # in the extraction logic further down. Without this, the OS version
     # being served might change but the bootstrap kernel and ramdisk
     # might not.
-    current_os = files.template(
-        name='Signal Current OS',
+    current_installer = files.template(
+        name='Signal Current Installer',
         src=str(deploy_dir / 'templates' / 'current-os.j2'),
         dest=str(host.data.pxe.tftp.root_dir / 'current-os'),
         pxe=host.data.pxe,
@@ -108,8 +109,8 @@ def configure(state=None, host=None):
 
     if host.fact.file(kernel_path) is None or \
        host.fact.file(initrd_path) is None or \
-       download_iso.changed or \
-       current_os.changed:
+       download_installer.changed or \
+       current_installer.changed:
         server.shell(
             name='Mount the ISO to /mnt',
             commands=[
