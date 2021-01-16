@@ -7,7 +7,7 @@ from pyinfra.operations import (
     systemd,
 )
 
-from aircraft.deploys.ubuntu.models import v1beta2
+from aircraft.deploys.ubuntu.models import v1beta3
 from aircraft.validators import validate_schema_version
 
 deploy_dir = Path(__file__).parent
@@ -16,7 +16,7 @@ deploy_dir = Path(__file__).parent
 @deploy('Configure dnsmasq')
 def configure(state=None, host=None):
     supported_schemas = [
-        v1beta2.DnsmasqData
+        v1beta3.DnsmasqData
     ]
 
     validate_schema_version(host.data.dnsmasq, supported_schemas)
@@ -67,7 +67,7 @@ def configure(state=None, host=None):
 @deploy('Uninstall dnsmasq')
 def uninstall(state=None, host=None):
     supported_schemas = [
-        v1beta2.DnsmasqData
+        v1beta3.DnsmasqData
     ]
 
     validate_schema_version(host.data.dnsmasq, supported_schemas)

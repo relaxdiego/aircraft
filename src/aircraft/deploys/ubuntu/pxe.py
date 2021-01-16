@@ -6,7 +6,7 @@ from pyinfra.operations import (
     server,
 )
 
-from aircraft.deploys.ubuntu.models import v1beta2
+from aircraft.deploys.ubuntu.models import v1beta3
 from aircraft.validators import validate_schema_version
 
 deploy_dir = Path(__file__).parent
@@ -15,7 +15,7 @@ deploy_dir = Path(__file__).parent
 @deploy('Configure PXE files')
 def configure(state=None, host=None):
     supported_schema_versions = [
-        v1beta2.PxeData,
+        v1beta3.PxeData,
     ]
 
     validate_schema_version(host.data.pxe, supported_schema_versions)
