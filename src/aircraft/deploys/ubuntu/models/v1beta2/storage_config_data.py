@@ -135,7 +135,7 @@ class StorageDiskConfigData(BaseModel):
 
 class StorageConfigData(BaseModel):
     disks: List[StorageDiskConfigData]
-    lvm_volgroups: List[StorageLvmVolGroupConfigData]
+    lvm_volgroups: List[StorageLvmVolGroupConfigData] = []
 
     def export_disks(self):
         return [disk.export() for disk in self.disks]
