@@ -92,8 +92,8 @@ def configure(state=None, host=None):
     # might not.
     current_installer = files.template(
         name='Signal Current Installer',
-        src=str(deploy_dir / 'templates' / 'current-os.j2'),
-        dest=str(host.data.pxe.tftp.root_dir / 'current-os'),
+        src=str(deploy_dir / 'templates' / 'current-installer.j2'),
+        dest=str(host.data.pxe.tftp.root_dir / 'current-installer'),
         pxe=host.data.pxe,
         sudo=True,
 
