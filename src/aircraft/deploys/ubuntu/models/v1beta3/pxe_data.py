@@ -13,13 +13,13 @@ from .tftp_data import TftpData
 from .http_data import HttpData
 
 
-class InstallerTypeEnum(str, Enum):
+class InstallerType(str, Enum):
     autoinstall_v1 = 'autoinstall-v1'
     legacy_netboot = 'legacy-netboot'
 
 
 class InstallerConfigData(BaseModel):
-    type: InstallerTypeEnum
+    type: InstallerType
     image_source_url: AnyHttpUrl
     image_sha256sum: str
 
