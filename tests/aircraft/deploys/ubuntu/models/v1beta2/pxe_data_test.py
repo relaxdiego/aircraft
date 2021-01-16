@@ -1,7 +1,7 @@
 import pytest
 
-from aircraft.deploys.ubuntu.models.v1beta2 import PxeData
-from aircraft.deploys.ubuntu.models.v1beta2.pxe_data import InstallerConfigData
+from aircraft.deploys.ubuntu.models.v1beta3 import PxeData
+from aircraft.deploys.ubuntu.models.v1beta3.pxe_data import InstallerConfigData
 
 
 @pytest.fixture

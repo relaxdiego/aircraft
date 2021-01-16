@@ -1,7 +1,7 @@
 from unittest import TestCase
 
 
-from aircraft.deploys.ubuntu.models.v1beta2 import BootfileData
+from aircraft.deploys.ubuntu.models.v1beta3 import BootfileData
 
 
 class BootFileDataTest(TestCase):

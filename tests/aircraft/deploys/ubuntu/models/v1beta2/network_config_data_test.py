@@ -6,7 +6,7 @@ import pytest
 import textwrap
 import yaml
 
-from aircraft.deploys.ubuntu.models.v1beta2 import NetworkConfigData
+from aircraft.deploys.ubuntu.models.v1beta3 import NetworkConfigData
 
 
 @pytest.fixture

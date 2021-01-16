@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from aircraft.deploys.ubuntu.models.v1beta2 import DnsmasqData
+from aircraft.deploys.ubuntu.models.v1beta3 import DnsmasqData
 
 
 class DnsmasqDataTest(TestCase):

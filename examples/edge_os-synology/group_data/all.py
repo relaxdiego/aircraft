@@ -1,12 +1,12 @@
 from pathlib import Path
 
-from aircraft.deploys.edge_os.models.v1beta2 import (
+from aircraft.deploys.edge_os.models.v1beta3 import (
     DhcpData,
 )
-from aircraft.deploys.synology.models.v1beta2 import (
+from aircraft.deploys.synology.models.v1beta3 import (
     PxeData,
 )
-from aircraft.deploys.ubuntu.models.v1beta2 import (
+from aircraft.deploys.ubuntu.models.v1beta3 import (
     BootfileData,
     HttpData,
     StorageConfigData,

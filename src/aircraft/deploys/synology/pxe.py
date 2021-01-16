@@ -8,7 +8,7 @@ from pyinfra.operations import (
     server,
 )
 
-from aircraft.deploys.synology.models import v1beta2
+from aircraft.deploys.synology.models import v1beta3
 from aircraft.validators import validate_schema_version
 
 # This is bad. Each deploy dir should be independent. I'm just
@@ -21,7 +21,7 @@ deploy_dir = Path(__file__).parent.parent / 'ubuntu'
 @deploy('Configure the PXE server')
 def configure(state=None, host=None):
     supported_schema_versions = [
-        v1beta2.PxeData,
+        v1beta3.PxeData,
     ]
 
     validate_schema_version(host.data.pxe, supported_schema_versions)

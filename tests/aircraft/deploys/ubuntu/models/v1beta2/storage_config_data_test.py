@@ -1,6 +1,6 @@
 import pytest
 
-from aircraft.deploys.ubuntu.models.v1beta2 import StorageConfigData
+from aircraft.deploys.ubuntu.models.v1beta3 import StorageConfigData
 
 
 @pytest.fixture

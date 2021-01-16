@@ -1,7 +1,7 @@
 from pathlib import Path
 import yaml
 
-from aircraft.deploys.ubuntu.models.v1beta2 import (
+from aircraft.deploys.ubuntu.models.v1beta3 import (
     DnsmasqData,
     HttpData,
     PxeData,
