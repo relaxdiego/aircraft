@@ -1,7 +1,10 @@
 import pytest
 
 from aircraft.deploys.ubuntu.models.v1beta3 import PxeData
-from aircraft.deploys.ubuntu.models.v1beta3.pxe_data import InstallerConfigData
+from aircraft.deploys.ubuntu.models.v1beta3.pxe_data import (
+    AutoinstallV1InstallerConfigData,
+    LegacyNetbootInstallerConfigData,
+)
 
 
 @pytest.fixture
@@ -51,12 +54,39 @@ def valid_with_autoinstall_v1_installer(
     }
 
 
+@pytest.fixture
+def valid_with_legacy_netboot(
+    valid_bootfiles_config_data,
+    valid_http_config_data,
+    valid_tftp_config_data,
+):
+    return {
+        'tftp': valid_tftp_config_data,
+        'http': valid_http_config_data,
+
+        'bootfiles': valid_bootfiles_config_data,
+
+        'installer': {
+            'type': 'legacy-netboot',
+            'netboot_source_url': 'http://some.domain.com/some/path/to/file.iso',
+            'netboot_sha256sum': '0123456789abcdef',
+            'image_source_url': 'http://some.domain.com/some/path/to/file.iso',
+            'image_sha256sum': '0123456789abcdef',
+        }
+    }
+
+
 # TODO: Add more tests
 def test__raises_a_value_error_when_tftp_is_not_provided():
     with pytest.raises(ValueError):
         PxeData()
 
 
-def test__recognizes_an_installer_dict(valid_with_autoinstall_v1_installer):
+def test__recognizes_an_autoinstaller_v1_config(valid_with_autoinstall_v1_installer):
     assert isinstance(PxeData(**valid_with_autoinstall_v1_installer).installer,
-                      InstallerConfigData)
+                      AutoinstallV1InstallerConfigData)
+
+
+def test__recognizes_a_legacy_netboot_config(valid_with_legacy_netboot):
+    assert isinstance(PxeData(**valid_with_legacy_netboot).installer,
+                      LegacyNetbootInstallerConfigData)

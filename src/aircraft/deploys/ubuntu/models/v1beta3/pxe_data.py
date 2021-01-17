@@ -4,6 +4,7 @@ from pydantic import (
 )
 from typing import (
     List,
+    Union,
 )
 
 from .base_model import BaseModel
@@ -18,8 +19,16 @@ class InstallerType(str, Enum):
     legacy_netboot = 'legacy-netboot'
 
 
-class InstallerConfigData(BaseModel):
+class AutoinstallV1InstallerConfigData(BaseModel):
     type: InstallerType
+    image_source_url: AnyHttpUrl
+    image_sha256sum: str
+
+
+class LegacyNetbootInstallerConfigData(BaseModel):
+    type: InstallerType
+    netboot_source_url: AnyHttpUrl
+    netboot_sha256sum: str
     image_source_url: AnyHttpUrl
     image_sha256sum: str
 
@@ -29,7 +38,10 @@ class PxeData(BaseModel):
     http: HttpData
 
     bootfiles: List[BootfileData]
-    installer: InstallerConfigData
+    installer: Union[
+        AutoinstallV1InstallerConfigData,
+        LegacyNetbootInstallerConfigData,
+    ]
 
     machines: List[MachineData] = []
 
