@@ -215,8 +215,8 @@ def configure_installer_type_legacy_netboot(state=None, host=None):
     # Download the netboot archive
     #
 
-    archive_path = host.data.pxe.http.root_dir.joinpath(
-        host.data.pxe.installer.image_source_url.path.lstrip('/')
+    archive_path = host.data.pxe.tftp.root_dir.joinpath(
+        host.data.pxe.installer.netboot_source_url.path.lstrip('/')
     )
 
     files.directory(
@@ -228,14 +228,66 @@ def configure_installer_type_legacy_netboot(state=None, host=None):
         host=host, state=state,
     )
 
-    download_archive = files.download(
-        name=f'Download archive to {archive_path}',
-        src=str(host.data.pxe.installer.image_source_url),
+    download_netboot_archive = files.download(
+        name=f'Download netboot archive to {archive_path}',
+        src=str(host.data.pxe.installer.netboot_source_url),
         dest=str(archive_path),
-        sha256sum=host.data.pxe.installer.image_sha256sum,
+        sha256sum=host.data.pxe.installer.netboot_sha256sum,
         sudo=True,
 
         host=host, state=state,
+    )
+
+    #
+    # Download the OS iso
+    #
+
+    iso_path = host.data.pxe.http.root_dir.joinpath(
+        host.data.pxe.installer.image_source_url.path.lstrip('/')
+    )
+
+    files.directory(
+        name=f"Ensure {iso_path.parent}",
+        path=str(iso_path.parent),
+        present=True,
+        sudo=True,
+
+        host=host, state=state,
+    )
+
+    server.shell(
+        name=f'Ensure nothing is mounted on {iso_path.parent}/mnt',
+        commands=[
+            f'(mount | grep " on {iso_path.parent}/mnt" && '
+            f'umount {iso_path.parent}/mnt) || :',
+        ],
+        sudo=True,
+
+        host=host, state=state
+    )
+
+    download_iso = files.download(
+        name=f'Download OS iso to {iso_path}',
+        src=str(host.data.pxe.installer.image_source_url),
+        dest=str(iso_path),
+        sudo=True,
+
+        sha256sum=host.data.pxe.installer.image_sha256sum,
+
+        host=host, state=state,
+    )
+
+    iso_mount_path = iso_path.parent / 'mnt'
+
+    server.shell(
+        name=f'Mount the ISO to {iso_path.parent}/mnt',
+        commands=[
+            f'mkdir -p {iso_path.parent}/mnt',
+            f'mount {iso_path} {iso_path.parent}/mnt',
+        ],
+        sudo=True,
+
+        host=host, state=state
     )
 
     # This deploy only supports serving one OS version for now and
@@ -263,9 +315,13 @@ def configure_installer_type_legacy_netboot(state=None, host=None):
 
     if host.fact.file(kernel_path) is None or \
        host.fact.file(initrd_path) is None or \
-       download_archive.changed or \
+       download_netboot_archive.changed or \
+       download_iso.changed or \
        current_installer.changed:
 
+        # We make use of the kernel and initrd in the netboot archive
+        # since the the ones in the 18.04 iso, specifically under the
+        # casper directory, fail to work properly.
         kernel_path_in_archive = './ubuntu-installer/amd64/linux'
         initrd_path_in_archive = './ubuntu-installer/amd64/initrd.gz'
 
@@ -288,13 +344,34 @@ def configure_installer_type_legacy_netboot(state=None, host=None):
     #
     # Render Legacy Preseed Config
     #
-    legacy_preseed_path = archive_path.parent / 'legacy-preseed.cfg'
+    legacy_preseed_path = host.data.pxe.http.root_dir.joinpath(
+        'legacy-preseed.seed'
+    )
+    net_image_disk_path = iso_mount_path / 'install' / 'filesystem.squashfs'
+    net_image_http_path = str(
+        Path(
+            host.data.pxe.installer.image_source_url.path.lstrip('/')
+        ).parent.joinpath('mnt', 'install', 'filesystem.squashfs')
+    )
+
+    server.shell(
+        name='Check that squashfs file exists',
+        commands=[
+            f'test -f {net_image_disk_path}',
+        ],
+        sudo=True,
+
+        host=host, state=state
+    )
 
     files.template(
         name='Render legacy preseed config',
-        src=str(deploy_dir / 'templates' / 'legacy-preseed.cfg.j2'),
+        src=str(deploy_dir / 'templates' / 'legacy-preseed.seed.j2'),
         dest=str(host.data.pxe.http.root_dir / legacy_preseed_path),
         sudo=True,
+
+        pxe=host.data.pxe,
+        net_image_http_path=net_image_http_path,
 
         host=host, state=state,
     )
@@ -304,20 +381,22 @@ def configure_installer_type_legacy_netboot(state=None, host=None):
     #
 
     installer_path = Path(
-        host.data.pxe.installer.image_source_url.path.lstrip('/')
+        host.data.pxe.installer.netboot_source_url.path.lstrip('/')
     )
 
     files.template(
         name='Render GRUB config',
         src=str(deploy_dir / 'templates' / 'grub2.legacy-netboot.cfg.j2'),
         dest=str(host.data.pxe.tftp.root_dir / 'grub' / 'grub.cfg'),
-        pxe=host.data.pxe,
-        os_name=Path(host.data.pxe.installer.image_source_url.path).stem,
-        kernel_filename=Path(kernel_path).name,
+        sudo=True,
+
         initrd_filename=Path(initrd_path).name,
         installer_path=installer_path,
-        legacy_preseed_path=installer_path.parent / legacy_preseed_path.name,
-        sudo=True,
+        kernel_filename=Path(kernel_path).name,
+        legacy_preseed_path=legacy_preseed_path.name,
+        net_image_http_path=net_image_http_path,
+        os_name=Path(host.data.pxe.installer.image_source_url.path).stem,
+        pxe=host.data.pxe,
 
         host=host, state=state,
     )

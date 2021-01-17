@@ -1,0 +1,14 @@
+d-i live-installer/net-image string http://{{pxe.http.get_address()}}/{{net_image_http_path}}
+
+### Unattended Installation
+d-i auto-install/enable boolean true
+d-i debconf/priority select critical
+
+### Localization
+d-i debian-installer/locale string en_US.UTF-8
+d-i localechooser/supported-locales multiselect en_US.UTF-8, de_DE.UTF-8
+d-i console-setup/ask_detect boolean false
+d-i keyboard-configuration/xkb-keymap select us
+
+### Network configuration
+d-i netcfg/choose_interface select auto

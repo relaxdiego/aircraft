@@ -25,8 +25,8 @@ menuentry "Autoinstall {{os_name}} for {{machine.hostname}}" --id=autoinstall-{{
 {% endfor %}
 
 menuentry "Custom install {{os_name}}" --id=manual-install {
-    echo "Loading Kernel..."
-    linux /{{kernel_filename}} ip=dhcp boot=casper url={{pxe.http.get_address()}}/{{legacy_preseed_path}}
-    echo "Loading Ram Disk..."
+    echo "Loading Kernel /{{kernel_filename}}..."
+    linux /{{kernel_filename}} ip=dhcp install auto=true priority=critical url={{pxe.http.get_address()}}/{{legacy_preseed_path}} live-installer/net-image=http://{{pxe.http.get_address()}}/{{net_image_http_path}}
+    echo "Loading Ram Disk /{{initrd_filename}}..."
     initrd /{{initrd_filename}}
 }
