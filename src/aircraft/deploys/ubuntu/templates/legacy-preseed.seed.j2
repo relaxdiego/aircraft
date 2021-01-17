@@ -72,3 +72,5 @@ d-i mirror/http/directory string /ubuntu/releases/18.04/release/mnt/ubuntu
 d-i mirror/suite          string bionic
 # no proxy
 d-i mirror/http/proxy     string
+
+tasksel tasksel/first multiselect openssh-server ubuntu-server
