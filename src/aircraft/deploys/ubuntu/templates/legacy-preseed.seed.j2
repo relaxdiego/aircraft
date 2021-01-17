@@ -1,4 +1,6 @@
-d-i live-installer/net-image string http://{{pxe.http.get_address()}}/{{net_image_http_path}}
+# References:
+# - https://help.ubuntu.com/community/Installation/LocalNet
+# - https://github.com/coreprocess/linux-unattended-installation/blob/master/ubuntu/18.04/custom/preseed.cfg
 
 ### Unattended Installation
 d-i auto-install/enable boolean true
@@ -59,3 +61,14 @@ d-i time/zone string US/Eastern
 d-i clock-setup/ntp boolean true
 # NTP server to use. The default is almost always fine here.
 #d-i clock-setup/ntp-server string ntp.example.com
+
+# Installation source
+# Note the value of mirror/country "enter information manually" This is an actual choice in the mirror menu. Choosing this allows us to enter our local repository information.
+d-i mirror/country        string manual
+# hostname This is whatever HTTP server you have set up.
+d-i mirror/http/hostname  string {{pxe.http.get_address()}}
+# This is the /ubuntu directory from the install CD copied (or linked) under the webroot of your HTTP server
+d-i mirror/http/directory string /ubuntu/releases/18.04/release/mnt/ubuntu
+d-i mirror/suite          string bionic
+# no proxy
+d-i mirror/http/proxy     string
