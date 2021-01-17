@@ -169,7 +169,7 @@ def configure_installer_type_autoinstall_v1(state=None, host=None):
 
     files.template(
         name='Render GRUB config',
-        src=str(deploy_dir / 'templates' / 'grub2.cfg.j2'),
+        src=str(deploy_dir / 'templates' / 'grub2.autoinstall-v1.cfg.j2'),
         dest=str(host.data.pxe.tftp.root_dir / 'grub' / 'grub.cfg'),
         pxe=host.data.pxe,
         os_name=Path(host.data.pxe.installer.image_source_url.path).stem,
@@ -286,17 +286,37 @@ def configure_installer_type_legacy_netboot(state=None, host=None):
         )
 
     #
+    # Render Legacy Preseed Config
+    #
+    legacy_preseed_path = archive_path.parent / 'legacy-preseed.cfg'
+
+    files.template(
+        name='Render legacy preseed config',
+        src=str(deploy_dir / 'templates' / 'legacy-preseed.cfg.j2'),
+        dest=str(host.data.pxe.http.root_dir / legacy_preseed_path),
+        sudo=True,
+
+        host=host, state=state,
+    )
+
+    #
     # Render GRUB2 config
     #
 
+    installer_path = Path(
+        host.data.pxe.installer.image_source_url.path.lstrip('/')
+    )
+
     files.template(
         name='Render GRUB config',
-        src=str(deploy_dir / 'templates' / 'grub2.cfg.j2'),
+        src=str(deploy_dir / 'templates' / 'grub2.legacy-netboot.cfg.j2'),
         dest=str(host.data.pxe.tftp.root_dir / 'grub' / 'grub.cfg'),
         pxe=host.data.pxe,
         os_name=Path(host.data.pxe.installer.image_source_url.path).stem,
         kernel_filename=Path(kernel_path).name,
         initrd_filename=Path(initrd_path).name,
+        installer_path=installer_path,
+        legacy_preseed_path=installer_path.parent / legacy_preseed_path.name,
         sudo=True,
 
         host=host, state=state,

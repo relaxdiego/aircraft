@@ -1,0 +1,32 @@
+set default="0"
+set timeout=-1
+
+if loadfont unicode ; then
+  set gfxmode=auto
+  set locale_dir=$prefix/locale
+  set lang=en_US
+fi
+# terminal_output gfxterm
+
+set menu_color_normal=white/black
+set menu_color_highlight=black/light-gray
+if background_color 44,0,30; then
+  clear
+fi
+
+{% for machine in pxe.machines %}
+menuentry "Autoinstall {{os_name}} for {{machine.hostname}}" --id=autoinstall-{{machine.hostname}} {
+    echo "Loading Kernel..."
+    # Make sure to escape the ';'
+    linux /{{kernel_filename}} ip=dhcp url=http://{{pxe.http.get_address()}}/{{pxe.installer.image_source_url.path.lstrip('/')}} autoinstall ds=nocloud-net\;s=http://{{pxe.http.get_address()}}/{{machine.hostname}}/
+    echo "Loading Ram Disk..."
+    initrd /{{initrd_filename}}
+}
+{% endfor %}
+
+menuentry "Custom install {{os_name}}" --id=manual-install {
+    echo "Loading Kernel..."
+    linux /{{kernel_filename}} ip=dhcp boot=casper url={{pxe.http.get_address()}}/{{legacy_preseed_path}}
+    echo "Loading Ram Disk..."
+    initrd /{{initrd_filename}}
+}
