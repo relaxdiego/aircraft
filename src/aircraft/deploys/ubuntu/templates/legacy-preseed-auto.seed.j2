@@ -80,3 +80,8 @@ d-i mirror/http/proxy     string
 
 tasksel tasksel/first multiselect openssh-server ubuntu-server
 pkgsel pkgsel/update-policy select none
+
+# Reboot when installation completes
+finish-install	finish-install/reboot_in_progress	note
+# Are you sure you want to exit now?
+d-i	di-utils-reboot/really_reboot	boolean	true
