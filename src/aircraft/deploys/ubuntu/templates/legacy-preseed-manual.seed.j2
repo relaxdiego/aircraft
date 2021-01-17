@@ -12,4 +12,15 @@ d-i debconf/priority select critical
 d-i base-installer/install-recommends boolean true
 d-i base-installer/kernel/image string linux-generic
 
+# Installation source
+# Note the value of mirror/country "enter information manually" This is an actual choice in the mirror menu. Choosing this allows us to enter our local repository information.
+d-i mirror/country        string manual
+# hostname This is whatever HTTP server you have set up.
+d-i mirror/http/hostname  string {{pxe.http.get_address()}}
+# This is the /ubuntu directory from the install CD copied (or linked) under the webroot of your HTTP server
+d-i mirror/http/directory string /ubuntu/releases/18.04/release/mnt/ubuntu
+d-i mirror/suite          string bionic
+# no proxy
+d-i mirror/http/proxy     string
+
 tasksel tasksel/first multiselect openssh-server ubuntu-server
