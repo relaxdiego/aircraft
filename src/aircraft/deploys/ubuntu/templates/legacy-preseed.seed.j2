@@ -2,7 +2,7 @@ d-i live-installer/net-image string http://{{pxe.http.get_address()}}/{{net_imag
 
 ### Unattended Installation
 d-i auto-install/enable boolean true
-d-i debconf/priority select critical
+d-i debconf/priority select high
 
 ### Localization
 d-i debian-installer/locale string en_US.UTF-8

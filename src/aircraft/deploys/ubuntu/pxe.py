@@ -310,8 +310,8 @@ def configure_installer_type_legacy_netboot(state=None, host=None):
     # Extract the kernel and ram disk image for use by the bootloader
     #
 
-    kernel_path = str(host.data.pxe.tftp.root_dir / 'linux')
-    initrd_path = str(host.data.pxe.tftp.root_dir / 'initrd.gz')
+    kernel_path = host.data.pxe.tftp.root_dir / 'linux'
+    initrd_path = host.data.pxe.tftp.root_dir / 'initrd.gz'
 
     if host.fact.file(kernel_path) is None or \
        host.fact.file(initrd_path) is None or \
@@ -321,18 +321,18 @@ def configure_installer_type_legacy_netboot(state=None, host=None):
 
         # We make use of the kernel and initrd in the netboot archive
         # since the the ones in the 18.04 iso, specifically under the
-        # casper directory, fail to work properly.
+        # {iso_mount_path}/install directory, fail to work properly.
         kernel_path_in_archive = './ubuntu-installer/amd64/linux'
         initrd_path_in_archive = './ubuntu-installer/amd64/initrd.gz'
 
         server.shell(
-            name='Extract the files from the installer archive',
+            name='Extract the files from the netboot installer',
             commands=[
-                f'tar -zxvf {archive_path} -C {Path(kernel_path).parent} '
+                f'tar -zxvf {archive_path} -C {kernel_path.parent} '
                 f'--strip-components={kernel_path_in_archive.count("/")} '
                 f'{kernel_path_in_archive}',
 
-                f'tar -zxvf {archive_path} -C {Path(initrd_path).parent} '
+                f'tar -zxvf {archive_path} -C {initrd_path.parent} '
                 f'--strip-components={initrd_path_in_archive.count("/")} '
                 f'{initrd_path_in_archive}',
             ],
@@ -340,6 +340,17 @@ def configure_installer_type_legacy_netboot(state=None, host=None):
 
             host=host, state=state
         )
+
+        # server.shell(
+        #     name="Extract kernel and initrd from ISO",
+        #     commands=[
+        #         f'cp {iso_mount_path}/install/{kernel_path.name} {kernel_path}',
+        #         f'cp {iso_mount_path}/install/{initrd_path.name} {initrd_path}',
+        #     ],
+        #     sudo=True,
+        #
+        #     host=host, state=state,
+        # )
 
     #
     # Render Legacy Preseed Config
@@ -392,7 +403,7 @@ def configure_installer_type_legacy_netboot(state=None, host=None):
 
         initrd_filename=Path(initrd_path).name,
         installer_path=installer_path,
-        kernel_filename=Path(kernel_path).name,
+        kernel_filename=kernel_path.name,
         legacy_preseed_path=legacy_preseed_path.name,
         net_image_http_path=net_image_http_path,
         os_name=Path(host.data.pxe.installer.image_source_url.path).stem,
