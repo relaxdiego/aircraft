@@ -24,9 +24,11 @@ menuentry "Autoinstall {{os_name}} for {{machine.hostname}}" --id=autoinstall-{{
 }
 {% endfor %}
 
+# The answers you give to this custom installer will end up
+# being logged at /var/log/installer/syslog in the final install
 menuentry "Custom install {{os_name}}" --id=manual-install {
     echo "Loading Kernel /{{kernel_filename}}..."
-    linux /{{kernel_filename}} ip=dhcp install auto=true priority=critical url=http://{{pxe.http.get_address()}}/{{legacy_preseed_manual_path}} live-installer/net-image=http://{{pxe.http.get_address()}}/{{net_image_http_path}}
+    linux /{{kernel_filename}} DEBCONF_DEBUG=5 ip=dhcp install auto=true priority=critical url=http://{{pxe.http.get_address()}}/{{legacy_preseed_manual_path}} live-installer/net-image=http://{{pxe.http.get_address()}}/{{net_image_http_path}}
     echo "Loading Ram Disk /{{initrd_filename}}..."
     initrd /{{initrd_filename}}
 }
