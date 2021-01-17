@@ -8,11 +8,16 @@ d-i debconf/priority select high
 
 ### Localization
 d-i debian-installer/locale string en_US.UTF-8
-
-### Keyboard selection.
-# Disable automatic (interactive) keymap detection.
+d-i localechooser/supported-locales string en_US.UTF-8
+localechooser localechooser/supported-locales string en_US.UTF-8
+d-i localechooser/preferred-locale string en_US.UTF-8
+localechooser localechooser/preferred-locale string en_US.UTF-8
 d-i console-setup/ask_detect boolean false
+
 d-i keyboard-configuration/xkb-keymap select us
+d-i	keyboard-configuration/layout	select	English (US)
+d-i	keyboard-configuration/variant	select	English (US)
+d-i	keyboard-configuration/layoutcode	string	us
 
 ### Network configuration
 d-i netcfg/choose_interface select auto
@@ -74,3 +79,4 @@ d-i mirror/suite          string bionic
 d-i mirror/http/proxy     string
 
 tasksel tasksel/first multiselect openssh-server ubuntu-server
+pkgsel pkgsel/update-policy select none

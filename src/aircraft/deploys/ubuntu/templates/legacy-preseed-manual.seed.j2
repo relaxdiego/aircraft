@@ -1,0 +1,15 @@
+#
+# MANUAL (CUSTOM) INSTALLATION PRESEED
+#
+
+# References:
+# - https://help.ubuntu.com/community/Installation/LocalNet
+# - https://github.com/coreprocess/linux-unattended-installation/blob/master/ubuntu/18.04/custom/preseed.cfg
+
+d-i debconf/priority select critical
+
+### Base system installation
+d-i base-installer/install-recommends boolean true
+d-i base-installer/kernel/image string linux-generic
+
+tasksel tasksel/first multiselect openssh-server ubuntu-server

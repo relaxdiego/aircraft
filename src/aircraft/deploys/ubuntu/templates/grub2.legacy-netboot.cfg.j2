@@ -16,17 +16,17 @@ fi
 
 {% for machine in pxe.machines %}
 menuentry "Autoinstall {{os_name}} for {{machine.hostname}}" --id=autoinstall-{{machine.hostname}} {
-    echo "Loading Kernel..."
+    echo "Loading Kernel /{{kernel_filename}}..."
     # Make sure to escape the ';'
-    linux /{{kernel_filename}} ip=dhcp url=http://{{pxe.http.get_address()}}/{{pxe.installer.image_source_url.path.lstrip('/')}} autoinstall ds=nocloud-net\;s=http://{{pxe.http.get_address()}}/{{machine.hostname}}/
-    echo "Loading Ram Disk..."
+    linux /{{kernel_filename}} ip=dhcp install auto=true priority=critical netcfg/get_hostname={{machine.hostname}} url=http://{{pxe.http.get_address()}}/{{legacy_preseed_auto_dir}}/{{machine.hostname}} live-installer/net-image=http://{{pxe.http.get_address()}}/{{net_image_http_path}}
+    echo "Loading Ram Disk /{{initrd_filename}}..."
     initrd /{{initrd_filename}}
 }
 {% endfor %}
 
 menuentry "Custom install {{os_name}}" --id=manual-install {
     echo "Loading Kernel /{{kernel_filename}}..."
-    linux /{{kernel_filename}} ip=dhcp install auto=true priority=high url=http://{{pxe.http.get_address()}}/{{legacy_preseed_path}} live-installer/net-image=http://{{pxe.http.get_address()}}/{{net_image_http_path}}
+    linux /{{kernel_filename}} ip=dhcp install auto=true priority=critical url=http://{{pxe.http.get_address()}}/{{legacy_preseed_manual_path}} live-installer/net-image=http://{{pxe.http.get_address()}}/{{net_image_http_path}}
     echo "Loading Ram Disk /{{initrd_filename}}..."
     initrd /{{initrd_filename}}
 }

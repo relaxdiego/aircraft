@@ -341,22 +341,14 @@ def configure_installer_type_legacy_netboot(state=None, host=None):
             host=host, state=state
         )
 
-        # server.shell(
-        #     name="Extract kernel and initrd from ISO",
-        #     commands=[
-        #         f'cp {iso_mount_path}/install/{kernel_path.name} {kernel_path}',
-        #         f'cp {iso_mount_path}/install/{initrd_path.name} {initrd_path}',
-        #     ],
-        #     sudo=True,
-        #
-        #     host=host, state=state,
-        # )
-
     #
     # Render Legacy Preseed Config
     #
-    legacy_preseed_path = host.data.pxe.http.root_dir.joinpath(
-        'legacy-preseed.seed'
+    legacy_preseed_manual_path = host.data.pxe.http.root_dir.joinpath(
+        'legacy-preseed-manual.seed'
+    )
+    legacy_preseed_auto_dir = host.data.pxe.http.root_dir.joinpath(
+        'legacy-preseed-auto'
     )
     net_image_disk_path = iso_mount_path / 'install' / 'filesystem.squashfs'
     net_image_http_path = str(
@@ -377,8 +369,8 @@ def configure_installer_type_legacy_netboot(state=None, host=None):
 
     files.template(
         name='Render legacy preseed config',
-        src=str(deploy_dir / 'templates' / 'legacy-preseed.seed.j2'),
-        dest=str(host.data.pxe.http.root_dir / legacy_preseed_path),
+        src=str(deploy_dir / 'templates' / 'legacy-preseed-manual.seed.j2'),
+        dest=str(host.data.pxe.http.root_dir / legacy_preseed_manual_path),
         sudo=True,
 
         pxe=host.data.pxe,
@@ -404,7 +396,8 @@ def configure_installer_type_legacy_netboot(state=None, host=None):
         initrd_filename=Path(initrd_path).name,
         installer_path=installer_path,
         kernel_filename=kernel_path.name,
-        legacy_preseed_path=legacy_preseed_path.name,
+        legacy_preseed_auto_dir=legacy_preseed_auto_dir.stem,
+        legacy_preseed_manual_path=legacy_preseed_manual_path.name,
         net_image_http_path=net_image_http_path,
         os_name=Path(host.data.pxe.installer.image_source_url.path).stem,
         pxe=host.data.pxe,
@@ -412,31 +405,21 @@ def configure_installer_type_legacy_netboot(state=None, host=None):
         host=host, state=state,
     )
 
-    # #
-    # # Render the machine-specific user-data and meta-data files
-    # #
     #
-    # for machine in host.data.pxe.machines:
-    #     meta_data_path = host.data.pxe.http.root_dir / machine.hostname / 'meta-data'
-    #     files.template(
-    #         name=f'Render {meta_data_path}',
-    #         src=str(deploy_dir / 'templates' / 'meta-data.j2'),
-    #         dest=str(meta_data_path),
-    #         create_remote_dir=True,
-    #         sudo=True,
-    #         machine=machine,
+    # Render the machine-specific preseed files
     #
-    #         host=host, state=state,
-    #     )
-    #
-    #     user_data_path = host.data.pxe.http.root_dir / machine.hostname / 'user-data'
-    #     files.template(
-    #         name=f'Render {user_data_path}',
-    #         src=str(deploy_dir / 'templates' / 'user-data.j2'),
-    #         dest=str(user_data_path),
-    #         create_remote_dir=True,
-    #         sudo=True,
-    #         machine=machine,
-    #
-    #         host=host, state=state,
-    #     )
+
+    for machine in host.data.pxe.machines:
+        machine_legacy_preseed_path = legacy_preseed_auto_dir / machine.hostname
+        files.template(
+            name=f'Render {machine_legacy_preseed_path}',
+            src=deploy_dir / 'templates' / 'legacy-preseed-auto.seed.j2',
+            dest=machine_legacy_preseed_path,
+            create_remote_dir=True,
+            sudo=True,
+
+            machine=machine,
+            pxe=host.data.pxe,
+
+            host=host, state=state,
+        )
