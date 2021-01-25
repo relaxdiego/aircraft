@@ -1,6 +1,6 @@
 # TIP: To validate this file, run:
 #
-#     python examples/_edge_/group_data/all.py
+#     python group_data/all.py
 #
 # Any schema violations will be reported accordingly by pydantic
 
