@@ -1,10 +1,3 @@
-WARNING
-=======
-
-This example is still alpha since aircraft doesn't yet fully support the
-old d-i or debian-installer method of installing Ubuntu.
-
-
 Given
 -----
 
