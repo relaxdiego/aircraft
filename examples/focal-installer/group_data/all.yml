@@ -17,22 +17,15 @@ variables:
   machine_1_name:      &machine_1_name       'pxe-client-1'
   machine_1_address:   &machine_1_address    '192.168.100.11/24'
 
-  # bionic
+  # focal
   bootfiles:    &bootfiles
     - client_arch:      7
-      image_source_url: 'http://archive.ubuntu.com/ubuntu/dists/bionic/main/uefi/grub2-amd64/2.02-2ubuntu8/grubnetx64.efi.signed'
-      image_sha256sum:  '877302c8671f5a5db922fa9ee36d342720774f1ef4aae1b460ef8f53ee282f06'
-
+      image_source_url: 'http://archive.ubuntu.com/ubuntu/dists/focal/main/uefi/grub2-amd64/2.04-1ubuntu26/grubnetx64.efi.signed'
+      image_sha256sum:  '279a5a755bc248d22799434a261b92698740ab817d8aeccbd0cb7409959a1463'
   installer:    &installer
-    type:               'legacy-netboot'
-    netboot_source_url: 'http://archive.ubuntu.com/ubuntu/dists/bionic-updates/main/installer-amd64/20101020ubuntu543.17/images/netboot/netboot.tar.gz'
-    netboot_sha256sum:  '0dc1254144a566434d8665069d091dc392284a89c402e8bc206839e68df03417'
-    # As per https://ubuntuforums.org/showthread.php?t=2390710 the old debian-installer is no
-    # longer available in the live image and that there is not enough documentation on how to
-    # provide subiquity the answers that it needs over the network. Thus, we are using the non-live
-    # version here which still has the old debian-installer.
-    image_source_url:   'http://cdimage.ubuntu.com/ubuntu/releases/18.04/release/ubuntu-18.04.5-server-amd64.iso'
-    image_sha256sum:    '8c5fc24894394035402f66f3824beb7234b757dd2b5531379cb310cedfdf0996'
+    type:             'autoinstall-v1'
+    image_source_url: 'https://releases.ubuntu.com/20.04.1/ubuntu-20.04.1-live-server-amd64.iso'
+    image_sha256sum:  '443511f6bf12402c12503733059269a2e10dec602916c0a75263e5d990f6bb93'
 
 
 http: &http

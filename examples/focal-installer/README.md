@@ -1,9 +1,18 @@
+WARNING
+=======
+
+This example is still alpha since aircraft doesn't yet fully support the
+old d-i or debian-installer method of installing Ubuntu.
+
+
 Given
 -----
 
-* An L2 network provided by Ubiquiti EdgeRouter that has its DHCP service
-  disabled and provides a gateway allowing outgoing connections all the
-  way to the Internet. The router must also allow for key-based SSH auth.
+* An L2 network that DOESN'T have a DCHP server but DOES have a gateway
+  allowing outgoing connections all the way to the Internet.
+
+* An Ubuntu machine in the L2 network that provides key-based auth SSH
+  and passwordless sudo.
 
 * Synology DSM OS as the PXE server with the following services enabled:
   * SSH (key auth enabled)
@@ -23,7 +32,7 @@ NOTE: As much as I wanted to automate all that Synology requirement, there's
 Network Layout
 --------------
 
-The network layout is illustrated in [this diagram](https://docs.google.com/drawings/d/1_94fSEMZPXcj3LoJz1zty5t1Qb7oHFnCy6QosuifJAw/edit?usp=sharing).
+The network layout is illustrated in [this diagram](https://docs.google.com/drawings/d/1QUKOCMXUo2vTudtBiqDe79aknTaEWyukA7ucoZuZ5tk/edit?usp=sharing).
 Notice how the Synology NAS does not have to be located in the L2 Lab Net as
 long as it is routable. If you have the L2 gateway's configuration properly
 set up, then it should work as fine.
