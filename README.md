@@ -1,12 +1,10 @@
 Aircraft
 ========
 
-> BUYER BEWARE: This project is still in very early stages. Its architecture
-> will drastically change from day to day as I experiment, make mistakes, and
-> implement the lessons learned. I also cannot make any guarantees that the
-> entire codebase will always work. Bugs abound. Having said that, if you like
-> to browse incomplete code and gain an understanding of how a project is
-> designed, this might just be the thing for you!
+A collection of [pyinfra](https://pyinfra.com) packaged deploys that can be used
+to declaratively configure services such as dnsmasq, apache2, and others. For now
+only a few services are supported but more services such as GitLab or Jenkins
+will become available in the future.
 
 
 # Video Introduction
