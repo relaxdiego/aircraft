@@ -77,7 +77,10 @@ CURRENT_HEAD=$(shell git rev-parse --short HEAD)
 	@(twine upload dist/* || echo "publish error") | tee .last-publish
 	@(grep "publish error" .last-publish 1>/dev/null 2>&1 && rm -f .last-publish && exit 1) || true
 	@git tag -a -s v$(CURRENT_VERSION) $(CURRENT_HEAD) -m "Tag $(CURRENT_VERSION)" || exit 1
+	@(echo "")
+	@(echo "=========================================================================")
 	@(echo "Please prepare the next release by running: bumpversion major|minor|patch")
+	@(echo "=========================================================================")
 
 
 ## test           : Runs the tests
