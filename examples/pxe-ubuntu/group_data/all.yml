@@ -5,9 +5,9 @@
 # Any schema violations will be reported accordingly by pydantic
 
 variables:
-  pxe_server_address:  &pxe_server_address   '192.168.86.43'
+  pxe_server_address:  &pxe_server_address   '192.168.86.21'
   pxe_server_port:     &pxe_server_port      8080
-  tftp_server_address: &tftp_server_address  '192.168.86.43'
+  tftp_server_address: &tftp_server_address  '192.168.86.21'
   dhcp_interfaces:     &dhcp_interfaces      ['eth0']
   dhcp_subnet:         &dhcp_subnet          '192.168.100.0/24'
   dhcp_address_ranges: &dhcp_address_ranges  [{start: '192.168.100.200', end: '192.168.100.254'}]
@@ -57,8 +57,7 @@ variables:
 http: &http
   hostname:      *pxe_server_address
   port:          *pxe_server_port
-  root_dir:      '/volume4/pxe/http'
-  sftp_root_dir: '/pxe/http'
+  root_dir:      '/opt/aircraft/pxe/http'
 
 
 dnsmasq:
@@ -74,8 +73,7 @@ dnsmasq:
 
   tftp: &tftp
     hostname:      *tftp_server_address
-    root_dir:      '/volume4/pxe/tftpboot'
-    sftp_root_dir: '/pxe/tftpboot'
+    root_dir:      '/opt/aircraft/pxe/tftpboot'
 
 
 pxe:
