@@ -6,7 +6,6 @@
 
 variables:
   pxe_server_address:  &pxe_server_address   '192.168.100.2'
-  pxe_server_port:     &pxe_server_port      8080
   tftp_server_address: &tftp_server_address  '192.168.100.2'
   dhcp_interfaces:     &dhcp_interfaces      ['eth0']
   dhcp_subnet:         &dhcp_subnet          '192.168.100.0/24'
@@ -56,7 +55,6 @@ variables:
 
 http: &http
   hostname:      *pxe_server_address
-  port:          *pxe_server_port
   root_dir:      '/opt/aircraft/pxe/http'
 
 
