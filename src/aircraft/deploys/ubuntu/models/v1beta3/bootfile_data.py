@@ -1,6 +1,9 @@
 from pydantic import (
     AnyUrl,
 )
+from typing import (
+    Union,
+)
 
 from .base_model import BaseModel
 
@@ -11,7 +14,8 @@ class BootfileData(BaseModel):
     PXE client architecture it applies to. For more information on PXE
     client architectures, see https://tools.ietf.org/html/rfc4578#section-2.1
     """
-    client_arch: int
+    client_name: str
+    client_arch: Union[int, str]
     image_source_url: AnyUrl
     image_sha256sum: str
 

@@ -11,6 +11,7 @@ from aircraft.deploys.ubuntu.models.v1beta3.pxe_data import (
 def valid_bootfiles_config_data():
     return [
         {
+            'client_name': 'UEFI-client',
             'client_arch': 7,
             'image_source_url': 'http://some.domain.com/some/path/to/file.efi',
             'image_sha256sum': '0123456789abcdef',

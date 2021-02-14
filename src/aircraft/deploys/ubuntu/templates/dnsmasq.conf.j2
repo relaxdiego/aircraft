@@ -701,8 +701,8 @@ log-dhcp
 #dhcp-ignore-names=tag:wpad-ignore
 
 {%- for bootfile in dnsmasq.dhcp.bootfiles %}
-dhcp-match=set:pxe_client_arch_{{bootfile.client_arch}},option:client-arch,{{bootfile.client_arch}}
-dhcp-boot=tag:pxe_client_arch_7,{{bootfile.get_path()}}
+dhcp-match=set:pxe_client_arch_{{bootfile.client_name}},option:client-arch,{{bootfile.client_arch}}
+dhcp-boot=tag:pxe_client_arch_{{bootfile.client_name}},{{bootfile.get_path()}}
 {%- if dnsmasq.dhcp.tftp_server_name -%}
 ,{{dnsmasq.dhcp.tftp_server_name}},{{dnsmasq.dhcp.tftp_server_name}}
 {%- endif %}
