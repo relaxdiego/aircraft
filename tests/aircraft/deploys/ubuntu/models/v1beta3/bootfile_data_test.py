@@ -1,5 +1,6 @@
 import pytest
 from unittest import TestCase
+from uuid import uuid4
 
 
 from aircraft.deploys.ubuntu.models.v1beta3 import BootfileData
@@ -125,3 +126,18 @@ class BootFileDataTest(TestCase):
                 image_source_url="http://some.domain.com/some/path",
                 image_sha256sum="someshahere",
             )
+
+    def test__it_allows_setting_dhcp_options(self):
+        dhcp_options = {
+            43: str(uuid4())
+        }
+
+        bootfile = BootfileData(
+            client_name="some-client",
+            client_arch=1,
+            dhcp_options=dhcp_options,
+            image_source_url="http://some.domain.com/the/path",
+            image_sha256sum="someshahere",
+        )
+
+        assert bootfile.dhcp_options == dhcp_options

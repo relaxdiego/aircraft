@@ -30,6 +30,7 @@ variables:
       # These are the MAC addresses assigned to the Raspberry Pi foundation. Search
       # for Raspberry at https://regauth.standards.ieee.org/standards-ra-web/pub/view.html#registries
       dhcp_macs:        ['b8:27:eb:*:*:*', 'dc:a6:32:*:*:*', 'e4:5f:01:*:*:*']
+      dhcp_options:     {43: 'Raspberry Pi Boot'}
       image_source_url: 'https://github.com/raspberrypi/firmware/blob/8572bb50bf24a9ffef949ced69776e66559f4afe/boot/bootcode.bin?raw=true'
       image_sha256sum:  '92fd15eb2468187b69d15a9482d7e8cee3704993c53bb5ba55afe550723c5975'
 

@@ -718,3 +718,12 @@ dhcp-boot=tag:pxe_client_{{bootfile.client_name}},{{bootfile.get_path()}}
 ,{{dnsmasq.dhcp.tftp_server_name}},{{dnsmasq.dhcp.tftp_server_name}}
 {%- endif %}
 {%- endfor %}
+
+# Define other dhcp options
+{%- for bootfile in dnsmasq.dhcp.bootfiles %}
+{% if bootfile.dhcp_options -%}
+{% for option_key, option_value in bootfile.dhcp_options.items() -%}
+dhcp-option=tag:pxe_client_{{bootfile.client_name}},option:{{option_key}},'{{option_value}}'
+{% endfor -%}
+{%- endif %}
+{%- endfor %}

@@ -5,6 +5,7 @@ from pydantic import (
 )
 import re
 from typing import (
+    Dict,
     List,
     Union,
 )
@@ -21,6 +22,7 @@ class BootfileData(BaseModel):
     client_name: str
     client_arch: Union[int, str] = None
     dhcp_macs: List[str] = None
+    dhcp_options: Dict[int, str] = None
     image_source_url: AnyUrl
     image_sha256sum: str
 
