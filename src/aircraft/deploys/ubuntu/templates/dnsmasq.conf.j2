@@ -700,9 +700,20 @@ log-dhcp
 #dhcp-name-match=set:wpad-ignore,wpad
 #dhcp-ignore-names=tag:wpad-ignore
 
+# Define tags for the PXE clients. Tags are built from their 'client_name'
+{% for bootfile in dnsmasq.dhcp.bootfiles -%}
+{% if bootfile.client_arch -%}
+dhcp-match=set:pxe_client_{{bootfile.client_name}},option:client-arch,{{bootfile.client_arch}}
+{% elif bootfile.dhcp_macs -%}
+{% for mac in bootfile.dhcp_macs -%}
+dhcp-mac=set:pxe_client_{{bootfile.client_name}},{{mac}}
+{% endfor -%}
+{%- endif %}
+{%- endfor %}
+
+# Define the bootfile to provide for each pxe client type
 {%- for bootfile in dnsmasq.dhcp.bootfiles %}
-dhcp-match=set:pxe_client_arch_{{bootfile.client_name}},option:client-arch,{{bootfile.client_arch}}
-dhcp-boot=tag:pxe_client_arch_{{bootfile.client_name}},{{bootfile.get_path()}}
+dhcp-boot=tag:pxe_client_{{bootfile.client_name}},{{bootfile.get_path()}}
 {%- if dnsmasq.dhcp.tftp_server_name -%}
 ,{{dnsmasq.dhcp.tftp_server_name}},{{dnsmasq.dhcp.tftp_server_name}}
 {%- endif %}
