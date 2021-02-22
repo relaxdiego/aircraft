@@ -700,8 +700,9 @@ log-dhcp
 #dhcp-name-match=set:wpad-ignore,wpad
 #dhcp-ignore-names=tag:wpad-ignore
 
-# Define tags for the PXE clients. Tags are built from their 'client_name'
-{% for bootfile in dnsmasq.dhcp.bootfiles -%}
+{% for bootfile in dnsmasq.dhcp.bootfiles %}
+# === BEGIN CONFIG FOR PXE client class {{bootfile.client_name}} ===
+# Define tag to attach to PXE client. Tags are built from 'bootfile.client_name'
 {% if bootfile.client_arch -%}
 dhcp-match=set:pxe_client_{{bootfile.client_name}},option:client-arch,{{bootfile.client_arch}}
 {% elif bootfile.dhcp_macs -%}
@@ -709,21 +710,18 @@ dhcp-match=set:pxe_client_{{bootfile.client_name}},option:client-arch,{{bootfile
 dhcp-mac=set:pxe_client_{{bootfile.client_name}},{{mac}}
 {% endfor -%}
 {%- endif %}
-{%- endfor %}
 
-# Define the bootfile to provide for each pxe client type
-{%- for bootfile in dnsmasq.dhcp.bootfiles %}
+# Define the bootfile to provide to pxe client tagged pxe_client_{{bootfile.client_name}}
 dhcp-boot=tag:pxe_client_{{bootfile.client_name}},{{bootfile.get_path()}}
 {%- if dnsmasq.dhcp.tftp_server_name -%}
 ,{{dnsmasq.dhcp.tftp_server_name}},{{dnsmasq.dhcp.tftp_server_name}}
 {%- endif %}
-{%- endfor %}
 
-# Define other dhcp options
-{%- for bootfile in dnsmasq.dhcp.bootfiles %}
 {% if bootfile.dhcp_options -%}
+# Define other DHCP options for pxe client tagged pxe_client_{{bootfile.client_name}}
 {% for option_key, option_value in bootfile.dhcp_options.items() -%}
-dhcp-option=tag:pxe_client_{{bootfile.client_name}},option:{{option_key}},'{{option_value}}'
+dhcp-option=tag:pxe_client_{{bootfile.client_name}},{{option_key}},'{{option_value}}'
 {% endfor -%}
-{%- endif %}
-{%- endfor %}
+{% endif -%}
+# === END CONFIG FOR PXE client class {{bootfile.client_name}} ===
+{% endfor -%}
